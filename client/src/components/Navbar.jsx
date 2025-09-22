@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import Logo from "../assets/Logo.png";
+import Logo from "../assets/Logo1.png";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
