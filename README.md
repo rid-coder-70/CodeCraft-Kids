@@ -26,17 +26,17 @@
 - **Live Demo (Frontend):** [Link to deployed frontend]  
 - **Backend API:** [Link to backend API, if deployed]
 
-
-
 ---
 
 ## Folder Structure
+
 project-root/
 ├─ client/ # Frontend: React + Tailwind + Phaser.js
 ├─ Server/ # Backend: Node.js + Express + MongoDB
 ├─ uploads/ # Static uploads (images, files)
 ├─ .gitignore
 └─ README.md
+
 
 ---
 
@@ -52,24 +52,17 @@ project-root/
 
 ---
 
+## Collaboration Guidelines
 
-### Collaboration Guidelines
-Team Members & Roles:
+**Team Members & Roles:**
 
-Name	 	Contribution	GitHub
-Priom Chakraborty		UX & Frontend Design (React, Tailwind)	chkpriom
+| Name              | Contribution                                | GitHub |
+|------------------|--------------------------------------------|--------|
+| Priom Chakraborty | UX & Frontend Design (React, Tailwind)     | [chkpriom](https://github.com/chkpriom) |
+| Ridoy Baidya      | Backend, Database & Deployment             | TBD    |
+| Md. Rahat Ahmed   | Game Logic & System Architecture           | TBD    |
 
-
-
----
-
-This `README.md` is **hackathon-ready and professional**:
-
-- Includes **overview, features, tech stack, folder structure, setup, collaboration guidelines, contributors, references, screenshots, and future improvements**.  
-- You can **replace placeholder images and demo links** with real screenshots and deployed URLs.  
-
----
-
-If you want, I can also **create a version of this README with live GIFs of gameplay and interactive code editor**, which makes it even more impressive for hackathon submission.  
-
-Do you want me to do that?
+**Branch Workflow:**
+```bash
+# Create a feature branch for your task
+git checkout -b feature/branch-name
