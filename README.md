@@ -54,7 +54,12 @@ project-root/
 
 
 ### Collaboration Guidelines
-1. Priom Chakraborty  github:https://github.com/chkpriom
+Team Members & Roles:
+
+Name	 	Contribution	GitHub
+Priom Chakraborty		UX & Frontend Design (React, Tailwind)	chkpriom
+
+
 
 ---
 
