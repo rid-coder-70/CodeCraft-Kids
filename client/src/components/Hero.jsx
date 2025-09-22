@@ -114,13 +114,14 @@ export default function Hero() {
         </h2>
         <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-lg border border-gray-700">
           <iframe
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-            title="CodeCraft Kids Tutorial Video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            loading="lazy"
-            allowFullScreen
-            className="w-full h-full"
-          />
+  src="https://www.youtube.com/embed/Oadb_Q2Tbac"
+  title="CodeCraft Kids Tutorial Video"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  loading="lazy"
+  allowFullScreen
+  className="w-full h-full"
+/>
+
         </div>
       </motion.section>
 
