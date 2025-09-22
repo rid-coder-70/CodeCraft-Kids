@@ -1,6 +1,6 @@
 # CodeCraft Kids – Gamified Coding Adventure for Kids
 
-![Project Banner](https://via.placeholder.com/1200x300.png?text=CodeCraft+Kids)
+![Project Banner]
 
 ## Project Overview
 **CodeCraft Kids** is an interactive, gamified web application designed to make learning programming fun and engaging for children aged 10–15. The platform combines story-driven quests, coding puzzles, and game-building activities to teach fundamental programming concepts such as loops, conditionals, variables, and functions.
@@ -26,8 +26,7 @@
 - **Live Demo (Frontend):** [Link to deployed frontend]  
 - **Backend API:** [Link to backend API, if deployed]
 
-![Gameplay Screenshot](https://via.placeholder.com/800x400.png?text=Gameplay+Screenshot)
-*Example gameplay interface showing story-driven quests and coding challenges.*
+
 
 ---
 
@@ -55,7 +54,7 @@ project-root/
 
 
 ### Collaboration Guidelines
-1. Priom Chakraborty  git
+1. Priom Chakraborty  github:https://github.com/chkpriom
 
 ---
 
