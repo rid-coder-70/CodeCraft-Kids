@@ -15,6 +15,7 @@ export default function Signup() {
   const [visible, setVisible] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -40,23 +41,31 @@ export default function Signup() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear field error when user starts typing
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: "" });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-
-    const result = signupSchema.safeParse(formData);
-    if (!result.success) {
-      const fieldErrors = {};
-      result.error.errors.forEach((err) => {
-        fieldErrors[err.path[0]] = err.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
+    setLoading(true);
 
     try {
+      // Validate form data
+      const result = signupSchema.safeParse(formData);
+      if (!result.success) {
+        const fieldErrors = {};
+        // Fix: Use issues array instead of errors
+        result.error.issues.forEach((issue) => {
+          fieldErrors[issue.path[0]] = issue.message;
+        });
+        setErrors(fieldErrors);
+        setLoading(false);
+        return;
+      }
+
       const res = await axios.post(
         "http://localhost:5000/api/auth/signup",
         formData
@@ -69,7 +78,12 @@ export default function Signup() {
         setErrors({ submit: "Signup failed: Token not received" });
       }
     } catch (err) {
-      setErrors({ submit: err.response?.data?.message || "Signup failed" });
+      console.error("Signup error:", err);
+      setErrors({ 
+        submit: err.response?.data?.message || "Signup failed. Please try again." 
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -161,9 +175,12 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full relative px-6 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] group overflow-hidden"
+            disabled={loading}
+            className="w-full relative px-6 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="relative z-10">Create Account 🚀</span>
+            <span className="relative z-10">
+              {loading ? "Creating Account..." : "Create Account 🚀"}
+            </span>
             <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         </form>

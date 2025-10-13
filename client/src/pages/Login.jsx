@@ -14,7 +14,7 @@ export default function Login() {
   const [visible, setVisible] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
-  const [emailExists, setEmailExists] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Redirect if already logged in
@@ -38,53 +38,33 @@ export default function Login() {
     if (formRef.current) observer.observe(formRef.current);
   }, []);
 
-  // Check email existence when typing
-  const handleEmailChange = async (e) => {
-    const email = e.target.value;
-    setFormData({ ...formData, email });
-
-    if (!email) {
-      setEmailExists(false);
-      return;
-    }
-
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/check-email",
-        { email }
-      );
-      setEmailExists(res.data.exists);
-    } catch (err) {
-      console.error("Email check error:", err);
-      setEmailExists(false);
-    }
-  };
-
   const handleChange = (e) => {
-    if (e.target.name === "email") handleEmailChange(e);
-    else setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear field error when user starts typing
+    if (errors[e.target.name]) {
+      setErrors({ ...errors, [e.target.name]: "" });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-
-    if (emailExists) {
-      setErrors({ email: "Email already registered. Try Another." });
-      return;
-    }
-
-    const result = loginSchema.safeParse(formData);
-    if (!result.success) {
-      const fieldErrors = {};
-      result.error.errors.forEach((err) => {
-        fieldErrors[err.path[0]] = err.message;
-      });
-      setErrors(fieldErrors);
-      return;
-    }
+    setLoading(true);
 
     try {
+      // Validate form data
+      const result = loginSchema.safeParse(formData);
+      if (!result.success) {
+        const fieldErrors = {};
+        // Fix: Use issues array instead of errors
+        result.error.issues.forEach((issue) => {
+          fieldErrors[issue.path[0]] = issue.message;
+        });
+        setErrors(fieldErrors);
+        setLoading(false);
+        return;
+      }
+
       const res = await axios.post(
         "http://localhost:5000/api/auth/login",
         formData
@@ -98,9 +78,12 @@ export default function Login() {
         setErrors({ submit: "Login failed: Token not received" });
       }
     } catch (err) {
+      console.error("Login error:", err);
       setErrors({
-        submit: err.response?.data?.message || "Login failed",
+        submit: err.response?.data?.message || "Login failed. Please check your credentials.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -152,11 +135,7 @@ export default function Login() {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-4 py-4 rounded-2xl bg-gray-800/50 border text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition duration-300 ${
-                emailExists 
-                  ? "border-red-400 focus:ring-red-400" 
-                  : "border-white/10 focus:ring-purple-400 focus:border-purple-400"
-              }`}
+              className="w-full px-4 py-4 rounded-2xl bg-gray-800/50 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition duration-300"
               required
             />
             {errors.email && (
@@ -181,9 +160,12 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full relative px-6 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] group overflow-hidden"
+            disabled={loading}
+            className="w-full relative px-6 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] group overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span className="relative z-10">Login 🚀</span>
+            <span className="relative z-10">
+              {loading ? "Logging in..." : "Login 🚀"}
+            </span>
             <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         </form>

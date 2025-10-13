@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
+import communityRoutes from "./routes/community.js";
+import userRoutes from "./routes/users.js";
 
 // --------------------------- Config Setup ---------------------------
 dotenv.config();
@@ -22,6 +24,9 @@ app.use(express.json());
 
 // --------------------------- Routes ---------------------------
 app.use("/api/auth", authRoutes);
+app.use("/api/community", communityRoutes);
+app.use("/api/users", userRoutes);
+
 
 // Serve static uploads folder
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));

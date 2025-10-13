@@ -32,19 +32,26 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// 🔹 Static badges per level
-const levelBadges = {
-  0: "/uploads/badge-level0.png",
-  1: "/uploads/badge-level1.jpg",
-  2: "/uploads/badge-level2.jpg",
-  3: "/uploads/badge-level3.jpg",
-  4: "/uploads/badge-level4.jpg",
-  // 5: "/uploads/badge-level5.png",
-  // 6: "/uploads/badge-level6.png",
-  // 7: "/uploads/badge-level7.png",
-  // 8: "/uploads/badge-level8.png",
-  // 9: "/uploads/badge-level9.png",
-};
+// 🔹 Check if email exists
+router.post("/check-email", async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const existingUser = await User.findOne({ email });
+    
+    res.json({
+      success: true,
+      exists: !!existingUser
+    });
+  } catch (err) {
+    console.error("Check email error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // 🔹 Signup
 router.post("/signup", async (req, res) => {
@@ -124,10 +131,18 @@ router.put("/profile", authMiddleware, upload.single("profilePic"), async (req, 
       const level = Number(completedLevel);
       if (!user.completedLevels.includes(level)) {
         user.completedLevels.push(level);
-
-        if (levelBadges[level]) {
-          user.badge = levelBadges[level];
-          badgeEarned = levelBadges[level];
+        
+        // Award badge for the completed level
+        const badgeAdded = user.addBadge(level);
+        if (badgeAdded) {
+          // Get the badge that was just added
+          const newBadge = user.badges[user.badges.length - 1];
+          badgeEarned = {
+            name: newBadge.name,
+            icon: newBadge.icon,
+            description: newBadge.description,
+            level: newBadge.level
+          };
         }
       }
     }
@@ -137,7 +152,7 @@ router.put("/profile", authMiddleware, upload.single("profilePic"), async (req, 
     res.json({
       success: true,
       message: badgeEarned
-        ? `🎉 You completed Level ${completedLevel} & earned a new badge!`
+        ? `🎉 You completed Level ${completedLevel} & earned the ${badgeEarned.name} badge!`
         : "Profile updated successfully.",
       user,
       badgeEarned,
