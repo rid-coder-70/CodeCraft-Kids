@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { FiArrowLeft } from 'react-icons/fi';
 // Import your level components
 import Level0 from "./Level0";
 import Level1 from "./Level1";
@@ -104,7 +104,7 @@ export default function BeginnerStartPage() {
             onClick={() => navigate("/dashboard")}
             className="bg-blue-600 text-white py-2 px-6 rounded-2xl font-bold shadow-lg hover:bg-blue-500 transition"
           >
-            ⬅ Back to Dashboard
+            <FiArrowLeft size={20} /> Back to Dashboard
           </button>
         </div>
 
