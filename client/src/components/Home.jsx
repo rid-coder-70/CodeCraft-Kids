@@ -1,6 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { 
+  FaRocket, 
+  FaSignInAlt, 
+  FaUsers, 
+  FaUserFriends,
+  FaChartLine,
+  FaComments,
+  FaCode,
+  FaGamepad
+} from "react-icons/fa";
+import { 
+  GiProgression 
+} from "react-icons/gi";
+import { 
+  IoPeople,
+  IoSparkles
+} from "react-icons/io5";
+import { 
+  MdPostAdd,
+  MdEmojiPeople
+} from "react-icons/md";
 import CommunityFeed from "./community/CommunityFeed";
 import UsersList from "./community/UsersList";
 
@@ -67,8 +88,8 @@ export default function Home() {
               </h1>
             </div>
             
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-              Learn Coding Through Fun & Games!
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 flex items-center justify-center gap-2">
+              <FaGamepad className="text-purple-400" /> Learn Coding Through Fun & Games! <FaCode className="text-pink-400" />
             </h2>
             
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
@@ -80,15 +101,21 @@ export default function Home() {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="backdrop-blur-md bg-purple-500/20 rounded-2xl p-6 border border-purple-400/30">
-              <div className="text-3xl font-bold text-purple-300 mb-2">{stats.totalUsers}+</div>
+              <div className="text-3xl font-bold text-purple-300 mb-2 flex items-center justify-center gap-2">
+                {stats.totalUsers}+ <FaUserFriends />
+              </div>
               <div className="text-gray-300">Young Coders</div>
             </div>
             <div className="backdrop-blur-md bg-pink-500/20 rounded-2xl p-6 border border-pink-400/30">
-              <div className="text-3xl font-bold text-pink-300 mb-2">{stats.totalPosts}+</div>
+              <div className="text-3xl font-bold text-pink-300 mb-2 flex items-center justify-center gap-2">
+                {stats.totalPosts}+ <MdPostAdd />
+              </div>
               <div className="text-gray-300">Community Posts</div>
             </div>
             <div className="backdrop-blur-md bg-green-500/20 rounded-2xl p-6 border border-green-400/30">
-              <div className="text-3xl font-bold text-green-300 mb-2">{stats.totalLevelsCompleted}+</div>
+              <div className="text-3xl font-bold text-green-300 mb-2 flex items-center justify-center gap-2">
+                {stats.totalLevelsCompleted}+ <GiProgression />
+              </div>
               <div className="text-gray-300">Levels Completed</div>
             </div>
           </div>
@@ -99,7 +126,9 @@ export default function Home() {
               to="/signup"
               className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] group overflow-hidden"
             >
-              <span className="relative z-10">Start Coding Now 🚀</span>
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Start Coding Now <FaRocket />
+              </span>
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Link>
             
@@ -107,7 +136,9 @@ export default function Home() {
               to="/login"
               className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] group overflow-hidden"
             >
-              <span className="relative z-10">Login to Continue</span>
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Login to Continue <FaSignInAlt />
+              </span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Link>
           </div>
@@ -119,23 +150,23 @@ export default function Home() {
           <div className="flex border-b border-white/10 mb-8">
             <button
               onClick={() => setActiveTab("community")}
-              className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 ${
+              className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
                 activeTab === "community"
                   ? "text-purple-400 border-b-2 border-purple-400"
                   : "text-gray-400 hover:text-white"
               }`}
             >
-              📝 Community Feed
+              <MdPostAdd /> Community Feed
             </button>
             <button
               onClick={() => setActiveTab("users")}
-              className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 ${
+              className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
                 activeTab === "users"
                   ? "text-purple-400 border-b-2 border-purple-400"
                   : "text-gray-400 hover:text-white"
               }`}
             >
-              👥 Our Coders ({stats.totalUsers})
+              <FaUsers /> Our Coders ({stats.totalUsers})
             </button>
           </div>
 
@@ -144,8 +175,8 @@ export default function Home() {
             {activeTab === "community" ? (
               <div>
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                    Community Activity
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 flex items-center justify-center gap-2">
+                    <FaComments /> Community Activity
                   </h3>
                   <p className="text-gray-400">
                     See what our young coders are creating and learning!
@@ -155,9 +186,9 @@ export default function Home() {
                 <div className="text-center mt-8">
                   <Link
                     to="/login"
-                    className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                    className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 mx-auto"
                   >
-                    Login to Join the Community
+                    <FaSignInAlt /> Login to Join the Community
                   </Link>
                 </div>
               </div>

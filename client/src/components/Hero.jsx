@@ -1,6 +1,38 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
+import { 
+  FaGamepad, 
+  FaLaptopCode, 
+  FaRocket, 
+  FaUsers, 
+  FaUserFriends,
+  FaChartLine,
+  FaChevronDown,
+  FaPlay,
+  FaVideo,
+  FaSignInAlt,
+  FaCode,
+  FaShareAlt,
+  FaTrophy,
+  FaStar,
+  FaComments,
+  FaUserPlus
+} from "react-icons/fa";
+import { 
+  GiProgression 
+} from "react-icons/gi";
+import { 
+  IoGameController,
+  IoPeople,
+  IoSparkles
+} from "react-icons/io5";
+import { 
+  MdPostAdd,
+  MdEmojiPeople,
+  MdCelebration
+} from "react-icons/md";
+
 import Hero1 from "../assets/Hero.jpg";
 import PythonIntro from "../pages/PythonIntro";
 import CommunityFeed from "./CommunityFeed";
@@ -98,12 +130,6 @@ export default function Home() {
               className="flex flex-col items-center justify-center mb-8"
             >
               <div className="flex items-center space-x-4 mb-6">
-                {/* <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-                  <div className="relative h-20 w-20 bg-gray-900 rounded-full shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_0_25px_rgba(168,85,247,0.8)] border-2 border-white/20 flex items-center justify-center">
-                    <span className="text-white font-bold text-xl">CCK</span>
-                  </div>
-                </div> */}
                 <h1 className="text-5xl font-extrabold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
                   CodeCraft Kids
                 </h1>
@@ -121,11 +147,15 @@ export default function Home() {
               className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-300 leading-relaxed max-w-3xl"
             >
               Learn coding with{" "}
-              <span className="font-semibold text-purple-300">fun games 🎮</span> and{" "}
-              <span className="font-semibold text-pink-300">
-                interactive tutorials 💻
+              <span className="font-semibold text-purple-300 flex items-center justify-center gap-1 inline-flex">
+                <FaGamepad className="inline" /> fun games
+              </span>{" "}
+              and{" "}
+              <span className="font-semibold text-pink-300 flex items-center justify-center gap-1 inline-flex">
+                <FaLaptopCode className="inline" /> interactive tutorials
               </span>
-              . Join our vibrant community of young coders and embark on exciting coding adventures! 🚀
+              . Join our vibrant community of young coders and embark on exciting coding adventures!{" "}
+              <FaRocket className="inline ml-1" />
             </motion.p>
 
             {/* Stats */}
@@ -136,15 +166,21 @@ export default function Home() {
               className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 w-full max-w-2xl"
             >
               <div className="backdrop-blur-md bg-purple-500/20 rounded-2xl p-4 border border-purple-400/30">
-                <div className="text-2xl font-bold text-purple-300 mb-1">{stats.totalUsers}+</div>
+                <div className="text-2xl font-bold text-purple-300 mb-1 flex items-center justify-center gap-2">
+                  {stats.totalUsers}+ <FaUserFriends />
+                </div>
                 <div className="text-gray-300 text-sm">Young Coders</div>
               </div>
               <div className="backdrop-blur-md bg-pink-500/20 rounded-2xl p-4 border border-pink-400/30">
-                <div className="text-2xl font-bold text-pink-300 mb-1">{stats.totalPosts}+</div>
+                <div className="text-2xl font-bold text-pink-300 mb-1 flex items-center justify-center gap-2">
+                  {stats.totalPosts}+ <MdPostAdd />
+                </div>
                 <div className="text-gray-300 text-sm">Community Posts</div>
               </div>
               <div className="backdrop-blur-md bg-green-500/20 rounded-2xl p-4 border border-green-400/30">
-                <div className="text-2xl font-bold text-green-300 mb-1">{stats.totalLevelsCompleted}+</div>
+                <div className="text-2xl font-bold text-green-300 mb-1 flex items-center justify-center gap-2">
+                  {stats.totalLevelsCompleted}+ <GiProgression />
+                </div>
                 <div className="text-gray-300 text-sm">Levels Completed</div>
               </div>
             </motion.div>
@@ -160,7 +196,9 @@ export default function Home() {
                 onClick={handleStart}
                 className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] group overflow-hidden"
               >
-                <span className="relative z-10">Start Python Tutorial 🚀</span>
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Start Python Tutorial <FaRocket />
+                </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
 
@@ -168,7 +206,9 @@ export default function Home() {
                 onClick={scrollToCommunity}
                 className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] group overflow-hidden"
               >
-                <span className="relative z-10">Explore Community</span>
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Explore Community <IoPeople />
+                </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </motion.div>
@@ -188,9 +228,7 @@ export default function Home() {
           >
             <div className="flex flex-col items-center">
               <span className="text-sm mb-2">Explore More</span>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-              </svg>
+              <FaChevronDown className="w-6 h-6" />
             </div>
           </button>
         </motion.div>
@@ -205,8 +243,8 @@ export default function Home() {
         viewport={{ once: true }}
         className="w-full lg:w-3/4 bg-gradient-to-br from-gray-900/80 via-purple-900/20 to-gray-900/80 backdrop-blur-xl p-8 md:p-12 my-16 rounded-3xl shadow-2xl shadow-purple-500/10 border border-white/10 flex flex-col items-center justify-center min-h-[500px] text-center animate-floating mx-auto"
       >
-        <h2 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-8">
-          🎥 Watch Demo Video & Learn With Us
+        <h2 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-8 flex items-center justify-center gap-3">
+          <FaVideo /> Watch Demo Video & Learn With Us
         </h2>
         <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black/50">
           <iframe
@@ -226,8 +264,8 @@ export default function Home() {
           <div className="backdrop-blur-xl bg-gradient-to-br from-gray-900/80 via-purple-900/20 to-gray-900/80 rounded-3xl shadow-2xl shadow-purple-500/10 border border-white/10 p-6 md:p-8 animate-floating">
             {/* Section Header */}
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-                Join Our Coding Community! 🎉
+              <h2 className="text-4xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 flex items-center justify-center gap-3">
+                <MdCelebration /> Join Our Coding Community! <IoSparkles />
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
                 Connect with other young coders, share your achievements, and get inspired by what others are creating!
@@ -238,23 +276,23 @@ export default function Home() {
             <div className="flex border-b border-white/10 mb-8">
               <button
                 onClick={() => setActiveTab("community")}
-                className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 ${
+                className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
                   activeTab === "community"
                     ? "text-purple-400 border-b-2 border-purple-400"
                     : "text-gray-400 hover:text-white"
                 }`}
               >
-                📝 Community Feed
+                <FaComments /> Community Feed
               </button>
               <button
                 onClick={() => setActiveTab("users")}
-                className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 ${
+                className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
                   activeTab === "users"
                     ? "text-purple-400 border-b-2 border-purple-400"
                     : "text-gray-400 hover:text-white"
                 }`}
               >
-                👥 Our Coders ({stats.totalUsers})
+                <FaUsers /> Our Coders ({stats.totalUsers})
               </button>
             </div>
 
@@ -263,8 +301,8 @@ export default function Home() {
               {activeTab === "community" ? (
                 <div>
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                      Community Activity
+                    <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 flex items-center justify-center gap-2">
+                      <FaShareAlt /> Community Activity
                     </h3>
                     <p className="text-gray-400">
                       See what our young coders are creating and learning!
@@ -274,9 +312,9 @@ export default function Home() {
                   <div className="text-center mt-8">
                     <Link
                       to="/signup"
-                      className="inline-block px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)]"
+                      className="inline-block px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] flex items-center justify-center gap-2 mx-auto"
                     >
-                      Join Now to Share Your Journey!
+                      <FaUserPlus /> Join Now to Share Your Journey!
                     </Link>
                   </div>
                 </div>
@@ -322,7 +360,9 @@ export default function Home() {
                 to="/signup"
                 className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] group overflow-hidden"
               >
-                <span className="relative z-10">Start Coding Now 🚀</span>
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Start Coding Now <FaRocket />
+                </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
               
@@ -330,7 +370,9 @@ export default function Home() {
                 onClick={scrollToPython}
                 className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] group overflow-hidden"
               >
-                <span className="relative z-10">Try Python Tutorial</span>
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Try Python Tutorial <FaCode />
+                </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </div>
