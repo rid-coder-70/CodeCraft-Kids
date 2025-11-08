@@ -106,12 +106,7 @@ export default function Login() {
         {/* Logo/Brand */}
         <div className="flex flex-col items-center justify-center mb-8">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative h-12 w-12 bg-gray-900 rounded-full shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-[0_0_25px_rgba(168,85,247,0.8)] border-2 border-white/20 flex items-center justify-center">
-                <span className="text-white font-bold text-sm">CCK</span>
-              </div>
-            </div>
+            
             <h2 className="text-2xl font-extrabold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
               CodeCraft Kids
             </h2>

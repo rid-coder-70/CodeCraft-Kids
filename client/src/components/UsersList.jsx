@@ -13,7 +13,17 @@ const UsersList = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/api/users");
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/api/users", {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      
       const data = await response.json();
       
       if (data.success) {
@@ -21,6 +31,7 @@ const UsersList = () => {
       }
     } catch (error) {
       console.error("Error fetching users:", error);
+      alert("Failed to load users. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -29,6 +40,35 @@ const UsersList = () => {
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Calculate user level based on completed levels
+  const getUserLevel = (completedLevels) => {
+    return completedLevels?.length || 0;
+  };
+
+  // Get highest badge icon from badges array
+  const getHighestBadge = (badges) => {
+    if (!badges || badges.length === 0) return "🌟";
+    const highestLevelBadge = badges.reduce((highest, current) => 
+      (current.level > highest.level) ? current : highest
+    );
+    return highestLevelBadge.icon || "🌟";
+  };
+
+  // Calculate progress percentage
+  const getProgressPercentage = (completedLevels) => {
+    const levelCount = completedLevels?.length || 0;
+    return Math.min(levelCount * 10, 100);
+  };
+
+  // Get current badge display
+  const getCurrentBadge = (user) => {
+    if (user.currentBadge) return user.currentBadge;
+    if (user.badges && user.badges.length > 0) {
+      return getHighestBadge(user.badges);
+    }
+    return "🌟";
+  };
 
   if (loading) {
     return (
@@ -40,7 +80,17 @@ const UsersList = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+          Code Warriors Community
+        </h1>
+        <p className="text-gray-400 text-lg">
+          Connect with fellow programmers and track your coding journey together
+        </p>
+      </div>
+
       {/* Search Bar */}
       <div className="mb-8">
         <input
@@ -48,7 +98,7 @@ const UsersList = () => {
           placeholder="🔍 Search coders by name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-6 py-4 rounded-2xl bg-gray-800/50 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition duration-300"
+          className="w-full px-6 py-4 rounded-2xl bg-gray-800/50 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition duration-300 backdrop-blur-sm"
         />
       </div>
 
@@ -65,22 +115,28 @@ const UsersList = () => {
             {filteredUsers.map((user) => (
               <div
                 key={user._id}
-                className="backdrop-blur-xl bg-gradient-to-br from-gray-900/60 via-purple-900/10 to-gray-900/60 rounded-2xl shadow-lg border border-white/10 p-6 hover:border-purple-400/30 transition-all duration-300 hover:transform hover:scale-105"
+                className="backdrop-blur-xl bg-gradient-to-br from-gray-900/60 via-purple-900/10 to-gray-900/60 rounded-2xl shadow-lg border border-white/10 p-6 hover:border-purple-400/30 transition-all duration-300 hover:transform hover:scale-105 group"
               >
                 {/* User Avatar & Badge */}
                 <div className="flex items-center justify-between mb-4">
-                  <img
-                    src={user.profilePic ? `http://localhost:5000${user.profilePic}` : "/default-avatar.png"}
-                    alt={user.name}
-                    className="w-16 h-16 rounded-full border-2 border-purple-500/50 object-cover"
-                  />
-                  {user.badge && (
+                  <div className="relative">
                     <img
-                      src={`http://localhost:5000${user.badge}`}
-                      alt="Achievement Badge"
-                      className="w-8 h-8 rounded-full border border-yellow-400"
+                      src={user.profilePic ? `http://localhost:5000${user.profilePic}` : "/default-avatar.png"}
+                      alt={user.name}
+                      className="w-16 h-16 rounded-full border-2 border-purple-500/50 object-cover group-hover:border-purple-400 transition-colors"
                     />
-                  )}
+                    <div className="absolute -bottom-1 -right-1 bg-gray-900 rounded-full p-1 border border-purple-500/50">
+                      <span className="text-lg">{getCurrentBadge(user)}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-2xl mb-1">
+                      {getHighestBadge(user.badges)}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {user.badges?.length || 0} badges
+                    </span>
+                  </div>
                 </div>
 
                 {/* User Info */}
@@ -92,14 +148,21 @@ const UsersList = () => {
                   <div className="flex justify-between">
                     <span>Levels Completed:</span>
                     <span className="text-purple-400 font-semibold">
-                      {user.completedLevels?.length || 0}
+                      {getUserLevel(user.completedLevels)}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span>Badges Earned:</span>
+                    <span className="text-yellow-400 font-semibold">
+                      {user.badges?.length || 0}
                     </span>
                   </div>
                   
                   <div className="flex justify-between">
                     <span>Member Since:</span>
                     <span className="text-gray-400">
-                      {new Date(user.createdAt).getFullYear()}
+                      {new Date(user.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
@@ -108,13 +171,13 @@ const UsersList = () => {
                 <div className="mt-4">
                   <div className="flex justify-between text-xs text-gray-400 mb-1">
                     <span>Progress</span>
-                    <span>{Math.min((user.completedLevels?.length || 0) * 10, 100)}%</span>
+                    <span>{getProgressPercentage(user.completedLevels)}%</span>
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-2">
                     <div
                       className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
                       style={{
-                        width: `${Math.min((user.completedLevels?.length || 0) * 10, 100)}%`
+                        width: `${getProgressPercentage(user.completedLevels)}%`
                       }}
                     ></div>
                   </div>
@@ -124,7 +187,7 @@ const UsersList = () => {
                 <div className="mt-4 pt-4 border-t border-white/10">
                   <Link
                     to={`/profile/${user._id}`}
-                    className="block w-full text-center py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded-xl font-semibold transition-all duration-300 hover:from-purple-500/30 hover:to-pink-500/30"
+                    className="block w-full text-center py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded-xl font-semibold transition-all duration-300 hover:from-purple-500/30 hover:to-pink-500/30 hover:text-white"
                   >
                     View Profile
                   </Link>
@@ -135,7 +198,11 @@ const UsersList = () => {
 
           {/* Users Count */}
           <div className="text-center mt-8 text-gray-400">
-            Showing {filteredUsers.length} of {users.length} amazing coders! 🌟
+            <div className="inline-flex items-center gap-2 bg-gray-800/50 px-6 py-3 rounded-2xl border border-white/10">
+              <span className="text-purple-400">🌟</span>
+              Showing {filteredUsers.length} of {users.length} amazing coders!
+              <span className="text-purple-400">🚀</span>
+            </div>
           </div>
         </>
       )}
