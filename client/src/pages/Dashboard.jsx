@@ -5,9 +5,15 @@ import CommunityFeed from "../components/CommunityFeed";
 import CreatePost from "../components/CreatePost";
 import BadgeDisplay from "../components/BadgeDisplay";
 
+const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js";
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [showGameMode, setShowGameMode] = useState(false);
+  const [mode, setMode] = useState("dashboard"); // "dashboard" or "editor"
+  const [pyodide, setPyodide] = useState(null);
+  const [code, setCode] = useState(`print("Hello from CodeCraft!")`);
+  const [output, setOutput] = useState("");
   const [refreshFeed, setRefreshFeed] = useState(0);
   const [user, setUser] = useState(null);
   const [showBadges, setShowBadges] = useState(false);
@@ -39,24 +45,59 @@ export default function Dashboard() {
     fetchUser();
   }, [navigate]);
 
-  const handleProfile = () => {
-    navigate("/profile");
-  };
+  useEffect(() => {
+    if (mode !== "editor") return;
 
-  const handleBadges = () => {
-    navigate("/badges");
-  };
+    const loadPyodide = async () => {
+      if (window.loadPyodide) {
+        const pyodideInstance = await window.loadPyodide({
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/",
+        });
+        setPyodide(pyodideInstance);
+      }
+    };
 
+    const script = document.createElement("script");
+    script.src = PYODIDE_URL;
+    script.onload = loadPyodide;
+    document.body.appendChild(script);
+  }, [mode]);
+
+  const handleProfile = () => navigate("/profile");
+  const handleBadges = () => navigate("/badges");
   const goToBeginner = () => navigate("/game/beginner");
   const goToProMode = () => navigate("/game/pro");
 
+  const runCode = async () => {
+    if (!pyodide) {
+      setOutput("⚠️ Pyodide is still loading...");
+      return;
+    }
+    try {
+      await pyodide.runPythonAsync(`
+import sys
+from io import StringIO
+sys.stdout = mystdout = StringIO()
+sys.stderr = mystderr = StringIO()
+`);
+      await pyodide.runPythonAsync(code);
+      const stdout = pyodide.runPython("mystdout.getvalue()");
+      const stderr = pyodide.runPython("mystderr.getvalue()");
+      setOutput(
+        (stdout ? stdout : "") +
+          (stderr ? `\n⚠️ ${stderr}` : "") ||
+          "✅ Code ran successfully!"
+      );
+    } catch (err) {
+      setOutput("❌ " + err.toString());
+    }
+  };
+
   const handlePostCreated = () => {
-    // Trigger refresh of community feed
     setRefreshFeed(prev => prev + 1);
   };
 
   const handlePostDeleted = () => {
-    // Trigger refresh when a post is deleted
     setRefreshFeed(prev => prev + 1);
   };
 
@@ -67,6 +108,46 @@ export default function Dashboard() {
 
   // Get recent badges (last 3 earned)
   const recentBadges = user?.badges?.slice(-3).reverse() || [];
+
+  if (mode === "editor") {
+    return (
+      <section className="bg-gray-900 text-white min-h-screen flex flex-col items-center p-6">
+        <h1 className="text-3xl font-bold mb-4">🧠 Code Editor Mode</h1>
+
+        <div className="flex w-full h-[80vh]">
+          {/* Left - Code Editor */}
+          <div className="w-1/2 p-3 bg-gray-800 flex flex-col">
+            <h2 className="text-lg font-semibold mb-2">Python Editor</h2>
+            <textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="flex-1 bg-black text-green-300 font-mono p-3 rounded-lg resize-none"
+            />
+            <button
+              onClick={runCode}
+              className="mt-3 bg-blue-500 hover:bg-blue-600 py-2 rounded-lg"
+            >
+              ▶️ Run
+            </button>
+            <button
+              onClick={() => setMode("dashboard")}
+              className="mt-2 bg-gray-600 hover:bg-gray-700 py-2 rounded-lg"
+            >
+              ← Back to Dashboard
+            </button>
+          </div>
+
+          {/* Right - Output */}
+          <div className="w-1/2 p-3 bg-gray-700 rounded-lg ml-2">
+            <h2 className="text-lg font-semibold mb-2">Output</h2>
+            <div className="bg-black text-green-300 p-3 rounded-lg font-mono h-full overflow-auto whitespace-pre-wrap">
+              {output || "Your output will appear here..."}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -124,7 +205,7 @@ export default function Dashboard() {
             Ready for your next coding adventure? Choose your game mode or connect with the community!
           </p>
 
-          {/* Buttons: Profile, Badges & Game Mode */}
+          {/* Buttons: Profile, Badges, Game Mode & Code Editor */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
             <button
               onClick={handleProfile}
@@ -134,15 +215,13 @@ export default function Dashboard() {
               <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
 
-            {/* <button
-              onClick={handleBadges}
-              className="relative px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(245,158,11,0.6)] group overflow-hidden"
+            <button
+              onClick={() => setMode("editor")}
+              className="relative px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(34,197,94,0.6)] group overflow-hidden"
             >
-              <span className="relative z-10">
-                My Badges ({user?.badges?.length || 0}) 🏆
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-600 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button> */}
+              <span className="relative z-10">Code Editor</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
 
             <button
               onClick={() => setShowGameMode(!showGameMode)}
@@ -153,14 +232,6 @@ export default function Dashboard() {
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
-
-            {/* <button
-              onClick={handleLogout}
-              className="relative px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] group overflow-hidden"
-            >
-              <span className="relative z-10">Logout</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </button> */}
           </div>
 
           {/* Game Mode Options */}

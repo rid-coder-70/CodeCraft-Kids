@@ -1,136 +1,161 @@
-import React, { useState, useEffect, useRef } from "react";
-import Phaser from "phaser";
+import React, { useState, useEffect } from "react";
 
-export default function SimplePythonGame({ initialLevel = 0, onComplete }) {
+// Load Pyodide from CDN
+const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js";
+
+export default function Level1_PrintReveal({ onComplete }) {
+  const [step, setStep] = useState(1); // 1 = learning, 2 = task
   const [userCode, setUserCode] = useState("");
+  const [output, setOutput] = useState("");
   const [message, setMessage] = useState("");
-  const [score, setScore] = useState(0);
-  const [level, setLevel] = useState(initialLevel); 
-  const [levelCompleted, setLevelCompleted] = useState(false); // New state
-  const gameRef = useRef(null);
+  const [revealed, setRevealed] = useState(false);
+  const [levelCompleted, setLevelCompleted] = useState(false);
+  const [pyodide, setPyodide] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const initGame = () => {
-    if (gameRef.current) {
-      gameRef.current.destroy(true);
-      gameRef.current = null;
-    }
-
-    const config = {
-      type: Phaser.AUTO,
-      width: 600,
-      height: 300,
-      parent: "phaser-game",
-      physics: { default: "arcade", arcade: { gravity: { y: 300 }, debug: false } },
-      scene: { preload, create, update },
-    };
-
-    gameRef.current = new Phaser.Game(config);
-
-    function preload() {
-      this.load.image("hero", "https://i.ibb.co/0Jmshvb/hero.png");
-      this.load.image("obstacle", "https://i.ibb.co/5YbXLQ2/enemy.png");
-      this.load.image("bg", "https://i.ibb.co/PrYQ5dH/bg.png");
-    }
-
-    function create() {
-      this.add.image(300, 150, "bg");
-      this.hero = this.physics.add.sprite(100, 250, "hero").setScale(0.5);
-      this.hero.setCollideWorldBounds(true);
-
-      if (level >= 1) {
-        this.obstacle = this.physics.add.sprite(500, 250, "obstacle").setScale(0.5);
-        this.heroJump = () => this.hero.setVelocityY(-250);
-
-        this.physics.add.collider(this.hero, this.obstacle, () => {
-          setMessage("💥 You hit the obstacle! Try again.");
-        });
-      }
-    }
-
-    function update() {
-      this.hero.setVelocityX(100); 
-    }
-  };
-
+  // ---- Load Pyodide once ----
   useEffect(() => {
-    initGame();
-    setLevelCompleted(false); // Reset when level changes
-    return () => {
-      if (gameRef.current) {
-        gameRef.current.destroy(true);
-        gameRef.current = null;
-      }
+    const loadPyodide = async () => {
+      setLoading(true);
+      const script = document.createElement("script");
+      script.src = PYODIDE_URL;
+      script.onload = async () => {
+        // @ts-ignore
+        const pyodideInstance = await window.loadPyodide();
+        setPyodide(pyodideInstance);
+        setLoading(false);
+      };
+      document.body.appendChild(script);
     };
-  }, [level]);
+    loadPyodide();
+  }, []);
 
+  // ---- Run Code using Pyodide ----
+ const runCode = async () => {
+  if (!pyodide) return;
+  setLoading(true);
+  setOutput("");
+  setMessage("");
+
+  try {
+    // Create a Python string to capture stdout
+    pyodide.runPython(`
+import sys
+from io import StringIO
+sys.stdout = mystdout = StringIO()
+`);
+
+    // Run user's code
+    await pyodide.runPythonAsync(userCode);
+
+    // Get stdout
+    const result = pyodide.runPython("mystdout.getvalue()");
+    setOutput(result);
+  } catch (err) {
+    setOutput(err.toString());
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  // ---- Submission ----
   const handleSubmit = () => {
-    if (level === 0) {
-      if (userCode.includes('print("Hello World")')) {
-        setScore(score + 1);
-        setMessage("🎉 Great! You learned how to print in Python.");
-        setLevelCompleted(true); // Level completed, show next button
-      } else {
-        setMessage('❌ Try again! Use print("Hello World").');
-      }
-    } else if (level === 1) {
-      if (userCode.includes("if")) {
-        setScore(score + 1);
-        setMessage("🎉 Good job! Hero jumped over the obstacle!");
-        const scene = gameRef.current.scene.scenes[0];
-        scene.heroJump();
-        setLevelCompleted(true);
-      } else {
-        setMessage("❌ Try again! Include an `if` statement.");
-      }
+    if (output.trim() === "Reveal") {
+      setRevealed(true);
+      setMessage("🎉 Well done! You printed 'Reveal'.");
+      setLevelCompleted(true);
     } else {
-      setMessage("✨ More levels coming soon!");
+      setMessage("❌ Output mismatch. Make sure your code prints 'Reveal'.");
     }
   };
 
   const handleNextLevel = () => {
-    const nextLevel = level + 1;
-    setLevel(nextLevel);
-    onComplete(); // Notify parent to unlock next level globally
+    onComplete();
     setUserCode("");
+    setOutput("");
     setMessage("");
-  };
-
-  const handleRetry = () => {
-    setScore(0);
-    setUserCode("");
-    setMessage("Game reset! Back to Level 0.");
-    setLevel(0);
+    setRevealed(false);
     setLevelCompleted(false);
-    initGame();
+    setStep(1);
   };
 
+  // ---- Step 1: Learning ----
+  if (step === 1) {
+    return (
+      <div className="bg-gray-800 text-white p-6 rounded-2xl shadow-xl text-center max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold mb-4 text-purple-400">
+          🧠 Learn: The print() Function
+        </h2>
+
+        <p className="text-gray-300 mb-4">
+          In Python, <code>print()</code> displays text or values on the screen.
+        </p>
+
+        <pre className="bg-gray-900 text-left p-4 rounded-lg mb-4 text-green-400 font-mono">
+{`print("Hello, world!")`}
+        </pre>
+
+        <p className="mb-2 text-gray-400">
+          🖥️ Output:
+          <br />
+          <span className="text-green-400 font-mono">Hello, world!</span>
+        </p>
+
+        <button
+          onClick={() => setStep(2)}
+          className="mt-6 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition"
+        >
+          Next ➡️ Try It Yourself
+        </button>
+      </div>
+    );
+  }
+
+  // ---- Step 2: Challenge ----
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold mb-2">🐍 Python Playground Game</h2>
-      <p className="mb-2 text-white/80">
-        {level === 0 && 'Level 0: Learn your first Python code → print("Hello World")'}
-        {level === 1 && "Level 1: Use an if-statement to make the hero jump over obstacles!"}
-        {level >= 2 && "More levels coming soon... 🚀"}
+    <div className="bg-gray-800 text-white p-6 rounded-2xl shadow-xl text-center max-w-2xl mx-auto">
+      <h2 className="text-3xl font-bold mb-4 text-purple-400">
+        🧱 Task: Reveal the Hidden Wall
+      </h2>
+      <p className="mb-3 text-white/80">
+        Write Python code that prints <code>"Reveal"</code> to unlock the wall.
       </p>
 
-      <div id="phaser-game" className="w-full h-[300px] mb-4 rounded-xl overflow-hidden shadow-lg"></div>
+      {/* Wall */}
+      <div
+        className={`w-full h-48 mb-4 rounded-xl border-4 transition-all duration-700 flex items-center justify-center ${
+          revealed
+            ? "bg-white border-black text-black text-2xl font-bold"
+            : "bg-gray-700 border-gray-600 text-transparent"
+        }`}
+      >
+        ✨ Hidden Message Revealed! ✨
+      </div>
 
-      <p className="text-yellow-300 font-bold">Score: {score}</p>
-      <p className="text-blue-400 font-semibold">Current Level: {level}</p>
-
+      {/* Code Editor */}
       <textarea
         value={userCode}
         onChange={(e) => setUserCode(e.target.value)}
-        placeholder="// Write your Python code here..."
-        className="w-full h-24 px-3 py-2 mb-2 bg-gray-900 border-2 border-purple-600 rounded-xl text-white font-mono focus:outline-none focus:ring-2 focus:ring-purple-500"
+        placeholder='Example: print("Reveal")'
+        className="w-full h-32 px-4 py-2 mb-3 bg-gray-900 border-2 border-purple-600 rounded-xl text-white font-mono focus:outline-none focus:ring-2 focus:ring-purple-500"
       />
 
-      <div className="flex gap-2">
+      {/* Buttons */}
+      <div className="flex gap-2 justify-center">
+        <button
+          onClick={runCode}
+          disabled={loading || !pyodide}
+          className="bg-blue-600 py-2 px-4 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition disabled:opacity-50"
+        >
+          {loading ? "Running..." : "Run Code ▶"}
+        </button>
+
         <button
           onClick={handleSubmit}
           className="bg-purple-600 py-2 px-4 rounded-xl font-bold shadow-lg hover:bg-purple-700 transition"
         >
-          Submit Code
+          Submit
         </button>
 
         {levelCompleted && (
@@ -138,19 +163,24 @@ export default function SimplePythonGame({ initialLevel = 0, onComplete }) {
             onClick={handleNextLevel}
             className="bg-green-600 py-2 px-4 rounded-xl font-bold shadow-lg hover:bg-green-700 transition"
           >
-            Next Level ➡
+            Next Level ➡️
           </button>
         )}
-
-        <button
-          onClick={handleRetry}
-          className="bg-red-600 py-2 px-4 rounded-xl font-bold shadow-lg hover:bg-red-700 transition"
-        >
-          Retry
-        </button>
       </div>
 
-      {message && <p className="mt-2 text-green-400 font-semibold">{message}</p>}
+      {/* Output */}
+      {output && (
+        <div className="mt-4 bg-gray-900 text-left p-3 rounded-lg text-green-400 font-mono border border-gray-600">
+          <strong>Output:</strong>
+          <pre className="whitespace-pre-wrap mt-1">{output}</pre>
+        </div>
+      )}
+
+      {message && (
+        <p className={`mt-3 font-semibold ${revealed ? "text-green-400" : "text-red-400"}`}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }
