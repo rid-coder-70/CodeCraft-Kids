@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Python Adventure Island - Start Your Journey!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="8" fill="%23ff69b4"/><circle cx="12" cy="12" r="4" fill="white"/></svg>'), auto;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #93c5fd 100%);
+            position: relative;
+        }
+
+        /* Animated Background */
+        .game-world {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Starry background */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+
+        /* Floating Islands */
+        .island {
+            position: absolute;
+            background: linear-gradient(to bottom, #22c55e, #15803d);
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: floatIsland 4s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .island:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        @keyframes floatIsland {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .island1 {
+            width: 200px;
+            height: 80px;
+            top: 60%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .island2 {
+            width: 180px;
+            height: 70px;
+            top: 45%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+
+        .island3 {
+            width: 220px;
+            height: 90px;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 2s;
+        }
+
+        /* Island Labels */
+        .island-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #1e3a8a;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .island-locked {
+            opacity: 0.5;
+            filter: grayscale(70%);
+        }
+
+        .island-locked .island-label::after {
+            content: ' 🔒';
+        }
+
+        /* Dora Character - Now Movable! */
+        .dora-character {
+            position: absolute;
+            width: 100px;
+            height: 120px;
+            z-index: 100;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.3));
+        }
+
+        .dora-head {
+            width: 50px;
+            height: 55px;
+            background: #d4a574;
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .dora-hair {
+            position: absolute;
+            width: 55px;
+            height: 30px;
+            background: #3d2817;
+            border-radius: 50% 50% 0 0;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .dora-eyes {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: black;
+            border-radius: 50%;
+            top: 20px;
+        }
+
+        .dora-eye-left {
+            left: 12px;
+        }
+
+        .dora-eye-right {
+            right: 12px;
+        }
+
+        .dora-smile {
+            position: absolute;
+            width: 20px;
+            height: 10px;
+            border: 2px solid black;
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .dora-body {
+            width: 45px;
+            height: 40px;
+            background: #ff1493;
+            border-radius: 8px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .dora-backpack {
+            position: absolute;
+            width: 30px;
+            height: 35px;
+            background: #9370db;
+            border-radius: 8px;
+            right: -18px;
+            top: 3px;
+            border: 2px solid #8b3a8b;
+        }
+
+        .dora-legs {
+            width: 10px;
+            height: 25px;
+            background: #d4a574;
+            margin: 5px 5px 0;
+            display: inline-block;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .dora-character.walking .dora-legs {
+            animation: walk 0.4s infinite;
+        }
+
+        @keyframes walk {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .dora-character.jumping {
+            animation: jump 0.6s ease-in-out;
+        }
+
+        @keyframes jump {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-60px) rotate(10deg);
+            }
+
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        /* Welcome Panel */
+        .welcome-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 600px;
+            z-index: 50;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .welcome-panel.hidden {
+            display: none;
+        }
+
+        .welcome-panel h1 {
+            color: #1e3a8a;
+            font-size: 42px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-panel p {
+            color: #475569;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .game-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(255, 20, 147, 0.4);
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 20, 147, 0.6);
+        }
+
+        .game-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Island Map UI */
+        .map-title {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 40px;
+            border-radius: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3a8a;
+            border: 4px solid #ff1493;
+        }
+
+        /* Interactive Path */
+        .path {
+            position: absolute;
+            height: 8px;
+            background: repeating-linear-gradient(90deg,
+                    #fbbf24 0px,
+                    #fbbf24 20px,
+                    #f59e0b 20px,
+                    #f59e0b 40px);
+            z-index: 1;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .path1 {
+            width: 300px;
+            top: 62%;
+            left: 26%;
+            transform: rotate(15deg);
+        }
+
+        .path2 {
+            width: 250px;
+            top: 50%;
+            right: 28%;
+            transform: rotate(-20deg);
+        }
+
+        /* Collectible Stars */
+        .collectible {
+            position: absolute;
+            font-size: 30px;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            z-index: 20;
+            transition: transform 0.2s;
+        }
+
+        .collectible:hover {
+            transform: scale(1.3) rotate(20deg);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        .collectible.collected {
+            animation: collect 0.5s forwards;
+        }
+
+        @keyframes collect {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Score Display */
+        .score-board {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        /* Tutorial Arrows */
+        .tutorial-arrow {
+            position: absolute;
+            font-size: 50px;
+            animation: bounce 1s infinite;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Clouds for decoration */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 100px;
+            animation: driftCloud 30s linear infinite;
+        }
+
+        @keyframes driftCloud {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(100vw);
+            }
+        }
+
+        .cloud1 {
+            width: 120px;
+            height: 50px;
+            top: 15%;
+            left: -150px;
+            animation-duration: 25s;
+        }
+
+        .cloud2 {
+            width: 100px;
+            height: 40px;
+            top: 30%;
+            left: -120px;
+            animation-duration: 35s;
+            animation-delay: 5s;
+        }
+
+        .cloud3 {
+            width: 140px;
+            height: 55px;
+            top: 70%;
+            left: -160px;
+            animation-duration: 30s;
+            animation-delay: 10s;
+        }
+
+        /* Sparkle Effects */
+        .sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkleAnim 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(3) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-panel {
+                padding: 30px 20px;
+                max-width: 90%;
+            }
+
+            .welcome-panel h1 {
+                font-size: 32px;
+            }
+
+            .map-title {
+                font-size: 18px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-world">
+        <!-- Stars -->
+        <div class="stars" id="starsContainer"></div>
+
+        <!-- Clouds -->
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+
+        <!-- Map Title -->
+        <div class="map-title" style="display: none;" id="mapTitle">
+            🗺️ Python Adventure Island 🗺️
+        </div>
+
+        <!-- Score Board -->
+        <div class="score-board" style="display: none;" id="scoreBoard">
+            ⭐ Stars: <span id="starCount">0</span>/5
+        </div>
+
+        <!-- Welcome Panel -->
+        <div class="welcome-panel" id="welcomePanel">
+            <h1>🎮 Welcome to Python Island! 🏝️</h1>
+            <p><strong>Hey there, future Python master!</strong></p>
+            <p>I'm Dora, and I'll be your guide on this exciting coding adventure! 🚀</p>
+            <p>On this magical island, you'll learn Python by playing fun games, collecting stars, and solving puzzles!
+            </p>
+            <p><strong>Ready to start your journey?</strong></p>
+            <button class="game-btn" id="startAdventure">🎯 Start Adventure!</button>
+        </div>
+
+        <!-- Floating Islands -->
+        <div class="island island1" id="island1" data-level="1">
+            <div class="island-label">🎯 Level 1: Print Quest</div>
+        </div>
+
+        <div class="island island2 island-locked" id="island2" data-level="2">
+            <div class="island-label">📦 Level 2: Variable Valley</div>
+        </div>
+
+        <div class="island island3 island-locked" id="island3" data-level="3">
+            <div class="island-label">🔢 Level 3: Type Tower</div>
+        </div>
+
+        <!-- Paths connecting islands -->
+        <div class="path path1" style="display: none;"></div>
+        <div class="path path2" style="display: none;"></div>
+
+        <!-- Collectible Stars -->
+        <div class="collectible" id="star1" style="top: 55%; left: 10%; display: none;">⭐</div>
+        <div class="collectible" id="star2" style="top: 40%; left: 35%; display: none;">⭐</div>
+        <div class="collectible" id="star3" style="top: 35%; right: 15%; display: none;">⭐</div>
+        <div class="collectible" id="star4" style="bottom: 20%; left: 45%; display: none;">⭐</div>
+        <div class="collectible" id="star5" style="top: 50%; right: 35%; display: none;">⭐</div>
+
+        <!-- Tutorial Arrow -->
+        <div class="tutorial-arrow" id="tutorialArrow" style="display: none; top: 53%; left: 12%;">👇</div>
+
+        <!-- Dora Character -->
+        <div class="dora-character walking" id="dora" style="bottom: 10%; left: 10%;">
+            <div class="dora-head">
+                <div class="dora-hair"></div>
+                <div class="dora-eyes dora-eye-left"></div>
+                <div class="dora-eyes dora-eye-right"></div>
+                <div class="dora-smile"></div>
+            </div>
+            <div class="dora-body">
+                <div class="dora-backpack"></div>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 5px;">
+                <div class="dora-legs"></div>
+                <div class="dora-legs"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let starsCollected = 0;
+        let gameStarted = false;
+
+        // Elements
+        const welcomePanel = document.getElementById('welcomePanel');
+        const startBtn = document.getElementById('startAdventure');
+        const mapTitle = document.getElementById('mapTitle');
+        const scoreBoard = document.getElementById('scoreBoard');
+        const dora = document.getElementById('dora');
+        const tutorialArrow = document.getElementById('tutorialArrow');
+        const starsContainer = document.getElementById('starsContainer');
+        const starCountDisplay = document.getElementById('starCount');
+
+        // Generate stars in background
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Start Adventure
+        startBtn.addEventListener('click', () => {
+            welcomePanel.style.animation = 'slideIn 0.5s reverse';
+            setTimeout(() => {
+                welcomePanel.classList.add('hidden');
+                startGame();
+            }, 500);
+        });
+
+        function startGame() {
+            gameStarted = true;
+            mapTitle.style.display = 'block';
+            scoreBoard.style.display = 'block';
+
+            // Show paths
+            document.querySelectorAll('.path').forEach(path => {
+                path.style.display = 'block';
+            });
+
+            // Show collectible stars
+            document.querySelectorAll('.collectible').forEach(star => {
+                star.style.display = 'block';
+            });
+
+            // Show tutorial
+            setTimeout(() => {
+                tutorialArrow.style.display = 'block';
+                setTimeout(() => {
+                    tutorialArrow.style.display = 'none';
+                }, 5000);
+            }, 1000);
+
+            // Move Dora to starting position
+            moveDora('15%', '60%');
+        }
+
+        // Move Dora
+        function moveDora(left, bottom) {
+            dora.classList.add('walking');
+            dora.style.left = left;
+            dora.style.bottom = bottom;
+
+            setTimeout(() => {
+                dora.classList.remove('walking');
+            }, 500);
+        }
+
+        // Dora follows cursor (optional interactive mode)
+        let doraFollowEnabled = false;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'd' || e.key === 'D') {
+                doraFollowEnabled = !doraFollowEnabled;
+                if (doraFollowEnabled) {
+                    alert('🎮 Dora Follow Mode ON! Move your mouse to guide Dora!');
+                }
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (doraFollowEnabled && gameStarted) {
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = 100 - (e.clientY / window.innerHeight) * 100;
+                dora.style.left = x + '%';
+                dora.style.bottom = y + '%';
+                dora.classList.add('walking');
+            }
+        });
+
+        // Collect Stars
+        document.querySelectorAll('.collectible').forEach((star, index) => {
+            star.addEventListener('click', () => {
+                if (!star.classList.contains('collected')) {
+                    star.classList.add('collected');
+                    starsCollected++;
+                    starCountDisplay.textContent = starsCollected;
+
+                    // Create sparkle effect
+                    createSparkles(star.offsetLeft, star.offsetTop);
+
+                    // Play celebration
+                    dora.classList.add('jumping');
+                    setTimeout(() => {
+                        dora.classList.remove('jumping');
+                    }, 600);
+
+                    // Remove star after animation
+                    setTimeout(() => {
+                        star.style.display = 'none';
+                    }, 500);
+                }
+            });
+        });
+
+        // Sparkle effect
+        function createSparkles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+                sparkle.style.animationDelay = (i * 0.1) + 's';
+                document.body.appendChild(sparkle);
+
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1500);
+            }
+        }
+
+        // Island Click Handlers
+        document.querySelectorAll('.island').forEach(island => {
+            island.addEventListener('click', () => {
+                const level = island.dataset.level;
+
+                if (island.classList.contains('island-locked')) {
+                    alert('🔒 This island is locked! Complete previous levels to unlock!');
+                    return;
+                }
+
+                // Navigate to level
+                if (level === '1') {
+                    window.location.href = 'learn-print.html';  // Learn first, then challenges!
+                } else if (level === '2') {
+                    alert('🚧 Level 2 coming soon! Keep practicing Level 1!');
+                } else if (level === '3') {
+                    alert('🚧 Level 3 coming soon!');
+                }
+            });
+
+            // Hover effect - make Dora look at island
+            island.addEventListener('mouseenter', () => {
+                if (!island.classList.contains('island-locked')) {
+                    const rect = island.getBoundingClientRect();
+                    const targetX = (rect.left / window.innerWidth) * 100;
+                    const targetY = 100 - (rect.top / window.innerHeight) * 100;
+
+                    // Subtle movement towards island
+                    const currentLeft = parseFloat(dora.style.left) || 15;
+                    const currentBottom = parseFloat(dora.style.bottom) || 60;
+
+                    dora.style.transform = `scale(1.1)`;
+                }
+            });
+
+            island.addEventListener('mouseleave', () => {
+                dora.style.transform = 'scale(1)';
+            });
+        });
+
+        // Keyboard controls for Dora
+        document.addEventListener('keydown', (e) => {
+            if (!gameStarted) return;
+
+            const currentLeft = parseFloat(dora.style.left) || 15;
+            const currentBottom = parseFloat(dora.style.bottom) || 60;
+            const step = 5;
+
+            dora.classList.add('walking');
+
+            switch (e.key) {
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    dora.style.left = Math.max(0, currentLeft - step) + '%';
+                    dora.style.transform = 'scaleX(-1)';
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    dora.style.left = Math.min(95, currentLeft + step) + '%';
+                    dora.style.transform = 'scaleX(1)';
+                    break;
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    dora.style.bottom = Math.min(90, currentBottom + step) + '%';
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    dora.style.bottom = Math.max(5, currentBottom - step) + '%';
+                    break;
+                case ' ':
+                    dora.classList.add('jumping');
+                    setTimeout(() => {
+                        dora.classList.remove('jumping');
+                    }, 600);
+                    break;
+            }
+
+            setTimeout(() => {
+                dora.classList.remove('walking');
+            }, 200);
+        });
+
+        // ========== LEVEL PROGRESSION SYSTEM ==========
+
+        function unlockIsland(islandId, labelText, bgColor) {
+            const island = document.getElementById(islandId);
+            if (island) {
+                island.classList.remove('island-locked');
+                island.style.background = `linear-gradient(135deg, ${bgColor}, ${bgColor}dd)`;
+                island.style.cursor = 'pointer';
+
+                const label = island.querySelector('.island-label');
+                if (label) {
+                    label.textContent = labelText;
+                    label.style.color = 'white';
+                }
+            }
+        }
+
+        function checkProgressAndUnlock() {
+            // Level 1 → Unlock Level 2
+            if (localStorage.getItem('pythonGame_level1_completed') === 'true') {
+                unlockIsland('island2', '📦 Level 2: Variable Valley', '#10b981');
+            }
+
+            // Level 2 → Unlock Level 3
+            if (localStorage.getItem('pythonGame_level2_completed') === 'true') {
+                unlockIsland('island3', '🔢 Level 3: Data Types', '#f59e0b');
+            }
+        }
+
+        // Call on page load
+        checkProgressAndUnlock();
+
+        // Island click handlers
+        document.querySelectorAll('.island').forEach(island => {
+            island.addEventListener('click', () => {
+                const level = island.dataset.level;
+
+                if (level === '1') {
+                    window.location.href = 'learn-print.html';
+                } else if (level === '2') {
+                    if (localStorage.getItem('pythonGame_level1_completed') === 'true') {
+                        window.location.href = 'learn-variables.html';
+                    } else {
+                        alert('🔒 Complete Level 1 first!');
+                    }
+                } else if (level === '3') {
+                    if (localStorage.getItem('pythonGame_level2_completed') === 'true') {
+                        alert('🎉 Level 3 coming soon! Keep practicing! 🚀');
+                    } else {
+                        alert('🔒 Complete Level 2 first!');
+                    }
+                }
+            });
+        });
+
+        // Welcome message
+        console.log('%c🎮 Python Adventure Island!', 'font-size: 24px; color: #ff1493; font-weight: bold;');
+        console.log('%c⭐ Click stars to collect them!', 'font-size: 14px; color: #fbbf24;');
+    </script>
+</body>
+
+</html>

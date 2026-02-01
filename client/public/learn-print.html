@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎓 Learn Python Print - Interactive Tutorial!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .learning-world {
+            position: relative;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: #10b981;
+            transform: scale(1.3);
+            box-shadow: 0 0 20px #10b981;
+        }
+
+        .dot.completed {
+            background: #3b82f6;
+        }
+
+        /* Lesson Card */
+        .lesson-card {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lesson-number {
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
+        }
+
+        .lesson-title {
+            color: #8b5cf6;
+            font-size: 36px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .lesson-content {
+            color: #334155;
+            font-size: 20px;
+            line-height: 1.8;
+            margin: 30px 0;
+        }
+
+        /* Interactive Code Demo */
+        .code-demo {
+            background: #1e293b;
+            color: #10b981;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .code-line {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .line-number {
+            color: #64748b;
+            min-width: 30px;
+        }
+
+        .code-text {
+            flex: 1;
+        }
+
+        .keyword {
+            color: #f472b6;
+        }
+
+        .string {
+            color: #fbbf24;
+        }
+
+        .output-arrow {
+            color: #10b981;
+            font-size: 24px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .output {
+            background: #0f172a;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 5px solid #10b981;
+        }
+
+        .output-label {
+            color: #10b981;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* Interactive Try Section */
+        .try-it-box {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            border: 4px solid #f59e0b;
+        }
+
+        .try-it-box h3 {
+            color: #d97706;
+            font-size: 28px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-playground {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #f59e0b;
+        }
+
+        .code-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            border: 2px solid #d97706;
+            border-radius: 10px;
+            resize: vertical;
+            background: #fefce8;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        .playground-output {
+            background: #1e293b;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            min-height: 80px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            white-space: pre-wrap;
+        }
+
+        /* Clickable Examples */
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .example-card {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .example-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .example-card::before {
+            content: '▶️';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            opacity: 0.5;
+        }
+
+        .example-code {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .example-result {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Visual Explanation */
+        .visual-explain {
+            background: #f0f9ff;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            border: 3px solid #3b82f6;
+        }
+
+        .explain-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .explain-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .explain-label {
+            font-weight: bold;
+            color: #8b5cf6;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .explain-content {
+            font-family: 'Courier New', monospace;
+            color: #1e293b;
+            font-size: 18px;
+        }
+
+        .arrow-right {
+            font-size: 40px;
+            color: #3b82f6;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-back {
+            background: #64748b;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Fun Facts Box */
+        .fun-fact {
+            background: linear-gradient(135deg, #ec4899, #d946ef);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 8px solid #fbbf24;
+        }
+
+        .fun-fact strong {
+            font-size: 22px;
+        }
+
+        /* Animated Dora Teaching */
+        .dora-teacher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 120px;
+            height: 140px;
+            z-index: 100;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .speech-bubble-small {
+            position: absolute;
+            top: -60px;
+            right: 0;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+            color: #334155;
+            max-width: 200px;
+            display: none;
+        }
+
+        .speech-bubble-small::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 20px;
+            border: 10px solid transparent;
+            border-top-color: white;
+        }
+
+        .speech-bubble-small.show {
+            display: block;
+            animation: popIn 0.3s;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Completion Celebration */
+        .completion-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: white;
+        }
+
+        .completion-overlay.show {
+            display: flex;
+            animation: fadeIn 0.5s;
+        }
+
+        .completion-overlay h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .completion-overlay p {
+            font-size: 28px;
+            margin: 10px 0;
+        }
+
+        .badge-icon {
+            font-size: 100px;
+            margin: 30px 0;
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .lesson-card {
+                padding: 30px 20px;
+            }
+
+            .lesson-title {
+                font-size: 28px;
+            }
+
+            .lesson-content {
+                font-size: 18px;
+            }
+
+            .example-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========== CUTE ANIMATED CHARACTERS ========== */
+
+        /* Dancing Pandas */
+        .dancing-panda {
+            position: fixed;
+            font-size: 80px;
+            z-index: 50;
+            animation: dance 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .dancing-panda:hover {
+            transform: scale(1.4) rotate(20deg) !important;
+        }
+
+        .panda-left {
+            left: 30px;
+            bottom: 120px;
+        }
+
+        .panda-right {
+            right: 30px;
+            top: 120px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes dance {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-8deg) scale(1);
+            }
+
+            25% {
+                transform: translateY(-25px) rotate(8deg) scale(1.1);
+            }
+
+            50% {
+                transform: translateY(0) rotate(-8deg) scale(1);
+            }
+
+            75% {
+                transform: translateY(-15px) rotate(8deg) scale(1.05);
+            }
+        }
+
+        /* Bouncing Cats */
+        .bouncing-cat {
+            position: fixed;
+            font-size: 65px;
+            z-index: 50;
+            animation: bounce-cat 2.5s ease-in-out infinite;
+            cursor: pointer;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .bouncing-cat:hover {
+            animation: spin-cat 0.5s ease-in-out;
+        }
+
+        .cat-1 {
+            left: 120px;
+            top: 80px;
+        }
+
+        .cat-2 {
+            right: 120px;
+            bottom: 160px;
+            animation-delay: 1.2s;
+        }
+
+        @keyframes bounce-cat {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+
+            50% {
+                transform: translateY(-35px) rotate(15deg) scale(1.15);
+            }
+        }
+
+        @keyframes spin-cat {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(360deg) scale(1.3);
+            }
+        }
+
+        /* Floating Emojis */
+        .floating-emoji {
+            position: fixed;
+            font-size: 55px;
+            z-index: 40;
+            animation: float-emoji 5s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .emoji-1 {
+            left: 18%;
+            top: 15%;
+        }
+
+        .emoji-2 {
+            right: 18%;
+            top: 25%;
+            animation-delay: 2.5s;
+        }
+
+        .emoji-3 {
+            left: 8%;
+            bottom: 18%;
+            animation-delay: 1.5s;
+        }
+
+        .emoji-4 {
+            right: 12%;
+            bottom: 25%;
+            animation-delay: 3.5s;
+        }
+
+        @keyframes float-emoji {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translateY(-50px) rotate(180deg) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* Colorful Balloons */
+        .colorful-balloon {
+            position: fixed;
+            font-size: 70px;
+            z-index: 45;
+            animation: float-up 8s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .balloon-1 {
+            left: 5%;
+            bottom: -100px;
+        }
+
+        .balloon-2 {
+            right: 8%;
+            bottom: -100px;
+            animation-delay: 4s;
+        }
+
+        .balloon-3 {
+            left: 50%;
+            bottom: -100px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) rotate(-8deg) translateX(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-130vh) rotate(8deg) translateX(30px);
+                opacity: 0;
+            }
+        }
+
+        /* Waving Hands */
+        .waving-hand {
+            position: fixed;
+            font-size: 75px;
+            z-index: 50;
+            animation: wave 2.5s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            cursor: pointer;
+        }
+
+        .wave-1 {
+            left: 8%;
+            top: 45%;
+        }
+
+        .wave-2 {
+            right: 8%;
+            top: 55%;
+            animation-delay: 1.25s;
+        }
+
+        @keyframes wave {
+
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            15% {
+                transform: rotate(25deg) scale(1.1);
+            }
+
+            30% {
+                transform: rotate(-25deg) scale(1.1);
+            }
+
+            45% {
+                transform: rotate(20deg) scale(1.05);
+            }
+
+            60% {
+                transform: rotate(-20deg) scale(1.05);
+            }
+
+            75% {
+                transform: rotate(10deg) scale(1);
+            }
+        }
+
+        /* Sparkle Stars */
+        .sparkle-star {
+            position: fixed;
+            font-size: 35px;
+            z-index: 40;
+            animation: sparkle 3s ease-in-out infinite;
+        }
+
+        .star-1 {
+            left: 25%;
+            top: 10%;
+        }
+
+        .star-2 {
+            right: 25%;
+            top: 12%;
+            animation-delay: 1s;
+        }
+
+        .star-3 {
+            left: 15%;
+            top: 70%;
+            animation-delay: 2s;
+        }
+
+        .star-4 {
+            right: 20%;
+            bottom: 15%;
+            animation-delay: 1.5s;
+        }
+
+        .star-5 {
+            left: 40%;
+            bottom: 10%;
+            animation-delay: 0.5s;
+        }
+
+        .star-6 {
+            right: 40%;
+            top: 30%;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes sparkle {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0) rotate(0deg);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.5) rotate(180deg);
+            }
+        }
+
+        /* Confetti Background */
+        .confetti-bg {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            z-index: 1;
+            animation: confetti-fall 10s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg) translateX(0);
+                opacity: 0.8;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(1080deg) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        /* Rainbow Border for Lesson Card */
+        .lesson-card {
+            border: 6px solid;
+            border-image: linear-gradient(45deg,
+                    #ff0000, #ff7f00, #ffff00, #00ff00,
+                    #0000ff, #4b0082, #9400d3, #ff0000) 1;
+            animation: rainbow-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes rainbow-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 20px 60px rgba(255, 0, 0, 0.3);
+            }
+
+            16% {
+                box-shadow: 0 20px 60px rgba(255, 127, 0, 0.3);
+            }
+
+            33% {
+                box-shadow: 0 20px 60px rgba(255, 255, 0, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 20px 60px rgba(0, 255, 0, 0.3);
+            }
+
+            66% {
+                box-shadow: 0 20px 60px rgba(0, 0, 255, 0.3);
+            }
+
+            83% {
+                box-shadow: 0 20px 60px rgba(139, 0, 255, 0.3);
+            }
+        }
+
+        /* Hearts Floating */
+        .floating-heart {
+            position: fixed;
+            font-size: 40px;
+            z-index: 35;
+            animation: float-hearts 6s ease-in-out infinite;
+            opacity: 0.7;
+        }
+
+        .heart-1 {
+            left: 30%;
+            bottom: -50px;
+        }
+
+        .heart-2 {
+            right: 30%;
+            bottom: -50px;
+            animation-delay: 3s;
+        }
+
+        @keyframes float-hearts {
+            0% {
+                transform: translateY(0) scale(0.5) rotate(0deg);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.8;
+            }
+
+            80% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-110vh) scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Cute Unicorn */
+        .unicorn {
+            position: fixed;
+            font-size: 90px;
+            top: 50%;
+            left: -100px;
+            z-index: 55;
+            animation: unicorn-run 15s linear infinite;
+            transform: scaleX(-1);
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        }
+
+        @keyframes unicorn-run {
+            0% {
+                left: -100px;
+            }
+
+            100% {
+                left: 110%;
+            }
+        }
+
+        /* Pookie Character (Cute Bear) */
+        .pookie-bear {
+            position: fixed;
+            font-size: 70px;
+            z-index: 50;
+            animation: pookie-wiggle 4s ease-in-out infinite;
+            cursor: pointer;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .pookie-1 {
+            left: 200px;
+            bottom: 50px;
+        }
+
+        .pookie-2 {
+            right: 200px;
+            top: 200px;
+            animation-delay: 2s;
+        }
+
+        @keyframes pookie-wiggle {
+
+            0%,
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+
+            25% {
+                transform: rotate(-15deg) scale(1.1);
+            }
+
+            50% {
+                transform: rotate(0deg) scale(1.2);
+            }
+
+            75% {
+                transform: rotate(15deg) scale(1.1);
+            }
+        }
+
+        .pookie-bear:hover {
+            animation: pookie-jump 0.6s ease;
+        }
+
+        @keyframes pookie-jump {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-40px) scale(1.3) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="learning-world">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎓 Learn Python: The print() Function!</h1>
+            <p style="font-size: 20px; margin-top: 10px;">Interactive Tutorial - Learn by Doing!</p>
+            <div class="progress-dots" id="progressDots"></div>
+        </div>
+
+        <!-- ========== ANIMATED CHARACTERS ========== -->
+
+        <!-- Dancing Pandas -->
+        <div class="dancing-panda panda-left" title="Click me!">🐼</div>
+        <div class="dancing-panda panda-right" title="Click me!">🐼</div>
+
+        <!-- Bouncing Cats -->
+        <div class="bouncing-cat cat-1" title="Hover me!">😺</div>
+        <div class="bouncing-cat cat-2" title="Hover me!">🐱</div>
+
+        <!-- Pookie Bears -->
+        <div class="pookie-bear pookie-1" title="Click to jump!">🐻</div>
+        <div class="pookie-bear pookie-2" title="Click to jump!">🧸</div>
+
+        <!-- Floating Emojis -->
+        <div class="floating-emoji emoji-1">🌟</div>
+        <div class="floating-emoji emoji-2">⭐</div>
+        <div class="floating-emoji emoji-3">✨</div>
+        <div class="floating-emoji emoji-4">💫</div>
+
+        <!-- Waving Hands -->
+        <div class="waving-hand wave-1">👋</div>
+        <div class="waving-hand wave-2">🙌</div>
+
+        <!-- Sparkle Stars -->
+        <div class="sparkle-star star-1">⭐</div>
+        <div class="sparkle-star star-2">🌟</div>
+        <div class="sparkle-star star-3">✨</div>
+        <div class="sparkle-star star-4">💫</div>
+        <div class="sparkle-star star-5">🌠</div>
+        <div class="sparkle-star star-6">⭐</div>
+
+        <!-- Colorful Balloons -->
+        <div class="colorful-balloon balloon-1">🎈</div>
+        <div class="colorful-balloon balloon-2">🎈</div>
+        <div class="colorful-balloon balloon-3">🎈</div>
+
+        <!-- Floating Hearts -->
+        <div class="floating-heart heart-1">💖</div>
+        <div class="floating-heart heart-2">💝</div>
+
+        <!-- Running Unicorn -->
+        <div class="unicorn">🦄</div>
+
+        <!-- Confetti pieces -->
+        <div class="confetti-bg" style="left: 10%; animation-delay: 0s; background: #ff6b6b;"></div>
+        <div class="confetti-bg" style="left: 20%; animation-delay: 1s; background: #4ecdc4;"></div>
+        <div class="confetti-bg" style="left: 30%; animation-delay: 2s; background: #ffe66d;"></div>
+        <div class="confetti-bg" style="left: 40%; animation-delay: 0.5s; background: #a8e6cf;"></div>
+        <div class="confetti-bg" style="left: 50%; animation-delay: 1.5s; background: #ff6b9d;"></div>
+        <div class="confetti-bg" style="left: 60%; animation-delay: 2.5s; background: #c7ceea;"></div>
+        <div class="confetti-bg" style="left: 70%; animation-delay: 0.8s; background: #ffd3b6;"></div>
+        <div class="confetti-bg" style="left: 80%; animation-delay: 1.8s; background: #ffaaa5;"></div>
+        <div class="confetti-bg" style="left: 90%; animation-delay: 2.2s; background: #ff8b94;"></div>
+        <div class="confetti-bg" style="left: 15%; animation-delay: 1.2s; background: #a8d8ea;"></div>
+        <div class="confetti-bg" style="left: 25%; animation-delay: 2.8s; background: #aa96da;"></div>
+        <div class="confetti-bg" style="left: 35%; animation-delay: 0.3s; background: #fcbad3;"></div>
+        <div class="confetti-bg" style="left: 45%; animation-delay: 1.9s; background: #ffffd2;"></div>
+        <div class="confetti-bg" style="left: 55%; animation-delay: 2.4s; background: #b2f7ef;"></div>
+        <div class="confetti-bg" style="left: 65%; animation-delay: 0.7s; background: #ffccf9;"></div>
+
+        <!-- Lesson Container -->
+        <div id="lessonContainer"></div>
+
+        <!-- Dora Teacher -->
+        <div class="dora-teacher" id="doraTeacher">
+            <div class="speech-bubble-small" id="doraSpeech"></div>
+            <div
+                style="width: 60px; height: 65px; background: #d4a574; border-radius: 50%; margin: 0 auto; position: relative;">
+                <div
+                    style="width: 65px; height: 35px; background: #3d2817; border-radius: 50% 50% 0 0; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);">
+                </div>
+                <div
+                    style="width: 12px; height: 12px; background: black; border-radius: 50%; position: absolute; top: 25px; left: 15px;">
+                </div>
+                <div
+                    style="width: 12px; height: 12px; background: black; border-radius: 50%; position: absolute; top: 25px; right: 15px;">
+                </div>
+            </div>
+            <div style="width: 50px; height: 45px; background: #ff1493; border-radius: 10px; margin: 8px auto;">
+                <div
+                    style="width: 35px; height: 40px; background: #9370db; border-radius: 10px; position: absolute; right: 10px; border: 2px solid #8b3a8b;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Overlay -->
+        <div class="completion-overlay" id="completionOverlay">
+            <div class="badge-icon">🎓</div>
+            <h1>🎉 Learning Complete! 🎉</h1>
+            <p>You now understand the print() function!</p>
+            <p style="margin-top: 30px;">Ready for some challenges?</p>
+            <button class="nav-btn btn-next" onclick="window.location.href='page2.html'"
+                style="margin-top: 40px; font-size: 24px; padding: 20px 50px;">
+                🎮 Start Challenges!
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <script>
+        let currentLesson = 0;
+        let pyodide = null;
+
+        // Initialize Pyodide
+        async function initPyodide() {
+            pyodide = await loadPyodide();
+        }
+        initPyodide();
+
+        const lessons = [
+            {
+                number: 1,
+                title: "👋 What is print()?",
+                content: `
+                    <p><strong>Welcome to Python!</strong> 🐍</p>
+                    <p>The <strong>print()</strong> function is like a megaphone for your computer! 📢</p>
+                    <p>When you use print(), you're telling the computer to <strong>show something on the screen</strong>.</p>
+                    
+                    <div class="visual-explain">
+                        <h3 style="color: #3b82f6; margin-bottom: 20px;">How it works:</h3>
+                        <div class="explain-row">
+                            <div class="explain-box">
+                                <div class="explain-label">You Write:</div>
+                                <div class="explain-content">print("Hello!")</div>
+                            </div>
+                            <div class="arrow-right">→</div>
+                            <div class="explain-box">
+                                <div class="explain-label">Computer Shows:</div>
+                                <div class="explain-content">Hello!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fun-fact">
+                        <strong>🎯 Fun Fact:</strong> "print" comes from old printers that would print text on paper! Now we print on screens! 📺
+                    </div>
+                `,
+                doraMsg: "Click examples to see them work! 🌟"
+            },
+            {
+                number: 2,
+                title: "📝 Printing Text Messages",
+                content: `
+                    <p><strong>To print text, you need QUOTATION MARKS!</strong> " " or ' '</p>
+                    <p>Text inside quotes is called a <strong>"string"</strong> - like a string of letters! 🧵</p>
+
+                    <div class="code-demo">
+                        <div class="code-line">
+                            <span class="line-number">1</span>
+                            <span class="code-text"><span class="keyword">print</span>(<span class="string">"Hello, Python!"</span>)</span>
+                            <span class="output-arrow">→</span>
+                        </div>
+                        <div class="output">
+                            <div class="output-label">▶ Output:</div>
+                            Hello, Python!
+                        </div>
+                    </div>
+
+                    <h3 style="color: #8b5cf6; margin: 30px 0 20px;">🎨 Click these examples to try them:</h3>
+                    <div class="example-grid">
+                        <div class="example-card" onclick="runExample('print(\\'Hello World!\\')')">
+                            <div class="example-code">print('Hello World!')</div>
+                            <div class="example-result">Shows: Hello World!</div>
+                        </div>
+                        <div class="example-card" onclick="runExample('print(\\'I love coding!\\')')">
+                            <div class="example-code">print('I love coding!')</div>
+                            <div class="example-result">Shows: I love coding!</div>
+                        </div>
+                        <div class="example-card" onclick="runExample('print(\\'Python is fun!\\')')">
+                            <div class="example-code">print('Python is fun!')</div>
+                            <div class="example-result">Shows: Python is fun!</div>
+                        </div>
+                    </div>
+
+                    <div class="fun-fact">
+                        <strong>💡 Remember:</strong> Always use quotes " " or ' ' around text! Without quotes, Python gets confused! 😵
+                    </div>
+                `,
+                doraMsg: "Try clicking the examples! 🖱️"
+            },
+            {
+                number: 3,
+                title: "🔢 Printing Numbers",
+                content: `
+                    <p><strong>Good news!</strong> Numbers don't need quotes! 🎉</p>
+                    <p>You can print numbers directly:</p>
+
+                    <div class="code-demo">
+                        <div class="code-line">
+                            <span class="line-number">1</span>
+                            <span class="code-text"><span class="keyword">print</span>(42)</span>
+                            <span class="output-arrow">→</span>
+                        </div>
+                        <div class="output">
+                            <div class="output-label">▶ Output:</div>
+                            42
+                        </div>
+                    </div>
+
+                    <div class="visual-explain">
+                        <h3 style="color: #3b82f6; margin-bottom: 20px;">The Difference:</h3>
+                        <div class="explain-row">
+                            <div class="explain-box" style="border: 3px solid #10b981;">
+                                <div class="explain-label">✅ Number (no quotes)</div>
+                                <div class="explain-content">print(100)</div>
+                            </div>
+                            <div class="explain-box" style="border: 3px solid #f59e0b;">
+                                <div class="explain-label">📝 Text (with quotes)</div>
+                                <div class="explain-content">print("100")</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #8b5cf6; margin: 30px 0 20px;">🎯 Try these number examples:</h3>
+                    <div class="example-grid">
+                        <div class="example-card" onclick="runExample('print(7)')">
+                            <div class="example-code">print(7)</div>
+                            <div class="example-result">Lucky number!</div>
+                        </div>
+                        <div class="example-card" onclick="runExample('print(2024)')">
+                            <div class="example-code">print(2024)</div>
+                            <div class="example-result">Current year!</div>
+                        </div>
+                        <div class="example-card" onclick="runExample('print(100)')">
+                            <div class="example-code">print(100)</div>
+                            <div class="example-result">Big number!</div>
+                        </div>
+                    </div>
+                `,
+                doraMsg: "Numbers are easy - no quotes needed! 🎯"
+            },
+            {
+                number: 4,
+                title: "🎨 Printing Multiple Things",
+                content: `
+                    <p><strong>You can print MORE than one thing at a time!</strong> 🌟</p>
+                    <p>Just separate them with <strong>commas</strong> (,)</p>
+
+                    <div class="code-demo">
+                        <div class="code-line">
+                            <span class="line-number">1</span>
+                            <span class="code-text"><span class="keyword">print</span>(<span class="string">"I am"</span>, 8, <span class="string">"years old"</span>)</span>
+                            <span class="output-arrow">→</span>
+                        </div>
+                        <div class="output">
+                            <div class="output-label">▶ Output:</div>
+                            I am 8 years old
+                        </div>
+                    </div>
+
+                    <div class="visual-explain">
+                        <h3 style="color: #3b82f6; margin-bottom: 20px;">Breaking it down:</h3>
+                        <div class="explain-row">
+                            <div class="explain-box">
+                                <div class="explain-label">Text</div>
+                                <div class="explain-content">"I am"</div>
+                            </div>
+                            <div style="font-size: 30px; color: #f59e0b;">+</div>
+                            <div class="explain-box">
+                                <div class="explain-label">Number</div>
+                                <div class="explain-content">8</div>
+                            </div>
+                            <div style="font-size: 30px; color: #f59e0b;">+</div>
+                            <div class="explain-box">
+                                <div class="explain-label">Text</div>
+                                <div class="explain-content">"years old"</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #8b5cf6; margin: 30px 0 20px;">🚀 Click to try combinations:</h3>
+                    <div class="example-grid">
+                        <div class="example-card" onclick="runExample('print(\\'My age is\\', 10)')">
+                            <div class="example-code">print('My age is', 10)</div>
+                            <div class="example-result">Mix text & number!</div>
+                        </div>
+                        <div class="example-card" onclick="runExample('print(\\'I have\\', 5, \\'cats\\')')">
+                            <div class="example-code">print('I have', 5, 'cats')</div>
+                            <div class="example-result">Multiple items!</div>
+                        </div>
+                        <div class="example-card" onclick="runExample('print(\\'Score:\\', 100, \\'points\\')')">
+                            <div class="example-code">print('Score:', 100, 'points')</div>
+                            <div class="example-result">Gaming stats!</div>
+                        </div>
+                    </div>
+
+                    <div class="fun-fact">
+                        <strong>✨ Magic:</strong> Python automatically adds spaces between items! So you get "I am 8 years old" not "Iam8years old"
+                    </div>
+                `,
+                doraMsg: "Combine text and numbers with commas! 🎨"
+            },
+            {
+                number: 5,
+                title: "🎮 Try It Yourself!",
+                content: `
+                    <p><strong>Now it's YOUR turn!</strong> 🌟</p>
+                    <p>Use the code playground below to write your own print() statements!</p>
+
+                    <div class="try-it-box">
+                        <h3>💻 Code Playground - Write Your Code Here!</h3>
+                        <div class="code-playground">
+                            <textarea class="code-input" id="playgroundCode" placeholder="Write your code here... Try: print('Hello!')" spellcheck="false"></textarea>
+                            <button class="nav-btn btn-next" onclick="runPlaygroundCode()" style="margin-top: 15px; width: 100%;">
+                                ▶️ Run My Code!
+                            </button>
+                            <div class="playground-output" id="playgroundOutput">Your output will appear here... 🎯</div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #8b5cf6; margin: 30px 0 20px;">💡 Ideas to try:</h3>
+                    <div class="example-grid">
+                        <div class="example-card" onclick="fillPlayground('print(\\'My name is [YOUR NAME]\\')')">
+                            <div class="example-code">Print your name!</div>
+                            <div class="example-result">Click to try →</div>
+                        </div>
+                        <div class="example-card" onclick="fillPlayground('print(\\'I am\\', 8, \\'years old\\')')">
+                            <div class="example-code">Print your age!</div>
+                            <div class="example-result">Click to try →</div>
+                        </div>
+                        <div class="example-card" onclick="fillPlayground('print(\\'My favorite number is\\', 42)')">
+                            <div class="example-code">Print favorite number!</div>
+                            <div class="example-result">Click to try →</div>
+                        </div>
+                        <div class="example-card" onclick="fillPlayground('print(\\'Python\\', \\'is\\', \\'awesome!\\')')">
+                            <div class="example-code">Multiple words!</div>
+                            <div class="example-result">Click to try →</div>
+                        </div>
+                    </div>
+
+                    <div class="fun-fact">
+                        <strong>🎓 You've Learned:</strong> How to use print() with text, numbers, and combinations! You're ready for challenges! 🚀
+                    </div>
+                `,
+                doraMsg: "Write your own code! Be creative! 🎨"
+            }
+        ];
+
+        // Initialize
+        loadLesson(0);
+        createProgressDots();
+
+        function createProgressDots() {
+            const dotsContainer = document.getElementById('progressDots');
+            lessons.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (index === 0) dot.classList.add('active');
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function loadLesson(index) {
+            currentLesson = index;
+            const lesson = lessons[index];
+
+            const container = document.getElementById('lessonContainer');
+            container.innerHTML = `
+                <div class="lesson-card">
+                    <div class="lesson-number">${lesson.number}</div>
+                    <h2 class="lesson-title">${lesson.title}</h2>
+                    <div class="lesson-content">
+                        ${lesson.content}
+                    </div>
+                    <div class="nav-buttons">
+                        ${index > 0 ? '<button class="nav-btn btn-back" onclick="prevLesson()">← Previous</button>' : '<div></div>'}
+                        ${index < lessons.length - 1 ?
+                    '<button class="nav-btn btn-next" onclick="nextLesson()">Next Lesson →</button>' :
+                    '<button class="nav-btn btn-next" onclick="completeLearn()">🎓 Finish Learning!</button>'
+                }
+                    </div>
+                </div>
+            `;
+
+            // Update progress dots
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.classList.remove('active');
+                if (i < index) dot.classList.add('completed');
+                if (i === index) dot.classList.add('active');
+            });
+
+            // Show Dora message
+            showDoraMessage(lesson.doraMsg);
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextLesson() {
+            if (currentLesson < lessons.length - 1) {
+                loadLesson(currentLesson + 1);
+            }
+        }
+
+        function prevLesson() {
+            if (currentLesson > 0) {
+                loadLesson(currentLesson - 1);
+            }
+        }
+
+        function completeLearn() {
+            document.getElementById('completionOverlay').classList.add('show');
+        }
+
+        function showDoraMessage(message) {
+            const speech = document.getElementById('doraSpeech');
+            speech.textContent = message;
+            speech.classList.add('show');
+
+            setTimeout(() => {
+                speech.classList.remove('show');
+            }, 4000);
+        }
+
+        // Run example code
+        async function runExample(code) {
+            if (!pyodide) {
+                alert('⏳ Python is still loading... Please wait a moment!');
+                return;
+            }
+
+            try {
+                pyodide.runPython(`
+import sys
+from io import StringIO
+output_capture = StringIO()
+sys.stdout = output_capture
+                `);
+
+                pyodide.runPython(code);
+                const output = pyodide.runPython("output_capture.getvalue()");
+
+                alert(`✅ Code executed!\n\n${code}\n\n📺 Output:\n${output || '(empty)'}`);
+            } catch (error) {
+                alert(`❌ Error: ${error.message}`);
+            }
+        }
+
+        // Playground functions
+        function fillPlayground(code) {
+            document.getElementById('playgroundCode').value = code;
+        }
+
+        async function runPlaygroundCode() {
+            const code = document.getElementById('playgroundCode').value.trim();
+            const outputDiv = document.getElementById('playgroundOutput');
+
+            if (!code) {
+                outputDiv.textContent = '⚠️ Please write some code first!';
+                return;
+            }
+
+            if (!pyodide) {
+                outputDiv.textContent = '⏳ Python is still loading... Please wait!';
+                return;
+            }
+
+            try {
+                pyodide.runPython(`
+import sys
+from io import StringIO
+output_capture = StringIO()
+sys.stdout = output_capture
+                `);
+
+                pyodide.runPython(code);
+                let output = pyodide.runPython("output_capture.getvalue()");
+
+                if (!output || output.trim() === '') {
+                    outputDiv.textContent = '✅ Code ran, but produced no output.\nTip: Make sure you used print()!';
+                } else {
+                    outputDiv.textContent = '✅ Success! Output:\n\n' + output;
+                }
+            } catch (error) {
+                outputDiv.textContent = '❌ Error:\n' + error.message + '\n\n💡 Check your quotes and parentheses!';
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentLesson < lessons.length - 1) {
+                nextLesson();
+            } else if (e.key === 'ArrowLeft' && currentLesson > 0) {
+                prevLesson();
+            }
+        });
+
+        console.log('%c🎓 Python Learning Mode!', 'font-size: 24px; color: #8b5cf6; font-weight: bold;');
+        console.log('%c💡 Tip: Use Arrow Keys to navigate lessons!', 'font-size: 14px; color: #3b82f6;');
+    </script>
+</body>
+
+</html>

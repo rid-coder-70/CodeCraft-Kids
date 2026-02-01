@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Python Adventure Island - Complete Learning Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Main Container */
+        .app-container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Page Sections - Hidden by default */
+        .page-section {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        /* Navigation Menu */
+        .main-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-menu h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .menu-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            font-family: 'Comic Sans MS';
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .menu-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        .menu-btn.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            transform: scale(1.05);
+        }
+
+        /* Toggle Menu Button */
+        .toggle-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-menu.collapsed {
+            display: none;
+        }
+    </style>
+
+    <!-- Include all styles from individual pages -->
+    <style id="index-styles">
+        /* Index.html Styles */
+        .index-page {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #93c5fd 100%);
+        }
+
+        .game-world {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+
+        .island {
+            position: absolute;
+            background: linear-gradient(to bottom, #22c55e, #15803d);
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: floatIsland 4s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .island:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        @keyframes floatIsland {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .island1 {
+            width: 200px;
+            height: 80px;
+            top: 60%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .island2 {
+            width: 180px;
+            height: 70px;
+            top: 45%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+
+        .island3 {
+            width: 220px;
+            height: 90px;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 2s;
+        }
+
+        .island-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #1e3a8a;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .welcome-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 600px;
+            z-index: 50;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .welcome-panel.hidden {
+            display: none;
+        }
+
+        .welcome-panel h1 {
+            color: #1e3a8a;
+            font-size: 42px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-panel p {
+            color: #475569;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .game-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(255, 20, 147, 0.4);
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 20, 147, 0.6);
+        }
+
+        .map-title {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 40px;
+            border-radius: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3a8a;
+            border: 4px solid #ff1493;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 100px;
+            animation: driftCloud 30s linear infinite;
+        }
+
+        @keyframes driftCloud {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(100vw);
+            }
+        }
+
+        .cloud1 {
+            width: 120px;
+            height: 50px;
+            top: 15%;
+            left: -150px;
+            animation-duration: 25s;
+        }
+
+        .cloud2 {
+            width: 100px;
+            height: 40px;
+            top: 30%;
+            left: -120px;
+            animation-duration: 35s;
+            animation-delay: 5s;
+        }
+
+        .cloud3 {
+            width: 140px;
+            height: 55px;
+            top: 70%;
+            left: -160px;
+            animation-duration: 30s;
+            animation-delay: 10s;
+        }
+    </style>
+
+    <style id="shared-styles">
+        /* Shared styles for all game pages */
+        .game-container {
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            color: white;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .level-info {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .progress-bar-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid white;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .score-display {
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .main-menu {
+                top: 10px;
+                left: 10px;
+                padding: 10px;
+            }
+
+            .menu-btn {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .toggle-menu {
+                padding: 8px 15px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Toggle Menu Button -->
+        <button class="toggle-menu" onclick="toggleMainMenu()">📚 Menu</button>
+
+        <!-- Main Navigation Menu -->
+        <div class="main-menu" id="mainMenu">
+            <h3>🎮 Navigate Game</h3>
+            <button class="menu-btn active" onclick="switchPage('index')">🏝️ Island Map</button>
+            <button class="menu-btn" onclick="switchPage('learn-print')">📖 Learn Print</button>
+            <button class="menu-btn" onclick="switchPage('page2')">🎯 Print Challenges</button>
+            <button class="menu-btn" onclick="switchPage('learn-variables')">📖 Learn Variables</button>
+            <button class="menu-btn" onclick="switchPage('challenge-variables')">🎯 Variable Challenges</button>
+        </div>
+
+        <!-- Page 1: Index (Island Map) -->
+        <div id="page-index" class="page-section active index-page">
+            <div class="game-world">
+                <div class="stars" id="starsContainer"></div>
+
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+                <div class="cloud cloud3"></div>
+
+                <div class="map-title" style="display: none;" id="mapTitle">
+                    🗺️ Python Adventure Island 🗺️
+                </div>
+
+                <div class="welcome-panel" id="welcomePanel">
+                    <h1>🎮 Welcome to Python Island! 🏝️</h1>
+                    <p><strong>Hey there, future Python master!</strong></p>
+                    <p>I'm Dora, and I'll be your guide on this exciting coding adventure! 🚀</p>
+                    <p>On this magical island, you'll learn Python by playing fun games, collecting stars, and solving
+                        puzzles!</p>
+                    <p><strong>Ready to start your journey?</strong></p>
+                    <button class="game-btn" id="startAdventure">🎯 Start Adventure!</button>
+                </div>
+
+                <div class="island island1" id="island1" data-level="1">
+                    <div class="island-label">🎯 Level 1: Print Quest</div>
+                </div>
+
+                <div class="island island2" id="island2" data-level="2">
+                    <div class="island-label">📦 Level 2: Variable Valley</div>
+                </div>
+
+                <div class="island island3" id="island3" data-level="3">
+                    <div class="island-label">🔢 Level 3: Type Tower</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 2: Learn Print -->
+        <div id="page-learn-print" class="page-section">
+            <iframe src="learn-print.html" style="width: 100%; height: 100vh; border: none;"></iframe>
+        </div>
+
+        <!-- Page 3: Print Challenges (page2.html) -->
+        <div id="page-page2" class="page-section">
+            <iframe src="page2.html" style="width: 100%; height: 100vh; border: none;"></iframe>
+        </div>
+
+        <!-- Page 4: Learn Variables -->
+        <div id="page-learn-variables" class="page-section">
+            <iframe src="learn-variables.html" style="width: 100%; height: 100vh; border: none;"></iframe>
+        </div>
+
+        <!-- Page 5: Variable Challenges -->
+        <div id="page-challenge-variables" class="page-section">
+            <iframe src="challenge-variables.html" style="width: 100%; height: 100vh; border: none;"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Navigation Functions
+        function switchPage(pageName) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-section');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Show selected page
+            const selectedPage = document.getElementById('page-' + pageName);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+            }
+
+            // Update menu buttons
+            const menuBtns = document.querySelectorAll('.menu-btn');
+            menuBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleMainMenu() {
+            const menu = document.getElementById('mainMenu');
+            menu.classList.toggle('collapsed');
+        }
+
+        // Index Page Logic
+        const welcomePanel = document.getElementById('welcomePanel');
+        const startBtn = document.getElementById('startAdventure');
+        const mapTitle = document.getElementById('mapTitle');
+        const starsContainer = document.getElementById('starsContainer');
+
+        // Generate stars in background
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Start Adventure
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                welcomePanel.style.animation = 'slideIn 0.5s reverse';
+                setTimeout(() => {
+                    welcomePanel.classList.add('hidden');
+                    mapTitle.style.display = 'block';
+                }, 500);
+            });
+        }
+
+        // Island Click Handlers
+        const island1 = document.getElementById('island1');
+        const island2 = document.getElementById('island2');
+        const island3 = document.getElementById('island3');
+
+        if (island1) {
+            island1.addEventListener('click', () => {
+                switchPage('learn-print');
+                const menuBtns = document.querySelectorAll('.menu-btn');
+                menuBtns.forEach(btn => btn.classList.remove('active'));
+                menuBtns[1].classList.add('active');
+            });
+        }
+
+        if (island2) {
+            island2.addEventListener('click', () => {
+                switchPage('learn-variables');
+                const menuBtns = document.querySelectorAll('.menu-btn');
+                menuBtns.forEach(btn => btn.classList.remove('active'));
+                menuBtns[3].classList.add('active');
+            });
+        }
+
+        if (island3) {
+            island3.addEventListener('click', () => {
+                alert('🚧 Level 3 coming soon! Keep practicing Level 1 and 2!');
+            });
+        }
+    </script>
+</body>
+
+</html>
