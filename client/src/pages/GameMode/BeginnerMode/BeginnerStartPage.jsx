@@ -29,7 +29,7 @@ export default function BeginnerStartPage() {
                         title="Python Island Map"
                         style={{
                             width: '100%',
-                            height: '100vh',
+                            height: 'calc(100vh - 80px)',
                             border: 'none',
                             display: 'block'
                         }}
@@ -43,7 +43,7 @@ export default function BeginnerStartPage() {
                         title="Learn Print Function"
                         style={{
                             width: '100%',
-                            height: '100vh',
+                            height: 'calc(100vh - 80px)',
                             border: 'none',
                             display: 'block'
                         }}
@@ -57,7 +57,7 @@ export default function BeginnerStartPage() {
                         title="Print Challenges"
                         style={{
                             width: '100%',
-                            height: '100vh',
+                            height: 'calc(100vh - 80px)',
                             border: 'none',
                             display: 'block'
                         }}
@@ -71,7 +71,7 @@ export default function BeginnerStartPage() {
                         title="Learn Variables"
                         style={{
                             width: '100%',
-                            height: '100vh',
+                            height: 'calc(100vh - 80px)',
                             border: 'none',
                             display: 'block'
                         }}
@@ -85,7 +85,7 @@ export default function BeginnerStartPage() {
                         title="Variable Challenges"
                         style={{
                             width: '100%',
-                            height: '100vh',
+                            height: 'calc(100vh - 80px)',
                             border: 'none',
                             display: 'block'
                         }}
@@ -99,7 +99,7 @@ export default function BeginnerStartPage() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        height: '100vh',
+                        height: 'calc(100vh - 80px)',
                         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         color: 'white',
                         fontFamily: 'Comic Sans MS, Arial, sans-serif'
@@ -183,7 +183,14 @@ export default function BeginnerStartPage() {
     };
 
     return (
-        <div style={{ margin: 0, padding: 0, overflow: 'hidden' }}>
+        <div style={{
+            width: '100%',
+            minHeight: 'calc(100vh - 80px)',
+            marginTop: '80px',
+            margin: 0,
+            padding: 0,
+            overflow: 'hidden'
+        }}>
             {renderGameContent()}
         </div>
     );

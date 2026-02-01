@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  FaGamepad, 
-  FaLaptopCode, 
-  FaRocket, 
-  FaUsers, 
+import {
+  FaGamepad,
+  FaLaptopCode,
+  FaRocket,
+  FaUsers,
   FaUserFriends,
   FaChartLine,
   FaChevronDown,
@@ -19,15 +19,15 @@ import {
   FaComments,
   FaUserPlus
 } from "react-icons/fa";
-import { 
-  GiProgression 
+import {
+  GiProgression
 } from "react-icons/gi";
-import { 
+import {
   IoGameController,
   IoPeople,
   IoSparkles
 } from "react-icons/io5";
-import { 
+import {
   MdPostAdd,
   MdEmojiPeople,
   MdCelebration
@@ -81,7 +81,7 @@ export default function Home() {
     try {
       const usersRes = await fetch("http://localhost:5000/api/users");
       const usersData = await usersRes.json();
-      
+
       const postsRes = await fetch("http://localhost:5000/api/community/posts?limit=1");
       const postsData = await postsRes.json();
 
@@ -96,142 +96,194 @@ export default function Home() {
   };
 
   return (
-    <div className="relative bg-black text-white overflow-hidden">
-      {/* Hero Section */}
-      <section className="min-h-screen flex flex-col items-center justify-center pt-20 px-4 sm:px-6 lg:px-8">
-        {/* Background Overlay */}
-        <div className="absolute inset-0">
-          <img
-            src={Hero1}
-            alt="Coding Adventure Background"
-            className="w-full h-full object-cover opacity-15"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-purple-900/20 to-black backdrop-blur-sm" />
-        </div>
-
-        {/* Glow accents */}
-        <div className="absolute top-10 left-10 w-28 h-28 bg-purple-500 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute bottom-10 right-10 w-32 h-32 bg-pink-500 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute top-1/2 right-1/4 w-20 h-20 bg-purple-400 rounded-full blur-2xl opacity-30"></div>
-
-        {/* Hero Content */}
-        <div className="max-w-7xl w-full flex flex-col items-center justify-center text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="w-full lg:w-3/4 bg-gradient-to-br from-gray-900/80 via-purple-900/20 to-gray-900/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl shadow-2xl shadow-purple-500/10 border border-white/10 min-h-[500px] flex flex-col justify-center items-center animate-floating"
+    <div className="relative bg-gradient-to-br from-blue-400 via-purple-500 to-pink-400 text-white overflow-hidden" style={{ fontFamily: "'Comic Sans MS', 'Arial', sans-serif" }}>
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Floating Stars */}
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={`star-${i}`}
+            className="absolute text-yellow-300 animate-twinkle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 20 + 10}px`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
           >
+            ⭐
+          </div>
+        ))}
+
+        {/* Floating Hearts */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={`heart-${i}`}
+            className="absolute text-pink-300 animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 25 + 15}px`,
+              animationDelay: `${Math.random() * 4}s`,
+            }}
+          >
+            💖
+          </div>
+        ))}
+
+        {/* Bouncing Pandas */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={`panda-${i}`}
+            className="absolute text-4xl animate-bounce"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              animationDuration: `${2 + Math.random() * 2}s`,
+            }}
+          >
+            🐼
+          </div>
+        ))}
+
+        {/* Dancing Cats */}
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={`cat-${i}`}
+            className="absolute text-3xl animate-wiggle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          >
+            😺
+          </div>
+        ))}
+
+        {/* Rainbow Circles */}
+        {[...Array(10)].map((_, i) => (
+          <div
+            key={`circle-${i}`}
+            className="absolute rounded-full blur-2xl opacity-20 animate-pulse"
+            style={{
+              width: `${Math.random() * 200 + 100}px`,
+              height: `${Math.random() * 200 + 100}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              background: `linear-gradient(135deg, ${['#ff1493', '#00bfff', '#7fff00', '#ffd700', '#ff69b4'][Math.floor(Math.random() * 5)]} 0%, transparent 100%)`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Hero Section */}
+      <section className="min-h-screen flex flex-col items-center justify-center pt-20 px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Main Content Card */}
+        <div className="max-w-7xl w-full flex flex-col items-center justify-center text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="w-full lg:w-4/5 bg-white/95 backdrop-blur-xl p-8 md:p-16 rounded-[40px] shadow-[0_0_50px_rgba(255,20,147,0.6)] border-8 border-pink-400 min-h-[600px] flex flex-col justify-center items-center rainbow-border"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,182,193,0.95) 100%)',
+            }}
+          >
+            {/* Title with Emojis */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 1 }}
-              className="flex flex-col items-center justify-center mb-8"
+              initial={{ y: -50 }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+              className="mb-8"
             >
-              <div className="flex items-center space-x-4 mb-6">
-                <h1 className="text-5xl font-extrabold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <span className="text-6xl animate-spin-slow">🎮</span>
+                <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-purple-600 via-pink-500 to-blue-600 bg-clip-text text-transparent drop-shadow-lg">
                   CodeCraft Kids
                 </h1>
+                <span className="text-6xl animate-spin-slow">🚀</span>
               </div>
-              
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-                Learn Coding Through Fun & Games!
+
+              <h2 className="text-3xl md:text-5xl font-bold text-pink-600 mb-4 animate-bounce-slow">
+                🌈 Learn Coding Through Fun! 🎨
               </h2>
             </motion.div>
 
+            {/* Cute Character Row */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="flex gap-4 mb-8 text-5xl"
+            >
+              <span className="animate-wiggle" style={{ animationDelay: '0s' }}>🐼</span>
+              <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>😺</span>
+              <span className="animate-wiggle" style={{ animationDelay: '0.4s' }}>🐻</span>
+              <span className="animate-bounce" style={{ animationDelay: '0.6s' }}>🦄</span>
+              <span className="animate-wiggle" style={{ animationDelay: '0.8s' }}>🐨</span>
+            </motion.div>
+
+            {/* Description */}
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 1 }}
-              className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-300 leading-relaxed max-w-3xl"
+              transition={{ delay: 0.6 }}
+              className="text-xl md:text-2xl text-purple-700 mb-8 leading-relaxed"
             >
-              Learn coding with{" "}
-              <span className="font-semibold text-purple-300 flex items-center justify-center gap-1 inline-flex">
-                <FaGamepad className="inline" /> fun games
-              </span>{" "}
-              and{" "}
-              <span className="font-semibold text-pink-300 flex items-center justify-center gap-1 inline-flex">
-                <FaLaptopCode className="inline" /> interactive tutorials
-              </span>
-              . Join our vibrant community of young coders and embark on exciting coding adventures!{" "}
-              <FaRocket className="inline ml-1" />
+              🎯 <strong>Learn Python</strong> with fun games, cute characters, and awesome challenges! 🌟<br />
+              Join <strong>{stats.totalUsers}+ young coders</strong> on exciting adventures! 🚀
             </motion.p>
 
-            {/* Stats */}
+            {/* Stats - Colorful Boxes */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 1 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 w-full max-w-2xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 w-full max-w-3xl"
             >
-              <div className="backdrop-blur-md bg-purple-500/20 rounded-2xl p-4 border border-purple-400/30">
-                <div className="text-2xl font-bold text-purple-300 mb-1 flex items-center justify-center gap-2">
-                  {stats.totalUsers}+ <FaUserFriends />
-                </div>
-                <div className="text-gray-300 text-sm">Young Coders</div>
+              <div className="bg-gradient-to-br from-purple-400 to-purple-600 rounded-3xl p-6 shadow-lg transform hover:scale-105 transition-transform">
+                <div className="text-5xl mb-2">👥</div>
+                <div className="text-3xl font-black text-white">{stats.totalUsers}+</div>
+                <div className="text-white font-bold">Kids Learning!</div>
               </div>
-              <div className="backdrop-blur-md bg-pink-500/20 rounded-2xl p-4 border border-pink-400/30">
-                <div className="text-2xl font-bold text-pink-300 mb-1 flex items-center justify-center gap-2">
-                  {stats.totalPosts}+ <MdPostAdd />
-                </div>
-                <div className="text-gray-300 text-sm">Community Posts</div>
+              <div className="bg-gradient-to-br from-pink-400 to-pink-600 rounded-3xl p-6 shadow-lg transform hover:scale-105 transition-transform">
+                <div className="text-5xl mb-2">✨</div>
+                <div className="text-3xl font-black text-white">{stats.totalPosts}+</div>
+                <div className="text-white font-bold">Fun Posts!</div>
               </div>
-              <div className="backdrop-blur-md bg-green-500/20 rounded-2xl p-4 border border-green-400/30">
-                <div className="text-2xl font-bold text-green-300 mb-1 flex items-center justify-center gap-2">
-                  {stats.totalLevelsCompleted}+ <GiProgression />
-                </div>
-                <div className="text-gray-300 text-sm">Levels Completed</div>
+              <div className="bg-gradient-to-br from-green-400 to-green-600 rounded-3xl p-6 shadow-lg transform hover:scale-105 transition-transform">
+                <div className="text-5xl mb-2">🎮</div>
+                <div className="text-3xl font-black text-white">{stats.totalLevelsCompleted}+</div>
+                <div className="text-white font-bold">Levels Done!</div>
               </div>
             </motion.div>
 
-            {/* CTA Buttons */}
+            {/* Big Fun Buttons */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 1 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-2xl"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1, type: "spring" }}
+              className="flex flex-col sm:flex-row gap-6 w-full max-w-2xl"
             >
               <button
                 onClick={handleStart}
-                className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] group overflow-hidden"
+                className="flex-1 px-10 py-6 text-2xl font-black text-white bg-gradient-to-r from-green-400 to-blue-500 rounded-full shadow-2xl transform hover:scale-110 transition-all duration-300 hover:shadow-[0_0_40px_rgba(34,197,94,0.8)] border-4 border-white"
               >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Start Python Tutorial <FaRocket />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                🚀 Start Playing! 🎮
               </button>
 
               <button
                 onClick={scrollToCommunity}
-                className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] group overflow-hidden"
+                className="flex-1 px-10 py-6 text-2xl font-black text-white bg-gradient-to-r from-orange-400 to-pink-500 rounded-full shadow-2xl transform hover:scale-110 transition-all duration-300 hover:shadow-[0_0_40px_rgba(234,88,12,0.8)] border-4 border-white"
               >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Explore Community <IoPeople />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                👥 See Friends! 💬
               </button>
             </motion.div>
           </motion.div>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
-        >
-          <button
-            onClick={scrollToCommunity}
-            className="text-gray-400 hover:text-white transition-colors duration-300 animate-bounce"
-          >
-            <div className="flex flex-col items-center">
-              <span className="text-sm mb-2">Explore More</span>
-              <FaChevronDown className="w-6 h-6" />
-            </div>
-          </button>
-        </motion.div>
       </section>
 
       {/* Demo Video Section */}
@@ -276,21 +328,19 @@ export default function Home() {
             <div className="flex border-b border-white/10 mb-8">
               <button
                 onClick={() => setActiveTab("community")}
-                className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
-                  activeTab === "community"
-                    ? "text-purple-400 border-b-2 border-purple-400"
-                    : "text-gray-400 hover:text-white"
-                }`}
+                className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${activeTab === "community"
+                  ? "text-purple-400 border-b-2 border-purple-400"
+                  : "text-gray-400 hover:text-white"
+                  }`}
               >
                 <FaComments /> Community Feed
               </button>
               <button
                 onClick={() => setActiveTab("users")}
-                className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
-                  activeTab === "users"
-                    ? "text-purple-400 border-b-2 border-purple-400"
-                    : "text-gray-400 hover:text-white"
-                }`}
+                className={`flex-1 py-4 font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${activeTab === "users"
+                  ? "text-purple-400 border-b-2 border-purple-400"
+                  : "text-gray-400 hover:text-white"
+                  }`}
               >
                 <FaUsers /> Our Coders ({stats.totalUsers})
               </button>
@@ -365,7 +415,7 @@ export default function Home() {
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
-              
+
               <button
                 onClick={scrollToPython}
                 className="relative px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] group overflow-hidden"
@@ -380,7 +430,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Floating Animation */}
+      {/* Animations & Styles */}
       <style>
         {`
           @keyframes floating {
@@ -390,6 +440,58 @@ export default function Home() {
           }
           .animate-floating {
             animation: floating 8s ease-in-out infinite;
+          }
+          
+          @keyframes wiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+          }
+          .animate-wiggle {
+            animation: wiggle 1s ease-in-out infinite;
+          }
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+          }
+          .animate-float {
+            animation: float 4s ease-in-out infinite;
+          }
+          
+          @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+          }
+          .animate-twinkle {
+            animation: twinkle 3s ease-in-out infinite;
+          }
+          
+          @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+          }
+          .animate-bounce-slow {
+            animation: bounce-slow 2s ease-in-out infinite;
+          }
+          
+          @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          .animate-spin-slow {
+            animation: spin-slow 8s linear infinite;
+          }
+          
+          @keyframes rainbow-border {
+            0% { border-color: #ff1493; }
+            20% { border-color: #00bfff; }
+            40% { border-color: #7fff00; }
+            60% { border-color: #ffd700; }
+            80% { border-color: #ff69b4; }
+            100% { border-color: #ff1493; }
+          }
+          .rainbow-border {
+            animation: rainbow-border 3s linear infinite;
           }
         `}
       </style>

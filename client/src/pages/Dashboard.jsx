@@ -85,8 +85,8 @@ sys.stderr = mystderr = StringIO()
       const stderr = pyodide.runPython("mystderr.getvalue()");
       setOutput(
         (stdout ? stdout : "") +
-          (stderr ? `\n⚠️ ${stderr}` : "") ||
-          "✅ Code ran successfully!"
+        (stderr ? `\n⚠️ ${stderr}` : "") ||
+        "✅ Code ran successfully!"
       );
     } catch (err) {
       setOutput("❌ " + err.toString());
@@ -150,14 +150,87 @@ sys.stderr = mystderr = StringIO()
   }
 
   return (
-    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-purple-900/20 to-black" />
-      
-      {/* Glow accents */}
-      <div className="absolute top-10 left-10 w-28 h-28 bg-purple-500 rounded-full blur-3xl opacity-20"></div>
-      <div className="absolute bottom-10 right-10 w-32 h-32 bg-pink-500 rounded-full blur-3xl opacity-20"></div>
-      <div className="absolute top-1/2 right-1/4 w-20 h-20 bg-purple-400 rounded-full blur-2xl opacity-30"></div>
+    <div className="min-h-screen pt-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-gradient-to-br from-orange-400 via-yellow-500 to-red-500" style={{ fontFamily: "'Comic Sans MS', 'Arial', sans-serif" }}>
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Twinkling Stars */}
+        {[...Array(30)].map((_, i) => (
+          <div
+            key={`star-${i}`}
+            className="absolute text-yellow-200 animate-twinkle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 18 + 12}px`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          >
+            ⭐
+          </div>
+        ))}
+
+        {/* Bouncing Animals */}
+        {[...Array(10)].map((_, i) => (
+          <div
+            key={`animal-${i}`}
+            className="absolute text-5xl animate-bounce"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              animationDuration: `${2 + Math.random() * 2}s`,
+            }}
+          >
+            {['🐼', '😺', '🐻', '🦄', '🐨', '🦊', '🐸', '🐷', '🐵', '🐶'][i]}
+          </div>
+        ))}
+
+        {/* Floating Trophies */}
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={`trophy-${i}`}
+            className="absolute text-4xl animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 4}s`,
+            }}
+          >
+            🏆
+          </div>
+        ))}
+
+        {/* Spinning Game Controllers */}
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={`game-${i}`}
+            className="absolute text-3xl animate-spin-slow"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          >
+            🎮
+          </div>
+        ))}
+
+        {/* Floating Sparkles */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={`sparkle-${i}`}
+            className="absolute text-yellow-300 animate-twinkle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 25 + 15}px`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          >
+            ✨
+          </div>
+        ))}
+      </div>
 
       {/* Main Dashboard Card */}
       <div className="relative z-10 max-w-7xl mx-auto mt-8">
@@ -174,7 +247,7 @@ sys.stderr = mystderr = StringIO()
                 CodeCraft Kids
               </h1>
             </div>
-            
+
             {/* User Welcome */}
             <div className="mb-6">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
@@ -189,7 +262,7 @@ sys.stderr = mystderr = StringIO()
                     </div>
                     <div className="text-left">
                       <p className="text-gray-300">
-                        Levels Completed: <span className="text-purple-400 font-bold">{user.completedLevels?.length|| 0}</span>
+                        Levels Completed: <span className="text-purple-400 font-bold">{user.completedLevels?.length || 0}</span>
                       </p>
                       <p className="text-gray-400 text-sm">
                         Badges Earned: <span className="text-yellow-400 font-bold">{user.badges?.length || 0}</span>
@@ -281,7 +354,7 @@ sys.stderr = mystderr = StringIO()
                   {showBadges ? 'Hide' : 'Show'} Details
                 </button>
               </div>
-              
+
               <div className="flex justify-center mb-2">
                 <BadgeDisplay badges={user.badges} size="medium" maxDisplay={5} />
               </div>
@@ -379,10 +452,10 @@ sys.stderr = mystderr = StringIO()
               Community Hub 🏆
             </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              Share your coding achievements, ask questions, and connect with other young coders! 
+              Share your coding achievements, ask questions, and connect with other young coders!
               Celebrate your progress and get inspired by the community.
             </p>
-            
+
             {/* Community Stats */}
             {user && (
               <div className="flex justify-center space-x-8 mt-6">
@@ -408,12 +481,12 @@ sys.stderr = mystderr = StringIO()
 
           {/* Community Feed */}
           <div className="mb-8">
-            <CommunityFeed 
-              key={refreshFeed} 
+            <CommunityFeed
+              key={refreshFeed}
               onPostDeleted={handlePostDeleted}
             />
           </div>
-          
+
           {/* Create Post Button */}
           <div className="text-center">
             <p className="text-gray-400 mb-4">Share your coding journey with the community!</p>
@@ -432,6 +505,58 @@ sys.stderr = mystderr = StringIO()
           }
           .animate-floating {
             animation: floating 8s ease-in-out infinite;
+          }
+          
+          @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+          }
+          .animate-wiggle {
+            animation: wiggle 1s ease-in-out infinite;
+          }
+          
+          @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+          }
+          .animate-float {
+            animation: float 4s ease-in-out infinite;
+          }
+          
+          @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+          }
+          .animate-twinkle {
+            animation: twinkle 3s ease-in-out infinite;
+          }
+          
+          @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+          }
+          .animate-bounce-slow {
+            animation: bounce-slow 2s ease-in-out infinite;
+          }
+          
+          @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          .animate-spin-slow {
+            animation: spin-slow 10s linear infinite;
+          }
+          
+          @keyframes rainbow-border-dashboard {
+            0% { border-color: #fb923c; }
+            20% { border-color: #fbbf24; }
+            40% { border-color: #f97316; }
+            60% { border-color: #ea580c; }
+            80% { border-color: #fbbf24; }
+            100% { border-color: #fb923c; }
+          }
+          .rainbow-border-dashboard {
+            animation: rainbow-border-dashboard 4s linear infinite;
           }
         `}
       </style>
