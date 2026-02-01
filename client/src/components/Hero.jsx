@@ -13,9 +13,14 @@ import {
   FaVideo,
   FaSignInAlt,
   FaCode,
-  FaShareAlt,
-  FaTrophy,
   FaStar,
+  FaHeart,
+  FaMagic,
+  FaBolt,
+  FaGem,
+  FaCrown,
+  FaTrophy,
+  FaShareAlt,
   FaComments,
   FaUserPlus
 } from "react-icons/fa";
@@ -174,6 +179,104 @@ export default function Home() {
               top: `${Math.random() * 100}%`,
               background: `linear-gradient(135deg, ${['#ff1493', '#00bfff', '#7fff00', '#ffd700', '#ff69b4'][Math.floor(Math.random() * 5)]} 0%, transparent 100%)`,
               animationDelay: `${Math.random() * 5}s`,
+            }}
+          />
+        ))}
+
+        {/* NEW: Pulsing Icon Stars */}
+        {[...Array(15)].map((_, i) => (
+          <FaStar
+            key={`icon-star-${i}`}
+            className="absolute text-yellow-400 animate-pulse-slow"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 20 + 15}px`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          />
+        ))}
+
+        {/* NEW: Bouncing Icon Hearts */}
+        {[...Array(12)].map((_, i) => (
+          <FaHeart
+            key={`icon-heart-${i}`}
+            className="absolute text-pink-500 animate-bounce-slow"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 22 + 16}px`,
+              animationDelay: `${Math.random() * 2}s`,
+            }}
+          />
+        ))}
+
+        {/* NEW: Floating Code Icons */}
+        {[...Array(10)].map((_, i) => (
+          <FaCode
+            key={`icon-code-${i}`}
+            className="absolute text-blue-400 animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 24 + 18}px`,
+              animationDelay: `${Math.random() * 4}s`,
+            }}
+          />
+        ))}
+
+        {/* NEW: Twinkling Magic Wands */}
+        {[...Array(15)].map((_, i) => (
+          <FaMagic
+            key={`icon-magic-${i}`}
+            className="absolute text-purple-400 animate-twinkle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 20 + 14}px`,
+              animationDelay: `${Math.random() * 4}s`,
+            }}
+          />
+        ))}
+
+        {/* NEW: Spinning Lightning Bolts */}
+        {[...Array(10)].map((_, i) => (
+          <FaBolt
+            key={`icon-bolt-${i}`}
+            className="absolute text-yellow-300 animate-spin-slow"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 22 + 16}px`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          />
+        ))}
+
+        {/* NEW: Glowing Gems */}
+        {[...Array(8)].map((_, i) => (
+          <FaGem
+            key={`icon-gem-${i}`}
+            className="absolute text-cyan-400 animate-pulse-slow"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 20 + 15}px`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          />
+        ))}
+
+        {/* NEW: Bouncing Crowns */}
+        {[...Array(7)].map((_, i) => (
+          <FaCrown
+            key={`icon-crown-${i}`}
+            className="absolute text-yellow-500 animate-bounce"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              fontSize: `${Math.random() * 24 + 18}px`,
+              animationDelay: `${Math.random() * 2}s`,
             }}
           />
         ))}

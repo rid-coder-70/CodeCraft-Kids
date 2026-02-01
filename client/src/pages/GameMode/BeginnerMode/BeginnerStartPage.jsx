@@ -187,7 +187,9 @@ export default function BeginnerStartPage() {
             width: '100%',
             minHeight: 'calc(100vh - 80px)',
             marginTop: '80px',
-            margin: 0,
+            marginBottom: 0,
+            marginLeft: 0,
+            marginRight: 0,
             padding: 0,
             overflow: 'hidden'
         }}>

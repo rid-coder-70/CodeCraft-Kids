@@ -1495,7 +1495,36 @@ sys.stdout = output_capture
                     outputDiv.textContent = '✅ Success! Output:\n\n' + output;
                 }
             } catch (error) {
-                outputDiv.textContent = '❌ Error:\n' + error.message + '\n\n💡 Check your quotes and parentheses!';
+                // Kid-friendly but specific error handling
+                let message = '❌ Error Found:\n\n';
+                let errorType = '';
+                let explanation = '';
+
+                if (error.message.includes('SyntaxError')) {
+                    errorType = '📝 Syntax Error (Code Writing Mistake)';
+                    if (error.message.includes('unterminated string')) {
+                        explanation = 'You started a quote " but didn\'t close it.\n\n💡 What to do: Add a closing " at the end of your text.\nExample: print("Hello World")';
+                    } else if (error.message.includes('invalid syntax') || error.message.includes('unexpected EOF')) {
+                        explanation = 'There\'s something wrong with how you wrote the code.\n\n💡 What to check:\n   • Are all ( ) closed?\n   • Are all " " closed?\n   • Did you spell \"print\" correctly?';
+                    } else {
+                        explanation = 'The code has a writing mistake.\n\n💡 What to do: Check your spelling, parentheses ( ), and quotes " "';
+                    }
+                } else if (error.message.includes('NameError')) {
+                    errorType = '🔤 Name Error (Unknown Word)';
+                    explanation = 'Python doesn\'t recognize a word you used.\n\n💡 What to do: If it\'s text, put quotes around it.\nWrong: print(Hello)\nRight: print("Hello")';
+                } else if (error.message.includes('TypeError')) {
+                    errorType = '🎯 Type Error (Wrong Mix)';
+                    explanation = 'You\'re trying to mix things that don\'t work together.\n\n💡 What to do: Make sure text has quotes " " around it.';
+                } else if (error.message.includes('IndentationError')) {
+                    errorType = '↔️ Indentation Error (Spacing Problem)';
+                    explanation = 'There are extra spaces at the start of a line.\n\n💡 What to do: Start typing at the very beginning of the line (no spaces).';
+                } else {
+                    errorType = '⚠️ Unknown Error';
+                    explanation = 'Something went wrong with your code.\n\n💡 Common fixes:\n   • Check spelling\n   • Add quotes " around text\n   • Close all parentheses ( )';
+                }
+
+                message += errorType + '\n\n' + explanation;
+                outputDiv.textContent = message;
             }
         }
 
