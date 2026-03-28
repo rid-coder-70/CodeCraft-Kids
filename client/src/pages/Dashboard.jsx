@@ -15,7 +15,7 @@ import {
   FaBars, FaTimes as FaClose, FaGem, FaFire, FaStore
 } from "react-icons/fa";
 import { useToast } from "../components/Toast";
-import Logo from "../assets/Logo1.png";
+import Logo from "../assets/logo.svg";
 
 // Curved wavy SVG for the sidebar edge matching the "Kiwi" layout screenshot
 const SidebarWave = () => (

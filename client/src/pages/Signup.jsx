@@ -4,7 +4,7 @@ import axios from "axios";
 import { z } from "zod";
 import { API_BASE } from "../config";
 import { useToast } from "../components/Toast";
-import Logo from "../assets/Logo1.png";
+import Logo from "../assets/logo.svg";
 
 const signupSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),

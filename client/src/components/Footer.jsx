@@ -5,7 +5,7 @@ import {
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useToast } from "./Toast";
-import Logo from "../assets/Logo1.png";
+import Logo from "../assets/logo.svg";
 
 const SOCIAL_LINKS = [
   { Icon: FaFacebookF, label: "Facebook", href: "#", hover: "hover:text-blue-600 focus:text-blue-600" },
