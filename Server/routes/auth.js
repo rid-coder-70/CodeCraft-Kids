@@ -126,12 +126,35 @@ router.put("/profile", authMiddleware, upload.single("profilePic"), async (req, 
 
     let badgeEarned = null;
 
+    // Update streak and last active date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (user.lastActiveDate) {
+      const lastActive = new Date(user.lastActiveDate);
+      lastActive.setHours(0, 0, 0, 0);
+      const diffDays = Math.floor((today - lastActive) / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        user.streak += 1;
+      } else if (diffDays > 1) {
+        user.streak = 1;
+      }
+    } else {
+      user.streak = 1;
+    }
+    user.lastActiveDate = today;
+
     // Level completion & badge update
     if (completedLevel !== undefined) {
       const level = Number(completedLevel);
       if (!user.completedLevels.includes(level)) {
         user.completedLevels.push(level);
         
+        // Award gems and XP for completing a new level
+        user.gems += 50;
+        user.experiencePoints += 100;
+
         // Award badge for the completed level
         const badgeAdded = user.addBadge(level);
         if (badgeAdded) {

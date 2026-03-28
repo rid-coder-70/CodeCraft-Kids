@@ -1,12 +1,48 @@
-# React + Vite
+# 🎨 CodeCraft Kids - Frontend (Client)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The interactive, kid-friendly "adventure map" interface where learning Python becomes a game! Designed with a modern, minimalist "Kiwi" aesthetic to keep things clear and engaging for young creators (6-15 years old).
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **Python Island Map**: A sequential level-mapping system that guide kids through their learning journey.
+*   **The Python Lab**: A professional-grade, split-pane code editor with **Prism.js Syntax Highlighting** and a live **Skulpt** browser-based Python console.
+*   **The Adventure Shop**: Spent your earned **Coding Gems** 💎 on hats, pets, and skins to customize your dashboard avatar.
+*   **Gamified Streaks**: Keep the fire 🔥 alive with daily streaks and XP tracking.
+*   **Community Feed**: Share your latest Python creations and achievements with other young coders across the globe.
+*   **Responsive "Kiwi" Design**: Optimized for both desktops and tablets, featuring smooth **Framer Motion** animations.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+*   **React 19** (Vite)
+*   **Tailwind CSS 4** (Styling)
+*   **Framer Motion** (Animations)
+*   **Skulpt** (In-browser Python execution)
+*   **React Joyride** (Onboarding Tour)
+*   **Axios** (API communication)
+
+## 📦 Installation
+
+1.  **Navigate to the folder**:
+    ```bash
+    cd client
+    ```
+
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Start development server**:
+    ```bash
+    npm run dev
+    ```
+
+## 🌐 Environment Variables
+
+Make sure to configure your `src/config.js` to point to the correct backend:
+```javascript
+export const API_BASE = "http://localhost:5000";
+```
+
+---
+*Stay curious, keep coding! 🚀*

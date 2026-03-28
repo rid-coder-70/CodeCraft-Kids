@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE } from "../config";
 import { motion, AnimatePresence } from "framer-motion";
+import { Joyride, STATUS } from 'react-joyride';
 import CommunityFeed from "../components/CommunityFeed";
 import CreatePost from "../components/CreatePost";
 import PythonEditor from "../components/PythonEditor";
@@ -10,8 +11,10 @@ import BadgeDisplay from "../components/BadgeDisplay";
 import {
   FaSignOutAlt, FaPaintBrush, FaBook, FaMagic, 
   FaComments, FaRobot, FaHandPointer, FaPuzzlePiece,
-  FaPaw, FaCamera, FaTrash, FaArrowDown, FaPlay, FaLock, FaHome
+  FaPaw, FaCamera, FaTrash, FaArrowDown, FaPlay, FaLock, FaHome,
+  FaBars, FaTimes as FaClose, FaGem, FaFire, FaStore
 } from "react-icons/fa";
+import { useToast } from "../components/Toast";
 import Logo from "../assets/Logo1.png";
 
 // Curved wavy SVG for the sidebar edge matching the "Kiwi" layout screenshot
@@ -41,10 +44,27 @@ const SIDEBAR_MENU = [
     category: "Play & Explore",
     items: [
       { id: "games_pro", name: "Pro Mode Games", icon: <FaHandPointer className="text-red-400" /> },
+      { id: "shop", name: "Adventure Shop", icon: <FaStore className="text-orange-400" /> },
       { id: "badges", name: "My Badges", icon: <FaPuzzlePiece className="text-yellow-400" /> },
       { id: "profile", name: "Profile Settings", icon: <FaPaw className="text-green-500" /> },
     ]
   }
+];
+
+const TOUR_STEPS = [
+    {
+      target: '.sidebar-menu',
+      content: 'Here is your learning map! Choose lessons, the playground, or the shop.',
+      disableBeacon: true,
+    },
+    {
+      target: '.stats-header',
+      content: 'Track your Streaks 🔥 and Gems 💎 here. Complete levels to earn more!',
+    },
+    {
+      target: '.dashboard-content',
+      content: 'This is where the magic happens! Your levels and feed will appear here.',
+    }
 ];
 
 const BEGINNER_LEVELS = [
@@ -62,8 +82,27 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGame, setSelectedGame] = useState(null);
   const [communityRefresh, setCommunityRefresh] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [runTour, setRunTour] = useState(false);
+  const toast = useToast();
 
   const handlePostCreated = () => setCommunityRefresh(prev => prev + 1);
+
+  useEffect(() => {
+    // Check if it's user's first time or they want to see tour again
+    const hasSeenTour = localStorage.getItem('hasSeenTour');
+    if (!hasSeenTour) {
+      setRunTour(true);
+    }
+  }, []);
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      setRunTour(false);
+      localStorage.setItem('hasSeenTour', 'true');
+    }
+  };
 
   // Sync progress if game is played inside dashboard
   useEffect(() => {
@@ -83,7 +122,9 @@ export default function Dashboard() {
             const data = await response.json();
             
             if (data.badgeEarned) {
-              alert(`🎉 UNLOCKED! Level ${e.data.level} Complete!\nNew Badge: ${data.badgeEarned.name} ${data.badgeEarned.icon}`);
+              toast(`🎉 UNLOCKED! Level ${e.data.level} Complete! Earned: ${data.badgeEarned.name}`, "success");
+            } else {
+              toast(`✨ Level ${e.data.level} completed again! Keep going!`, "info");
             }
 
             // Update local state too
@@ -121,14 +162,41 @@ export default function Dashboard() {
   const currentAvatar = user?.profilePic ? `${API_BASE}${user.profilePic}` : null;
 
   return (
-    <div className="min-h-screen bg-white flex font-sans text-gray-800 overflow-x-hidden">
+    <div className="min-h-screen bg-white flex font-sans text-gray-800 overflow-x-hidden relative">
       
+      {/* Mobile Sidebar Toggle */}
+      <div className="lg:hidden fixed top-6 left-6 z-50">
+        <button 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-3 bg-white border border-gray-100 rounded-2xl shadow-lg text-[#a0cc5b] text-xl"
+        >
+          {isSidebarOpen ? <FaClose /> : <FaBars />}
+        </button>
+      </div>
+
+      {/* Sidebar Overlay (Mobile) */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Sidebar (matches Kiwi layout) */}
       <motion.div 
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="w-56 sm:w-64 bg-[#f9faec] relative flex flex-col pt-8 pb-4 shrink-0 shadow-[4px_0_15px_rgba(0,0,0,0.02)] border-r border-gray-100 z-10"
+        initial={false}
+        animate={{ 
+          x: (typeof window !== 'undefined' && window.innerWidth < 1024 && !isSidebarOpen) ? -300 : 0,
+          opacity: 1
+        }}
+        transition={{ type: "spring", stiffness: 120, damping: 25 }}
+        className={`fixed lg:relative w-[280px] sm:w-[300px] h-screen bg-[#f9faec] flex flex-col pt-8 pb-4 shrink-0 shadow-[4px_0_20px_rgba(0,0,0,0.03)] border-r border-gray-100 z-50 lg:z-10
+          ${!isSidebarOpen ? "hidden lg:flex" : "flex"}`}
       >
         <SidebarWave />
 
@@ -139,7 +207,7 @@ export default function Dashboard() {
         </div>
 
         {/* Scrollable Nav */}
-        <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto px-4 custom-scrollbar sidebar-menu">
           {SIDEBAR_MENU.map((group, i) => (
             <div key={i} className="mb-8">
               <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wide px-2 mb-3">
@@ -154,6 +222,7 @@ export default function Dashboard() {
                         onClick={() => {
                           setActiveTab(item.id);
                           setSelectedGame(null);
+                          setIsSidebarOpen(false); // Close sidebar on mobile after selecting
                         }}
                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors font-medium text-sm
                           ${isActive ? "bg-white text-green-700 shadow-sm border border-gray-100" : "text-gray-600 hover:bg-white/50"}`}
@@ -193,24 +262,50 @@ export default function Dashboard() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="flex-1 flex flex-col relative h-screen overflow-y-auto bg-white pt-10 px-4 sm:px-10 lg:px-20 z-0"
+        className="flex-1 flex flex-col relative h-screen overflow-y-auto bg-white pt-10 px-4 sm:px-10 lg:px-20 z-0 dashboard-content"
       >
-        
-        {/* Header (Avatar & Search) - Hidden when playing game */}
+        <Joyride
+          steps={TOUR_STEPS}
+          run={runTour}
+          continuous={true}
+          showProgress={true}
+          showSkipButton={true}
+          callback={handleJoyrideCallback}
+          styles={{
+            options: {
+              primaryColor: '#a0cc5b',
+              zIndex: 1000,
+            }
+          }}
+        />
+
+        {/* Header (Avatar & Stats) - Hidden when playing game */}
         {!selectedGame && (
           <div className="flex flex-col items-center mb-12">
+            {/* Top Row: Streaks & Gems */}
+            <div className="flex gap-4 mb-6 stats-header animate-fade-in">
+              <div className="flex items-center gap-2 px-4 py-2 bg-orange-50 rounded-2xl border border-orange-100 shadow-sm" title="Your Daily Streak">
+                <FaFire className="text-orange-500 text-xl" />
+                <span className="font-bold text-orange-700">{user?.streak || 1} Day Streak</span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-2xl border border-blue-100 shadow-sm" title="Your Coding Gems">
+                <FaGem className="text-blue-500 text-xl" />
+                <span className="font-bold text-blue-700">{user?.gems || 0} Gems</span>
+              </div>
+            </div>
+
             {/* Avatar Bubble */}
-            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-3xl shadow-md border-4 border-white mb-2 overflow-hidden cursor-pointer" onClick={() => navigate("/profile")}>
+            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-3xl shadow-md border-4 border-white mb-2 overflow-hidden cursor-pointer hover:scale-105 transition-transform" onClick={() => navigate("/profile")}>
               {currentAvatar ? <img src={currentAvatar} alt="Avatar" className="w-full h-full object-cover" /> : "👦"}
             </div>
-            <h2 className="text-lg font-bold text-gray-700 font-sans mb-6 capitalize">{user?.name || "mithila"}</h2>
+            <h2 className="text-lg font-bold text-gray-700 font-sans mb-6 capitalize">{user?.name || "CodeCrafter"}</h2>
 
             {/* Search Input */}
             <div className="w-full max-w-lg">
-              <label className="text-xs font-bold text-gray-600 mb-1.5 block">Search Content</label>
+              <label className="text-xs font-bold text-gray-600 mb-1.5 block">Search Tutorials</label>
               <input
                 type="text"
-                placeholder="Enter search term..."
+                placeholder="Find a challenge..."er="Enter search term..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400 text-sm shadow-sm font-medium placeholder-gray-400 transition-all"
@@ -332,6 +427,32 @@ export default function Dashboard() {
                   <button onClick={() => navigate("/game/pro")} className="px-6 py-2 bg-orange-500 text-white font-bold rounded-full">
                     Try Pro Simulator
                   </button>
+                </div>
+              )}
+              {activeTab === "shop" && (
+                <div className="animate-fade-in text-center p-12 bg-orange-50 rounded-[3rem] border-2 border-dashed border-orange-200">
+                  <div className="text-6xl mb-6">🎒</div>
+                  <h2 className="text-2xl font-bold text-orange-800" style={{ fontFamily: "'Nunito', sans-serif" }}>Adventure Shop</h2>
+                  <p className="text-orange-600 font-medium mb-8 max-w-sm mx-auto">
+                    Spend your **{user?.gems || 0} Gems** on magical hats and coding pets!
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
+                    {[
+                      { name: "Magician Hat", price: 100, icon: "🎩" },
+                      { name: "Coding Cat", price: 250, icon: "🐱" },
+                      { name: "Glow Skin", price: 500, icon: "✨" },
+                      { name: "Robot Friend", price: 750, icon: "🤖" },
+                    ].map(item => (
+                      <div key={item.name} className="bg-white p-6 rounded-2xl border border-orange-100 shadow-sm flex flex-col items-center gap-2 hover:shadow-md transition-all">
+                        <span className="text-4xl">{item.icon}</span>
+                        <span className="font-bold text-gray-800">{item.name}</span>
+                        <button className="mt-2 px-4 py-1.5 bg-orange-400 text-white font-bold rounded-lg text-xs flex items-center gap-1">
+                          <FaGem className="text-[10px]" /> {item.price}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-12 text-xs text-orange-400 font-bold uppercase tracking-widest">Items coming soon to your avatar!</p>
                 </div>
               )}
             </>

@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaPlay, FaTrash, FaTerminal, FaCode } from "react-icons/fa";
+import { FaPlay, FaTrash, FaTerminal, FaCode, FaCopy } from "react-icons/fa";
+import Editor from 'react-simple-code-editor';
+import Prism from 'prismjs';
+import 'prismjs/components/prism-python';
+import 'prismjs/themes/prism.css';
 
 const PythonEditor = () => {
   const [code, setCode] = useState("print('Hello, CodeCrafter!')\n# Write your Python code here\nfor i in range(5):\n    print('Loop number:', i)");
@@ -71,9 +75,22 @@ const PythonEditor = () => {
   };
 
   const clearTerm = () => setOutput("");
+  
+  const copyCode = () => {
+    navigator.clipboard.writeText(code);
+  };
 
   return (
     <div className="w-full h-full flex flex-col animate-fade-in bg-[#f9faec] rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl">
+      <style>{`
+        .code-editor {
+          font-family: "Fira Code", "Fira Mono", monospace;
+          font-size: 16px;
+          min-height: 100%;
+        }
+        .code-editor textarea { outline: none !important; }
+      `}</style>
+
       {/* Editor Header */}
       <div className="bg-white px-6 py-4 flex items-center justify-between border-b border-gray-100 shrink-0">
         <div className="flex items-center gap-3">
@@ -82,11 +99,18 @@ const PythonEditor = () => {
           </div>
           <div>
             <h2 className="text-lg font-bold text-gray-800 leading-none" style={{ fontFamily: "'Nunito', sans-serif" }}>Python Lab</h2>
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Try-it-Yourself</span>
+            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">With Syntax Highlighting</span>
           </div>
         </div>
 
         <div className="flex gap-2">
+           <button 
+             onClick={copyCode}
+             className="p-3 text-gray-400 hover:text-green-500 transition-colors"
+             title="Copy Code"
+           >
+             <FaCopy />
+           </button>
            <button 
              onClick={clearTerm}
              className="p-3 text-gray-400 hover:text-red-500 transition-colors"
@@ -107,13 +131,13 @@ const PythonEditor = () => {
       {/* Editor Main Section (W3Schools Layout) */}
       <div className="flex-1 flex flex-col lg:flex-row min-h-0">
         {/* Code Input */}
-        <div className="flex-1 border-r border-gray-100 bg-white relative flex flex-col min-h-0">
-          <textarea
+        <div className="flex-1 border-r border-gray-100 bg-white relative flex flex-col min-h-0 overflow-auto custom-scrollbar">
+          <Editor
             value={code}
-            onChange={(e) => setCode(e.target.value)}
-            spellCheck="false"
-            className="flex-1 w-full p-6 font-mono text-sm sm:text-base leading-relaxed text-gray-700 bg-transparent focus:outline-none resize-none"
-            placeholder="# Write your Python code here..."
+            onValueChange={code => setCode(code)}
+            highlight={code => Prism.highlight(code, Prism.languages.python, 'python')}
+            padding={24}
+            className="code-editor"
           />
           <div className="absolute bottom-4 right-4 text-[10px] text-gray-300 font-mono pointer-events-none">
             Skulpt v1.2.0 • Python 3
@@ -121,7 +145,7 @@ const PythonEditor = () => {
         </div>
 
         {/* Console Output */}
-        <div className="flex-1 bg-[#1e293b] flex flex-col min-h-0 relative">
+        <div className="flex-1 bg-[#1e293b] flex flex-col min-h-0 relative lg:max-w-md xl:max-w-lg">
           <div className="px-4 py-2 border-b border-gray-700/50 flex items-center gap-2 text-gray-400 shrink-0">
             <FaTerminal className="text-xs" />
             <span className="text-[10px] font-bold uppercase tracking-widest">Result Terminal</span>
