@@ -1,5 +1,7 @@
 # CodeCraft Kids: The Next Generation of Python Education
 
+![CodeCraft Kids Home](Assets/Home.png)
+
 [![Version](https://img.shields.io/badge/version-2.1.0-brightgreen)](https://github.com/rid-coder-70/CodeCraft-Kids)
 [![Tech Stack](https://img.shields.io/badge/stack-MERN-blue)](https://github.com/rid-coder-70/CodeCraft-Kids)
 [![Kids Safe](https://img.shields.io/badge/Age-6--15-orange)](https://github.com/rid-coder-70/CodeCraft-Kids)
