@@ -1,48 +1,68 @@
-# 🎨 CodeCraft Kids - Frontend (Client)
+# 🎨 CodeCraft Kids - Frontend Ecosystem (Client)
 
-The interactive, kid-friendly "adventure map" interface where learning Python becomes a game! Designed with a modern, minimalist "Kiwi" aesthetic to keep things clear and engaging for young creators (6-15 years old).
+The vibrant, interactive interface of CodeCraft Kids is where learning transforms into adventure! This modern, minimalist "Kiwi" dashboard ensures students (6-15) can seamlessly navigate lessons, the code playground, and the community.
 
-## 🚀 Key Features
+---
 
-*   **Python Island Map**: A sequential level-mapping system that guide kids through their learning journey.
-*   **The Python Lab**: A professional-grade, split-pane code editor with **Prism.js Syntax Highlighting** and a live **Skulpt** browser-based Python console.
-*   **The Adventure Shop**: Spent your earned **Coding Gems** 💎 on hats, pets, and skins to customize your dashboard avatar.
-*   **Gamified Streaks**: Keep the fire 🔥 alive with daily streaks and XP tracking.
-*   **Community Feed**: Share your latest Python creations and achievements with other young coders across the globe.
-*   **Responsive "Kiwi" Design**: Optimized for both desktops and tablets, featuring smooth **Framer Motion** animations.
+## 🚀 Key Learning Modules
 
-## 🛠️ Tech Stack
+### 🏝️ Python Island Map
+Our core adventure map uses a **Sequential Level Locking System**. Students must complete one level's challenge to unlock the next, earning **Gems** and **Badges** as proof of their progress.
 
-*   **React 19** (Vite)
-*   **Tailwind CSS 4** (Styling)
-*   **Framer Motion** (Animations)
-*   **Skulpt** (In-browser Python execution)
-*   **React Joyride** (Onboarding Tour)
-*   **Axios** (API communication)
+### 👨‍💻 The Python Lab (v2.0)
+A high-performance "Try-it-Yourself" IDE with:
+*   **Prism.js Highlighting**: Real-time syntax coloring for Python keywords like `print`, `for`, `in`.
+*   **Skulpt Execution**: Fast, client-side Python 3 runner that works in the browser.
+*   **Dual-Pane UI**: Split-screen design for code and terminal output, just like professional developer tools.
 
-## 📦 Installation
+### 🎒 The Adventure Shop
+A gamified marketplace where students spend **Coding Gems** 💎 on hats, pets, and character skins to personalize their learning experience.
 
-1.  **Navigate to the folder**:
+### 🔥 Daily Streaks & Milestones
+Integrated engagement tracking that rewards consecutive days of practice and major learning achievements with special visual cues.
+
+---
+
+## 🛠️ Specialized UI Architecture
+
+*   **React 19 & Vite**: Optimized for sub-second loading and real-time state management.
+*   **Framer Motion**: Smooth, high-fidelity animations for sidebars, modals, and content transitions.
+*   **Tailwind 4 & "Kiwi" System**: Custom-engineered design tokens using nature-calm greens (`#a0cc5b`) and soft shadows.
+*   **React Joyride**: An automated, interactive onboarding tour to welcome every new student.
+*   **Axios**: Dedicated service layer for all RESTful API communication.
+
+---
+
+## 📦 Deployment & Setup
+
+1.  **Navigate to the Client Directory**:
     ```bash
     cd client
     ```
 
-2.  **Install dependencies**:
+2.  **Install Dependencies**:
     ```bash
     npm install
     ```
 
-3.  **Start development server**:
+3.  **Configure API (config.js)**:
+    Ensure your `src/config.js` is correctly pointing to the backend:
+    ```javascript
+    export const API_BASE = "http://localhost:5000";
+    ```
+
+4.  **Launch Dashboard**:
     ```bash
     npm run dev
     ```
 
-## 🌐 Environment Variables
+---
 
-Make sure to configure your `src/config.js` to point to the correct backend:
-```javascript
-export const API_BASE = "http://localhost:5000";
-```
+## 📐 Component Guidelines
+All components follow the **"Kiwi" Minimalist Standard**:
+*   Maximum use of common utility classes in Tailwind.
+*   Focus on **Card-based Layouts** and **Gentle Animations**.
+*   All interactive elements must be accessible and kid-friendly with larger tap targets.
 
 ---
-*Stay curious, keep coding! 🚀*
+*Fueling the next generation of digital pioneers!* 🚀🥝🎨
