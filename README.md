@@ -1,25 +1,33 @@
-# 🥝 CodeCraft Kids: The Next Generation of Python Education
+# CodeCraft Kids: The Next Generation of Python Education
 
 [![Version](https://img.shields.io/badge/version-2.1.0-brightgreen)](https://github.com/rid-coder-70/CodeCraft-Kids)
 [![Tech Stack](https://img.shields.io/badge/stack-MERN-blue)](https://github.com/rid-coder-70/CodeCraft-Kids)
 [![Kids Safe](https://img.shields.io/badge/Age-6--15-orange)](https://github.com/rid-coder-70/CodeCraft-Kids)
 
-Welcome to **CodeCraft Kids**, a premiere, gamified Learning Management System (LMS) designed to turn coding from a daunting task into a world-class adventure. Featuring our innovative **"Kiwi" Design System**, we focus on creating a high-end, minimalist environment that fosters creativity and focuses the mind.
+Welcome to **CodeCraft Kids**, a premiere, gamified Learning Management System (LMS) designed to turn coding from a daunting task into a world-class adventure. Featuring our innovative "Kiwi" Design System, we focus on creating a high-end, minimalist environment that fosters creativity and focuses the mind.
 
 ---
 
-## 🚀 Core Educational Features
+## Detailed Documentation
 
-*   **🏝️ Python Island Quest**: A sequential, level-locked curriculum that guides students through Python fundamentals with clear milestones.
-*   **👨‍💻 Python Lab (v2.0)**: A professional, W3Schools-inspired code editor featuring real-time **Prism.js Syntax Highlighting** and a high-performance **Skulpt** browser console.
-*   **🎨 Adventure Shop**: An interactive marketplace where students spend earned **Coding Gems** 💎 on avatar customizations, pets, and magical skins.
-*   **🔥 Daily Streaks**: A sophisticated engagement engine (Duolingo-style) that tracks and rewards consecutive days of coding.
-*   **🌍 Community Feed**: A moderated social layer where students share achievements, exchange coding tips, and celebrate progress through likes and comments.
-*   **🎖️ Automated Certification**: Real-time badge awarding and milestone tracking through our proprietary progress engine.
+Explore the specialized documentation for different parts of the platform:
+- [Frontend (Client) Documentation](client/README.md)
+- [Backend (Server) Documentation](Server/README.md)
 
 ---
 
-## 🛠️ Integrated Technology Stack
+## Core Educational Features
+
+*   **Python Island Quest**: A sequential, level-locked curriculum that guides students through Python fundamentals with clear milestones.
+*   **Python Lab (v2.0)**: A professional, W3Schools-inspired code editor featuring real-time Prism.js Syntax Highlighting and a high-performance Skulpt browser console.
+*   **Adventure Shop**: An interactive marketplace where students spend earned Coding Gems on avatar customizations, pets, and magical skins.
+*   **Daily Streaks**: A sophisticated engagement engine (Duolingo-style) that tracks and rewards consecutive days of coding.
+*   **Community Feed**: A moderated social layer where students share achievements, exchange coding tips, and celebrate progress through likes and comments.
+*   **Automated Certification**: Real-time badge awarding and milestone tracking through our proprietary progress engine.
+
+---
+
+## Integrated Technology Stack
 
 | Layer | Technologies | Key Capabilities |
 | :--- | :--- | :--- |
@@ -31,11 +39,11 @@ Welcome to **CodeCraft Kids**, a premiere, gamified Learning Management System (
 
 ---
 
-## ⚙️ Engineering Setup Guide
+## Engineering Setup Guide
 
 ### 1. Prerequisites
-*   **Node.js** (v18.0.0 or higher)
-*   **MongoDB** (Local instance or Cloud Atlas cluster)
+*   Node.js (v18.0.0 or higher)
+*   MongoDB (Local instance or Cloud Atlas cluster)
 
 ### 2. Rapid Installation
 
@@ -70,8 +78,7 @@ cd client && npm run dev    # Listens on Port 5173
 
 ---
 
-
-## 🤝 Contributing & Community
+## Contributing & Community
 We welcome contributions to the CodeCraft Kids project! Whether it's adding new coding levels, improving the Python Lab, or refining the Adventure Shop, your help makes a difference.
 
 1.  Fork the Project
@@ -81,4 +88,4 @@ We welcome contributions to the CodeCraft Kids project! Whether it's adding new 
 5.  Open a Pull Request
 
 ---
-*Created with ❤️ for the future engineers of the world!* 🚀🥝💎✨
+*Created for the future engineers of the world!*
