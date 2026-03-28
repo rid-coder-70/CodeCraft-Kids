@@ -36,15 +36,17 @@ export default function BeginnerStartPage() {
     const renderGameContent = () => {
         switch (currentLevel) {
             case 'map':
-                return <iframe src="/index.html" title="Python Island Map" className="w-full h-[calc(100vh-80px)] border-none block" />;
-            case 'learn-print':
-                return <iframe src="/learn-print.html" title="Learn Print Function" className="w-full h-[calc(100vh-80px)] border-none block" />;
-            case 'challenges-print':
-                return <iframe src="/challenges-print.html" title="Print Challenges" className="w-full h-[calc(100vh-80px)] border-none block" />;
-            case 'learn-variables':
-                return <iframe src="/learn-variables.html" title="Learn Variables" className="w-full h-[calc(100vh-80px)] border-none block" />;
-            case 'challenges-variables':
-                return <iframe src="/challenge-variables.html" title="Variable Challenges" className="w-full h-[calc(100vh-80px)] border-none block" />;
+                return <iframe src="/map.html" title="Python Island Map" className="w-full h-[calc(100vh-80px)] border-none block" />;
+            case 'level1':
+                return <iframe src="/level1.html" title="Level 1" className="w-full h-[calc(100vh-80px)] border-none block" />;
+            case 'level2':
+                return <iframe src="/level2.html" title="Level 2" className="w-full h-[calc(100vh-80px)] border-none block" />;
+            case 'level3':
+                return <iframe src="/level3.html" title="Level 3" className="w-full h-[calc(100vh-80px)] border-none block" />;
+            case 'level4':
+                return <iframe src="/level4.html" title="Level 4" className="w-full h-[calc(100vh-80px)] border-none block" />;
+            case 'level5':
+                return <iframe src="/level5.html" title="Level 5" className="w-full h-[calc(100vh-80px)] border-none block" />;
             default:
                 return (
                     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] bg-[#f9faec] text-gray-800 font-sans p-6 rounded-tr-3xl">
@@ -61,17 +63,17 @@ export default function BeginnerStartPage() {
                                 </button>
 
                                 <button
-                                    onClick={() => setCurrentLevel('learn-print')}
+                                    onClick={() => setCurrentLevel('level1')}
                                     className="flex flex-col items-center justify-center p-6 bg-white border-2 border-blue-200 rounded-2xl text-blue-700 hover:bg-blue-50 hover:border-blue-400 transition-all font-bold shadow-sm"
                                 >
-                                    <FaBook className="text-3xl mb-3" /> Learn Print
+                                    <FaBook className="text-3xl mb-3" /> Play Level 1
                                 </button>
 
                                 <button
-                                    onClick={() => setCurrentLevel('challenges-print')}
+                                    onClick={() => setCurrentLevel('level2')}
                                     className="flex flex-col items-center justify-center p-6 bg-white border-2 border-orange-200 rounded-2xl text-orange-700 hover:bg-orange-50 hover:border-orange-400 transition-all font-bold shadow-sm"
                                 >
-                                    <FaGamepad className="text-3xl mb-3" /> Print Game
+                                    <FaGamepad className="text-3xl mb-3" /> Play Level 2
                                 </button>
                             </div>
 

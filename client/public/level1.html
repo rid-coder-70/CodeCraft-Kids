@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1: Say Hello</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f9faec;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .adventure-card {
+            background: white;
+            border-radius: 2.5rem;
+            padding: 3rem;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e1ecdf;
+            text-align: center;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .header { margin-bottom: 2rem; }
+        .lvl-badge {
+            background: #a0cc5b;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 99rem;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 10px rgba(160, 204, 91, 0.3);
+        }
+        h1 { font-size: 2.25rem; font-weight: 900; color: #0f172a; margin-bottom: 1rem; }
+        p { font-size: 1.15rem; color: #64748b; line-height: 1.7; margin-bottom: 2rem; }
+        
+        .interaction-area {
+            background-color: #eff5f0;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            border: 1px dashed #a0cc5b;
+        }
+        code {
+            background: #0f172a;
+            color: #4ade80;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            display: block;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .string { color: #facc15; }
+        
+        .btn-next {
+            display: inline-block;
+            width: 100%;
+            background: linear-gradient(135deg, #a0cc5b 0%, #8ebb4a 100%);
+            color: white;
+            border: none;
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            font-size: 1.3rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 6px 20px rgba(160, 204, 91, 0.4);
+            text-decoration: none;
+        }
+        .btn-next:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(160, 204, 91, 0.5); }
+        .btn-next:active { transform: translateY(0); }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #a0cc5b; text-decoration: underline; }
+        
+        .character { font-size: 4rem; margin-bottom: 1.5rem; display: block; }
+    </style>
+</head>
+<body>
+    <div class="adventure-card">
+        <div class="header">
+            <span class="lvl-badge">LEVEL 1</span>
+            <span class="character">💬</span>
+            <h1>The Power of Words!</h1>
+            <p>In Python, the most important command is <strong>print</strong>. It's like your computer's voice! It shouts whatever you put inside the quotes.</p>
+        </div>
+
+        <div class="interaction-area">
+            <code>print(<span class="string">"Hello, CodeCrafter!"</span>)</code>
+            <p style="font-size: 0.95rem; margin-bottom: 0;">Try to say your name next! But first, let's finish this level!</p>
+        </div>
+
+        <button onclick="completeLevel()" class="btn-next">Finish & Get Gems! 💎</button>
+        
+        <a href="map.html" class="back-link">Back to Adventure Map</a>
+    </div>
+
+    <script>
+        function completeLevel() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#a0cc5b', '#ffffff', '#ffd700']
+            });
+
+            // Notify React Dashboard that level is complete
+            window.parent.postMessage({ type: 'LEVEL_COMPLETE', level: 2 }, '*');
+            
+            setTimeout(() => {
+                window.location.href = 'map.html';
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

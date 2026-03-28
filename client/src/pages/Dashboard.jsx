@@ -69,10 +69,11 @@ const TOUR_STEPS = [
 
 const BEGINNER_LEVELS = [
   { id: 1, path: 'map', name: "Python Island Map", icon: "🗺️" },
-  { id: 2, path: 'learn-print', name: "Learn Print Statement", icon: "📖" },
-  { id: 3, path: 'challenges-print', name: "Print Challenges", icon: "🎮" },
-  { id: 4, path: 'learn-variables', name: "Learn Variables", icon: "💡" },
-  { id: 5, path: 'challenges-variables', name: "Variable Challenges", icon: "🧩" },
+  { id: 2, path: 'level1', name: "Level 1: Say Hello", icon: "💬" },
+  { id: 3, path: 'level2', name: "Level 2: Memory Box", icon: "📦" },
+  { id: 4, path: 'level3', name: "Level 3: Super Math", icon: "➕" },
+  { id: 5, path: 'level4', name: "Level 4: Ask Questions", icon: "❓" },
+  { id: 6, path: 'level5', name: "Level 5: Master Coder", icon: "👑" },
 ];
 
 export default function Dashboard() {
@@ -203,7 +204,7 @@ export default function Dashboard() {
         {/* Brand */}
         <div className="flex items-center gap-3 px-6 mb-10 cursor-pointer" onClick={() => navigate("/")}>
           <img src={Logo} alt="CodeCraft" className="w-10 h-10 object-contain rounded-full border border-[#a0cc5b]" />
-          <h1 className="font-bold text-xl text-gray-800 tracking-tight">CodeCraft API</h1>
+          <h1 className="font-bold text-xl text-gray-800 tracking-tight">CodeCraft Kids</h1>
         </div>
 
         {/* Scrollable Nav */}
@@ -334,7 +335,7 @@ export default function Dashboard() {
               </div>
               <div className="bg-white rounded-[2rem] overflow-hidden border border-gray-100 shadow-xl h-[70vh]">
                 <iframe 
-                  src={`/${selectedGame.path === 'map' ? 'index.html' : selectedGame.path + '.html'}`} 
+                  src={`/${selectedGame.path === 'map' ? 'map.html' : selectedGame.path + '.html'}`} 
                   title={selectedGame.name}
                   className="w-full h-full border-none"
                 />
@@ -362,7 +363,7 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   {BEGINNER_LEVELS.filter(l => l.name.toLowerCase().includes(searchTerm.toLowerCase())).map((level) => {
                     const isCompleted = user?.completedLevels?.includes(level.id);
-                    const isLocked = level.id > 1 && !user?.completedLevels?.includes(level.id - 1);
+                    const isLocked = level.id > 2 && !user?.completedLevels?.includes(level.id - 1) && !isCompleted;
 
                     return (
                     <div key={level.id} className={`flex items-center justify-between p-4 border rounded-[20px] transition-all shadow-sm 

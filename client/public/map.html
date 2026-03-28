@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Adventure Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f9faec;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 2rem;
+        }
+        .container { width: 100%; max-width: 1000px; text-align: center; }
+        h1 { font-size: 3rem; font-weight: 900; margin-bottom: 3rem; color: #0f172a; text-shadow: 2px 2px 0px #fff; }
+        
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .level-node {
+            background: white;
+            border: 4px solid #e1ecdf;
+            border-radius: 2.5rem;
+            padding: 2.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+        }
+
+        .level-node:hover {
+            transform: translateY(-12px) scale(1.05);
+            border-color: #a0cc5b;
+            box-shadow: 0 15px 30px rgba(160, 204, 91, 0.2);
+        }
+
+        .icon { font-size: 3.5rem; margin-bottom: 1rem; transition: transform 0.3s; }
+        .level-node:hover .icon { transform: scale(1.2) rotate(5deg); }
+        
+        .label { font-weight: 800; font-size: 1rem; color: #475569; }
+        .lvl-num { font-size: 0.75rem; font-weight: 900; color: #a0cc5b; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .btn-start {
+            margin-top: 3rem;
+            padding: 1.25rem 4rem;
+            background: linear-gradient(135deg, #a0cc5b 0%, #8ebb4a 100%);
+            color: white;
+            border: none;
+            border-radius: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 25px rgba(160, 204, 91, 0.4);
+        }
+        .btn-start:hover { transform: scale(1.05); box-shadow: 0 15px 35px rgba(160, 204, 91, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="container" id="welcomeScreen">
+        <div style="font-size: 6rem; margin-bottom: 1rem;">🏝️</div>
+        <h1>Welcome to Python Island!</h1>
+        <p style="font-size: 1.3rem; color: #64748b; font-weight: 600; margin-bottom: 3rem;">The ultimate coding adventure awaits you.</p>
+        <button class="btn-start" onclick="startMap()">Get Started</button>
+    </div>
+
+    <div class="container" id="mapScreen" style="display: none;">
+        <h1>Adventure Map</h1>
+        <div class="map-grid">
+            <a href="level1.html" class="level-node">
+                <span class="lvl-num">Level 1</span>
+                <div class="icon">💬</div>
+                <div class="label">Say Hello</div>
+            </a>
+            
+            <a href="level2.html" class="level-node">
+                <span class="lvl-num">Level 2</span>
+                <div class="icon">📦</div>
+                <div class="label">Memory Box</div>
+            </a>
+
+            <a href="level3.html" class="level-node">
+                <span class="lvl-num">Level 3</span>
+                <div class="icon">➕</div>
+                <div class="label">Super Math</div>
+            </a>
+
+            <a href="level4.html" class="level-node">
+                <span class="lvl-num">Level 4</span>
+                <div class="icon">❓</div>
+                <div class="label">Ask Questions</div>
+            </a>
+
+            <a href="level5.html" class="level-node" style="border-color: #ffd700; background: #fffcf0;">
+                <span class="lvl-num" style="color: #fbbf24;">Level 5</span>
+                <div class="icon">👑</div>
+                <div class="label">Master Coder</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function startMap() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mapScreen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
