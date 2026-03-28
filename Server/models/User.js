@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
   },
   completedLevels: { type: [Number], default: [] }, // track completed levels
   currentBadge: { type: String, default: "🌟" }, // current display badge
+  gems: { type: Number, default: 0 },
+  streak: { type: Number, default: 0 },
+  lastActiveDate: { type: Date, default: null },
+  experiencePoints: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 }, { versionKey: false });
 
