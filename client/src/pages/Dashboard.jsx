@@ -68,12 +68,12 @@ const TOUR_STEPS = [
 ];
 
 const BEGINNER_LEVELS = [
-  { id: 1, path: 'map', name: "Python Island Map", icon: "🗺️" },
-  { id: 2, path: 'level1', name: "Level 1: Say Hello", icon: "💬" },
-  { id: 3, path: 'level2', name: "Level 2: Memory Box", icon: "📦" },
-  { id: 4, path: 'level3', name: "Level 3: Super Math", icon: "➕" },
-  { id: 5, path: 'level4', name: "Level 4: Ask Questions", icon: "❓" },
-  { id: 6, path: 'level5', name: "Level 5: Master Coder", icon: "👑" },
+  // { id: 1, path: 'map', name: "Python Island Map", icon: "🗺️" },
+  { id: 1, path: 'level1', name: "Level 1: Say Hello", icon: "💬" },
+  { id: 2, path: 'level2', name: "Level 2: Memory Box", icon: "📦" },
+  { id: 3, path: 'level3', name: "Level 3: Super Math", icon: "➕" },
+  { id: 4, path: 'level4', name: "Level 4: Ask Questions", icon: "❓" },
+  { id: 5, path: 'level5', name: "Level 5: Master Coder", icon: "👑" },
 ];
 
 export default function Dashboard() {
