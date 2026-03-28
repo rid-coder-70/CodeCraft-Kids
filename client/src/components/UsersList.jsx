@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { API_BASE } from "../config";
 import { 
   FaSearch, 
   FaUsers, 
@@ -36,25 +37,12 @@ const UsersList = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/users", {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-      
+      const response = await fetch(`${API_BASE}/api/users`);
+      if (!response.ok) throw new Error('Failed to fetch users');
       const data = await response.json();
-      
-      if (data.success) {
-        setUsers(data.users);
-      }
+      if (data.success) setUsers(data.users);
     } catch (error) {
       console.error("Error fetching users:", error);
-      alert("Failed to load users. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -64,27 +52,19 @@ const UsersList = () => {
     user.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Calculate user level based on completed levels
-  const getUserLevel = (completedLevels) => {
-    return completedLevels?.length || 0;
-  };
+  const getUserLevel = (completedLevels) => completedLevels?.length || 0;
 
-  // Get highest badge icon from badges array
   const getHighestBadge = (badges) => {
-    if (!badges || badges.length === 0) return <FaStar className="text-yellow-400" />;
-    const highestLevelBadge = badges.reduce((highest, current) => 
-      (current.level > highest.level) ? current : highest
-    );
-    return highestLevelBadge.icon || <FaStar className="text-yellow-400" />;
+    if (!badges || badges.length === 0) return "⭐";
+    const highest = badges.reduce((a, b) => ((b.level || 0) > (a.level || 0) ? b : a));
+    return highest.icon || "🏆";
   };
 
-  // Calculate progress percentage
   const getProgressPercentage = (completedLevels) => {
     const levelCount = completedLevels?.length || 0;
     return Math.min(levelCount * 10, 100);
   };
 
-  // Get current badge display
   const getCurrentBadge = (user) => {
     if (user.currentBadge) return user.currentBadge;
     if (user.badges && user.badges.length > 0) {
@@ -95,152 +75,133 @@ const UsersList = () => {
 
   if (loading) {
     return (
-      <div className="text-center text-white py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto"></div>
-        <p className="mt-4 text-gray-400">Loading our amazing coders...</p>
+      <div className="text-center py-12">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500 mx-auto"></div>
+        <p className="mt-4 text-gray-500 font-bold">Loading community...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto py-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 flex items-center justify-center gap-3">
-          <MdGroups className="text-purple-400" /> Code Warriors Community
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-2 flex items-center justify-center gap-3" style={{ fontFamily: "'Nunito', sans-serif" }}>
+          Community Leaderboard
         </h1>
-        <p className="text-gray-400 text-lg flex items-center justify-center gap-2">
-          <FaUsers className="text-gray-500" />
-          Connect with fellow programmers and track your coding journey together
+        <p className="text-gray-500 font-medium">
+          Connect with fellow students and track your coding journey together
         </p>
       </div>
 
       {/* Search Bar */}
-      <div className="mb-8">
-        <div className="relative">
+      <div className="mb-8 max-w-xl mx-auto">
+        <div className="relative border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden">
           <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search coders by name..."
+            placeholder="Search by name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-6 py-4 rounded-2xl bg-gray-800/50 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition duration-300 backdrop-blur-sm"
+            className="w-full pl-12 pr-6 py-4 focus:outline-none focus:ring-1 focus:ring-green-400 focus:border-green-400 transition text-sm font-medium text-gray-800 placeholder-gray-400"
           />
         </div>
       </div>
 
       {filteredUsers.length === 0 ? (
-        <div className="text-center text-gray-400 py-12">
-          <div className="text-6xl mb-4 flex justify-center">
-            <MdEmojiPeople className="text-purple-400" />
+        <div className="text-center text-gray-500 py-12 bg-white rounded-3xl border border-gray-100 shadow-sm max-w-xl mx-auto">
+          <div className="text-5xl mb-4 flex justify-center text-gray-300">
+            <MdEmojiPeople />
           </div>
-          <h3 className="text-xl font-semibold mb-2">No users found</h3>
-          <p>Try adjusting your search terms</p>
+          <h3 className="text-lg font-bold text-gray-800 mb-1">No users found</h3>
+          <p className="text-sm">Try adjusting your search terms</p>
         </div>
       ) : (
         <>
           {/* Users Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredUsers.map((user) => (
               <div
                 key={user._id}
-                className="backdrop-blur-xl bg-gradient-to-br from-gray-900/60 via-purple-900/10 to-gray-900/60 rounded-2xl shadow-lg border border-white/10 p-6 hover:border-purple-400/30 transition-all duration-300 hover:transform hover:scale-105 group"
+                className="bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 p-6 hover:shadow-[0_4px_25px_rgba(0,0,0,0.06)] transition-all duration-300 group"
               >
                 {/* User Avatar & Badge */}
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-50">
                   <div className="relative">
-                    <img
-                      src={user.profilePic ? `http://localhost:5000${user.profilePic}` : "/default-avatar.png"}
-                      alt={user.name}
-                      className="w-16 h-16 rounded-full border-2 border-purple-500/50 object-cover group-hover:border-purple-400 transition-colors"
-                    />
-                    <div className="absolute -bottom-1 -right-1 bg-gray-900 rounded-full p-1 border border-purple-500/50">
-                      <span className="text-lg text-yellow-400">
+                    {user.profilePic ? (
+                      <img
+                        src={`${API_BASE}${user.profilePic}`}
+                        alt={user.name}
+                        className="w-16 h-16 rounded-full border-2 border-green-100 object-cover group-hover:border-green-300 transition-colors"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#a0cc5b] to-[#8ebb4a] flex items-center justify-center text-white font-black text-2xl border-2 border-green-50">
+                        {user.name?.[0]?.toUpperCase() || "?"}
+                      </div>
+                    )}
+                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 border border-gray-100 shadow-sm">
+                      <span className="text-lg" title="Current Badge">
                         {getCurrentBadge(user)}
                       </span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-2xl mb-1 text-yellow-400">
+                    <span className="text-2xl mb-1 text-yellow-400 drop-shadow-sm">
                       {getHighestBadge(user.badges)}
                     </span>
-                    <span className="text-xs text-gray-400 flex items-center gap-1">
-                      <FaAward className="text-xs" /> {user.badges?.length || 0} badges
+                    <span className="text-xs text-gray-500 font-bold flex items-center gap-1">
+                      <FaAward className="text-xs text-orange-400" /> {user.badges?.length || 0} badges
                     </span>
                   </div>
                 </div>
 
                 {/* User Info */}
-                <h3 className="text-white font-semibold text-lg mb-2 truncate flex items-center gap-2">
-                  <FaUser className="text-purple-400 text-sm" /> {user.name}
+                <h3 className="text-gray-900 font-extrabold text-lg mb-4 truncate flex items-center gap-2" style={{ fontFamily: "'Nunito', sans-serif" }}>
+                  {user.name}
                 </h3>
                 
-                <div className="space-y-2 text-sm text-gray-300">
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1">
-                      <GiRank3 className="text-purple-400" /> Levels Completed:
+                <div className="space-y-3 text-sm text-gray-600 font-medium">
+                  <div className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-xl">
+                    <span className="flex items-center gap-2">
+                       Levels Completed:
                     </span>
-                    <span className="text-purple-400 font-semibold">
+                    <span className="text-green-600 font-extrabold text-base">
                       {getUserLevel(user.completedLevels)}
                     </span>
                   </div>
                   
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1">
-                      <FaTrophy className="text-yellow-400" /> Badges Earned:
+                  <div className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-xl">
+                    <span className="flex items-center gap-2">
+                      Member Since:
                     </span>
-                    <span className="text-yellow-400 font-semibold">
-                      {user.badges?.length || 0}
-                    </span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center gap-1">
-                      <FaCalendar className="text-gray-400" /> Member Since:
-                    </span>
-                    <span className="text-gray-400">
+                    <span className="text-gray-500 font-bold">
                       {new Date(user.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="mt-4">
-                  <div className="flex justify-between text-xs text-gray-400 mb-1">
-                    <span className="flex items-center gap-1">
-                      <IoSpeedometer className="text-green-400" /> Progress
-                    </span>
-                    <span>{getProgressPercentage(user.completedLevels)}%</span>
+                <div className="mt-5">
+                  <div className="flex justify-between text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">
+                    <span>Progress</span>
+                    <span className="text-green-600">{getProgressPercentage(user.completedLevels)}%</span>
                   </div>
-                  <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500"
+                      className="bg-[#a0cc5b] h-2 rounded-full transition-all duration-500"
                       style={{
                         width: `${getProgressPercentage(user.completedLevels)}%`
                       }}
                     ></div>
                   </div>
                 </div>
-
-                {/* View Profile Button */}
-                {/* <div className="mt-4 pt-4 border-t border-white/10">
-                  <Link
-                    to={`/profile/${user._id}`}
-                    className="block w-full text-center py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 rounded-xl font-semibold transition-all duration-300 hover:from-purple-500/30 hover:to-pink-500/30 hover:text-white flex items-center justify-center gap-2"
-                  >
-                    <FaUser /> View Profile
-                  </Link>
-                </div> */}
               </div>
             ))}
           </div>
 
-          {/* Users Count */}
-          <div className="text-center mt-8 text-gray-400">
-            <div className="inline-flex items-center gap-2 bg-gray-800/50 px-6 py-3 rounded-2xl border border-white/10">
-              <FaStar className="text-purple-400" />
-              Showing {filteredUsers.length} of {users.length} amazing coders!
-              <FaRocket className="text-purple-400" />
+          <div className="text-center mt-10">
+            <div className="inline-flex items-center gap-2 bg-[#f9faec] text-gray-600 font-bold px-6 py-3 rounded-2xl border border-gray-100 shadow-sm text-sm">
+              Showing {filteredUsers.length} of {users.length} coders
             </div>
           </div>
         </>

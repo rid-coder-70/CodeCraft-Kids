@@ -1,63 +1,41 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft, FaGamepad } from 'react-icons/fa';
 
 export default function ProStartPages() {
     const navigate = useNavigate();
 
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100vh',
-            background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
-            color: 'white',
-            fontFamily: 'Comic Sans MS, Arial, sans-serif',
-            padding: '20px'
-        }}>
-            <h1 style={{ fontSize: '48px', marginBottom: '20px' }}>🚀 Pro Mode</h1>
-            <p style={{ fontSize: '24px', marginBottom: '30px', textAlign: 'center' }}>
-                Advanced Python Challenges Coming Soon!
-            </p>
-            <p style={{ fontSize: '18px', marginBottom: '40px', textAlign: 'center', maxWidth: '600px' }}>
-                Complete all beginner levels first to unlock Pro Mode challenges!
-            </p>
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-6rem)] bg-[#f9faec] text-gray-800 font-sans p-6">
+            <div className="bg-white rounded-3xl p-10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 max-w-lg w-full text-center">
+                <span className="text-5xl block mb-6">🚀</span>
+                
+                <h1 className="text-3xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: "'Nunito', sans-serif" }}>
+                    Pro Mode
+                </h1>
+                
+                <p className="text-gray-900 font-bold text-lg mb-2">
+                    Advanced Python Challenges Coming Soon!
+                </p>
+                <p className="text-gray-500 font-medium mb-10 leading-relaxed text-sm">
+                    Complete all beginner levels first to unlock the Pro Mode challenges and earn advanced badges!
+                </p>
 
-            <div style={{ display: 'flex', gap: '20px' }}>
-                <button
-                    onClick={() => navigate('/game/beginner')}
-                    style={{
-                        padding: '20px 40px',
-                        fontSize: '20px',
-                        background: 'linear-gradient(135deg, #10b981, #059669)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '15px',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        boxShadow: '0 8px 20px rgba(0,0,0,0.3)'
-                    }}
-                >
-                    🎮 Play Beginner Mode
-                </button>
+                <div className="flex flex-col gap-3">
+                    <button
+                        onClick={() => navigate('/game/beginner')}
+                        className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-[#a0cc5b] hover:bg-[#8ebb4a] text-white rounded-xl font-bold transition-colors shadow-sm"
+                    >
+                        <FaGamepad /> Play Beginner Mode
+                    </button>
 
-                <button
-                    onClick={() => navigate('/dashboard')}
-                    style={{
-                        padding: '20px 40px',
-                        fontSize: '20px',
-                        background: '#64748b',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '15px',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        boxShadow: '0 8px 20px rgba(0,0,0,0.3)'
-                    }}
-                >
-                    ← Back to Dashboard
-                </button>
+                    <button
+                        onClick={() => navigate('/dashboard')}
+                        className="w-full flex items-center justify-center gap-2 py-3 px-6 bg-white border-2 border-gray-200 text-gray-600 hover:bg-gray-50 rounded-xl font-bold transition-colors"
+                    >
+                        <FaArrowLeft /> Back to Dashboard
+                    </button>
+                </div>
             </div>
         </div>
     );

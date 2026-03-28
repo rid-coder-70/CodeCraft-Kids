@@ -1,6 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE } from "../config";
+import {
+  FaUser, FaEnvelope, FaCamera, FaEdit, FaSave,
+  FaTimes, FaArrowLeft, FaTrophy, FaStar
+} from "react-icons/fa";
+import { useToast } from "../components/Toast";
+
+// Color generator for avatars
+const avatarColors = [
+  "from-[#f4a261] to-[#e76f51]", "from-[#2a9d8f] to-[#264653]",
+  "from-[#e9c46a] to-[#f4a261]", "from-[#a0cc5b] to-[#8ebb4a]",
+];
+const getAvatarColor = (name = "") => {
+  let s = 0; for (let c of name) s += c.charCodeAt(0);
+  return avatarColors[s % avatarColors.length];
+};
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -9,223 +25,222 @@ export default function Profile() {
   const [profilePic, setProfilePic] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewPic, setPreviewPic] = useState("");
-  const [message, setMessage] = useState("");
   const [editing, setEditing] = useState(false);
-
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
+    if (!token) { navigate("/login"); return; }
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/auth/profile", {
+        const res = await axios.get(`${API_BASE}/api/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-
         if (res.data.success) {
-          setUsername(res.data.user.name);
-          setEmail(res.data.user.email);
-          setProfilePic(res.data.user.profilePic || "");
+          const u = res.data.user;
+          setUser(u);
+          setUsername(u.name);
+          setEmail(u.email);
+          setProfilePic(u.profilePic || "");
         }
       } catch (err) {
         console.error("Profile fetch error:", err);
         navigate("/login");
       }
     };
-
     fetchProfile();
   }, [navigate, token]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast("Image too big! Max 5MB.", "error");
+        return;
+      }
       setSelectedFile(file);
       setPreviewPic(URL.createObjectURL(file));
     }
   };
 
   const handleSave = async () => {
+    if (!username.trim()) { toast("Name can't be empty!", "error"); return; }
+    setLoading(true);
     try {
       const formData = new FormData();
-      formData.append("name", username);
-      formData.append("email", email);
+      formData.append("name", username.trim());
+      formData.append("email", email.trim());
       if (selectedFile) formData.append("profilePic", selectedFile);
 
-      const res = await axios.put("http://localhost:5000/api/auth/profile", formData, {
+      const res = await axios.put(`${API_BASE}/api/auth/profile`, formData, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
       });
 
       if (res.data.success) {
-        setMessage("✅ Profile updated successfully!");
-        setProfilePic(res.data.user.profilePic);
+        toast("Profile updated successfully!", "success");
+        setProfilePic(res.data.user.profilePic || "");
         setSelectedFile(null);
         setPreviewPic("");
         setEditing(false);
-        setTimeout(() => setMessage(""), 3000);
+        setUser(res.data.user);
       }
     } catch (err) {
       console.error("Profile update error:", err);
-      setMessage("❌ Failed to update profile!");
-      setTimeout(() => setMessage(""), 3000);
+      toast("Couldn't update profile. Try again.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleExit = () => {
+  const handleCancel = () => {
     setEditing(false);
     setSelectedFile(null);
     setPreviewPic("");
+    if (user) { setUsername(user.name); setEmail(user.email); }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center pt-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-purple-900/20 to-black" />
-      
-      {/* Glow accents */}
-      <div className="absolute top-10 left-10 w-28 h-28 bg-purple-500 rounded-full blur-3xl opacity-20"></div>
-      <div className="absolute bottom-10 right-10 w-32 h-32 bg-pink-500 rounded-full blur-3xl opacity-20"></div>
-      <div className="absolute top-1/2 left-1/4 w-20 h-20 bg-purple-400 rounded-full blur-2xl opacity-30"></div>
+  const avatarSrc = previewPic || (profilePic ? `${API_BASE}${profilePic}` : null);
 
-      <div className="relative z-10 backdrop-blur-xl bg-gradient-to-br from-gray-900/80 via-purple-900/20 to-gray-900/80 rounded-3xl shadow-2xl shadow-purple-500/10 border border-white/10 p-8 md:p-12 w-full max-w-md animate-floating">
-        {/* Back Button */}
+  return (
+    <div className="min-h-screen bg-[#f9faec] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      
+      <div className="max-w-md w-full mx-auto mb-6">
         <button
           onClick={() => navigate("/dashboard")}
-          className="absolute top-4 left-4 px-4 py-2 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
+          className="flex items-center gap-2 text-gray-500 hover:text-green-600 font-bold transition-colors w-fit"
         >
-          ← Back
+          <FaArrowLeft /> Back to Dashboard
         </button>
+      </div>
 
+      <div className="relative z-10 bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 p-8 md:p-10 w-full max-w-md mx-auto">
+        
         {/* Header */}
-        <div className="flex flex-col items-center justify-center mb-8">
-          <div className="flex items-center space-x-3 mb-4">
-            
-            <h1 className="text-2xl font-extrabold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-              CodeCraft Kids
-            </h1>
-          </div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            {username ? `${username}'s Profile` : "Your Profile"}
-          </h2>
+        <div className="flex flex-col items-center mb-8">
+          <h1 className="text-2xl font-extrabold text-gray-900 mb-1" style={{ fontFamily: "'Nunito', sans-serif" }}>
+            My Profile
+          </h1>
+          <p className="text-gray-500 font-medium text-sm">
+            {username ? `${username}'s CodeCraft Account` : "Your profile"}
+          </p>
         </div>
 
-        {/* Profile Picture */}
-        <div className="flex flex-col items-center mb-6">
-          <img
-            src={
-              previewPic
-                ? previewPic
-                : profilePic
-                ? `http://localhost:5000${profilePic}`
-                : "/default-avatar.png"
-            }
-            alt="Profile"
-            className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-purple-500/50 shadow-2xl object-cover"
-          />
-
-          {editing && (
-            <label className="mt-4 cursor-pointer relative px-4 py-2 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 group overflow-hidden">
-              <span className="relative z-10">Choose File</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
+        {/* Avatar */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="relative group cursor-pointer inline-block">
+            {avatarSrc ? (
+              <img
+                src={avatarSrc}
+                alt="Profile"
+                className="w-28 h-28 rounded-full border-4 border-white shadow-md object-cover transition-transform group-hover:scale-105"
               />
+            ) : (
+              <div className={`w-28 h-28 rounded-full bg-gradient-to-br ${getAvatarColor(username)} flex items-center justify-center text-4xl font-bold text-white shadow-md border-4 border-white transition-transform group-hover:scale-105 select-none`}>
+                {username ? username[0].toUpperCase() : "?"}
+              </div>
+            )}
+            {editing && (
+              <label className="absolute inset-0 rounded-full flex items-center justify-center bg-black/40 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                <FaCamera className="text-white text-2xl" />
+                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              </label>
+            )}
+          </div>
+          {editing && (
+            <label className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-bold cursor-pointer transition-colors border border-gray-200 text-sm">
+              <FaCamera /> Change Photo
+              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
             </label>
           )}
         </div>
 
-        {/* Username */}
-        <div className="mb-4 w-full">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            disabled={!editing}
-            className={`w-full px-4 py-3 rounded-xl bg-gray-800/50 border text-white placeholder-gray-400 focus:outline-none transition duration-300 ${
-              !editing 
-                ? "border-white/10 opacity-70 cursor-not-allowed" 
-                : "border-white/10 focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-            }`}
-            placeholder="Enter your name"
-          />
+        {/* Stats Row */}
+        {user && (
+          <div className="flex justify-center gap-8 mb-8 pb-8 border-b border-gray-100">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1.5 text-green-500 text-xl font-extrabold">
+                <FaTrophy /> {user.completedLevels?.length || 0}
+              </div>
+              <div className="text-gray-400 text-xs font-bold uppercase tracking-wider mt-1">Levels</div>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1.5 text-orange-400 text-xl font-extrabold">
+                <FaStar /> {user.badges?.length || 0}
+              </div>
+              <div className="text-gray-400 text-xs font-bold uppercase tracking-wider mt-1">Badges</div>
+            </div>
+          </div>
+        )}
+
+        {/* Form Fields */}
+        <div className="space-y-5 mb-8">
+          <div>
+            <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Full Name</label>
+            <div className="relative">
+              <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text" value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={!editing}
+                className={`appearance-none block w-full pl-11 pr-4 py-3 border rounded-xl shadow-sm text-sm transition-colors ${
+                  editing
+                    ? "border-gray-300 text-gray-900 focus:outline-none focus:ring-green-400 focus:border-green-400 bg-white"
+                    : "border-transparent bg-gray-50 text-gray-500 cursor-not-allowed"
+                }`}
+                placeholder="Your name"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Email Address</label>
+            <div className="relative">
+              <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="email" value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={!editing}
+                className={`appearance-none block w-full pl-11 pr-4 py-3 border rounded-xl shadow-sm text-sm transition-colors ${
+                  editing
+                    ? "border-gray-300 text-gray-900 focus:outline-none focus:ring-green-400 focus:border-green-400 bg-white"
+                    : "border-transparent bg-gray-50 text-gray-500 cursor-not-allowed"
+                }`}
+                placeholder="Your email"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Email */}
-        <div className="mb-6 w-full">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={!editing}
-            className={`w-full px-4 py-3 rounded-xl bg-gray-800/50 border text-white placeholder-gray-400 focus:outline-none transition duration-300 ${
-              !editing 
-                ? "border-white/10 opacity-70 cursor-not-allowed" 
-                : "border-white/10 focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-            }`}
-            placeholder="Enter your email"
-          />
-        </div>
-
-        {/* Buttons */}
-        <div className="flex flex-col gap-4 mb-4 w-full">
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-3">
           {!editing ? (
             <button
               onClick={() => setEditing(true)}
-              className="relative px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] group overflow-hidden"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 text-sm font-bold text-white bg-[#a0cc5b] hover:bg-[#8ebb4a] rounded-xl shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
-              <span className="relative z-10">Edit Profile</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <FaEdit /> Edit Profile
             </button>
           ) : (
-            <>
+            <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleSave}
-                className="relative px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(16,185,129,0.6)] group overflow-hidden"
+                disabled={loading}
+                className="flex items-center justify-center gap-2 py-3 px-4 text-sm font-bold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-sm transition-colors disabled:opacity-50"
               >
-                <span className="relative z-10">Save Changes</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {loading ? "Saving..." : <><FaSave /> Save</>}
               </button>
               <button
-                onClick={handleExit}
-                className="relative px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-red-500 to-pink-500 rounded-xl shadow-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_25px_rgba(239,68,68,0.6)] group overflow-hidden"
-              >
-                <span className="relative z-10">Cancel</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                onClick={handleCancel}
+                className="flex items-center justify-center gap-2 py-3 px-4 text-sm font-bold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-xl shadow-sm transition-colors"
+               >
+                <FaTimes /> Cancel
               </button>
-            </>
+            </div>
           )}
         </div>
-
-        {message && (
-          <div className={`p-3 rounded-xl backdrop-blur-sm text-center ${
-            message.includes("✅") 
-              ? "bg-green-500/20 border border-green-400/30 text-green-300" 
-              : "bg-red-500/20 border border-red-400/30 text-red-300"
-          }`}>
-            {message}
-          </div>
-        )}
       </div>
-
-      {/* Floating Animation */}
-      <style>
-        {`
-          @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-          }
-          .animate-floating {
-            animation: floating 6s ease-in-out infinite;
-          }
-        `}
-      </style>
     </div>
   );
 }

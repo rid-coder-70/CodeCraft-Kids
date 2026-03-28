@@ -1,198 +1,94 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { FaMap, FaBook, FaGamepad, FaArrowLeft } from 'react-icons/fa';
 
 export default function BeginnerStartPage() {
-    const [currentLevel, setCurrentLevel] = useState('map'); // map, learn-print, challenges-print, learn-variables, challenges-variables
+    const location = useLocation();
+    const [currentLevel, setCurrentLevel] = useState(location.state?.targetLevel || 'map');
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check localStorage for progress
-        const checkProgress = () => {
-            const level1Complete = localStorage.getItem('pythonGame_level1_completed');
-            const level2Complete = localStorage.getItem('pythonGame_level2_completed');
-
-            console.log('Level 1 Complete:', level1Complete);
-            console.log('Level 2 Complete:', level2Complete);
+        const handleMessage = async (e) => {
+            if (e.data && e.data.type === 'LEVEL_COMPLETE') {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    try {
+                        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+                        await fetch(`${API_BASE}/api/auth/profile`, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ completedLevel: e.data.level })
+                        });
+                    } catch (error) {
+                        console.error('Error updating progress:', error);
+                    }
+                }
+            }
         };
 
-        checkProgress();
-    }, [currentLevel]);
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+    }, []);
 
-    // Function to render the current game level
     const renderGameContent = () => {
-
         switch (currentLevel) {
             case 'map':
-                return (
-                    <iframe
-                        src="/index.html"
-                        title="Python Island Map"
-                        style={{
-                            width: '100%',
-                            height: 'calc(100vh - 80px)',
-                            border: 'none',
-                            display: 'block'
-                        }}
-                    />
-                );
-
+                return <iframe src="/index.html" title="Python Island Map" className="w-full h-[calc(100vh-80px)] border-none block" />;
             case 'learn-print':
-                return (
-                    <iframe
-                        src="/learn-print.html"
-                        title="Learn Print Function"
-                        style={{
-                            width: '100%',
-                            height: 'calc(100vh - 80px)',
-                            border: 'none',
-                            display: 'block'
-                        }}
-                    />
-                );
-
+                return <iframe src="/learn-print.html" title="Learn Print Function" className="w-full h-[calc(100vh-80px)] border-none block" />;
             case 'challenges-print':
-                return (
-                    <iframe
-                        src="/page2.html"
-                        title="Print Challenges"
-                        style={{
-                            width: '100%',
-                            height: 'calc(100vh - 80px)',
-                            border: 'none',
-                            display: 'block'
-                        }}
-                    />
-                );
-
+                return <iframe src="/challenges-print.html" title="Print Challenges" className="w-full h-[calc(100vh-80px)] border-none block" />;
             case 'learn-variables':
-                return (
-                    <iframe
-                        src="/learn-variables.html"
-                        title="Learn Variables"
-                        style={{
-                            width: '100%',
-                            height: 'calc(100vh - 80px)',
-                            border: 'none',
-                            display: 'block'
-                        }}
-                    />
-                );
-
+                return <iframe src="/learn-variables.html" title="Learn Variables" className="w-full h-[calc(100vh-80px)] border-none block" />;
             case 'challenges-variables':
-                return (
-                    <iframe
-                        src="/challenge-variables.html"
-                        title="Variable Challenges"
-                        style={{
-                            width: '100%',
-                            height: 'calc(100vh - 80px)',
-                            border: 'none',
-                            display: 'block'
-                        }}
-                    />
-                );
-
+                return <iframe src="/challenge-variables.html" title="Variable Challenges" className="w-full h-[calc(100vh-80px)] border-none block" />;
             default:
                 return (
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: 'calc(100vh - 80px)',
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        color: 'white',
-                        fontFamily: 'Comic Sans MS, Arial, sans-serif'
-                    }}>
-                        <h1 style={{ fontSize: '48px', marginBottom: '30px' }}>🎮 Python Adventure!</h1>
-                        <p style={{ fontSize: '20px', marginBottom: '40px' }}>Choose your starting point:</p>
-                        <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                            <button
-                                onClick={() => setCurrentLevel('map')}
-                                style={{
-                                    padding: '20px 40px',
-                                    fontSize: '20px',
-                                    background: 'linear-gradient(135deg, #10b981, #059669)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '15px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
-                                    transition: 'transform 0.2s'
-                                }}
-                                onMouseOver={(e) => e.target.style.transform = 'translateY(-5px)'}
-                                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
-                            >
-                                🗺️ Island Map
-                            </button>
+                    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] bg-[#f9faec] text-gray-800 font-sans p-6 rounded-tr-3xl">
+                        <div className="bg-white rounded-3xl p-10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 max-w-2xl w-full text-center">
+                            <h1 className="text-4xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: "'Nunito', sans-serif" }}>Python Adventure!</h1>
+                            <p className="text-gray-500 font-bold mb-8">Choose your starting point below to begin your journey.</p>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:gap-6 mb-10">
+                                <button
+                                    onClick={() => setCurrentLevel('map')}
+                                    className="flex flex-col items-center justify-center p-6 bg-white border-2 border-green-200 rounded-2xl text-green-700 hover:bg-green-50 hover:border-green-400 transition-all font-bold shadow-sm"
+                                >
+                                    <FaMap className="text-3xl mb-3" /> Island Map
+                                </button>
+
+                                <button
+                                    onClick={() => setCurrentLevel('learn-print')}
+                                    className="flex flex-col items-center justify-center p-6 bg-white border-2 border-blue-200 rounded-2xl text-blue-700 hover:bg-blue-50 hover:border-blue-400 transition-all font-bold shadow-sm"
+                                >
+                                    <FaBook className="text-3xl mb-3" /> Learn Print
+                                </button>
+
+                                <button
+                                    onClick={() => setCurrentLevel('challenges-print')}
+                                    className="flex flex-col items-center justify-center p-6 bg-white border-2 border-orange-200 rounded-2xl text-orange-700 hover:bg-orange-50 hover:border-orange-400 transition-all font-bold shadow-sm"
+                                >
+                                    <FaGamepad className="text-3xl mb-3" /> Print Game
+                                </button>
+                            </div>
 
                             <button
-                                onClick={() => setCurrentLevel('learn-print')}
-                                style={{
-                                    padding: '20px 40px',
-                                    fontSize: '20px',
-                                    background: 'linear-gradient(135deg, #3b82f6, #1e40af)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '15px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)'
-                                }}
+                                onClick={() => navigate('/dashboard')}
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-xl font-bold transition-colors"
                             >
-                                📖 Learn Print
-                            </button>
-
-                            <button
-                                onClick={() => setCurrentLevel('challenges-print')}
-                                style={{
-                                    padding: '20px 40px',
-                                    fontSize: '20px',
-                                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '15px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    boxShadow: '0 8px 20px rgba(0,0,0,0.3)'
-                                }}
-                            >
-                                🎮 Print Challenges
+                                <FaArrowLeft /> Back to Dashboard
                             </button>
                         </div>
-
-                        <button
-                            onClick={() => navigate('/dashboard')}
-                            style={{
-                                marginTop: '40px',
-                                padding: '15px 30px',
-                                fontSize: '16px',
-                                background: '#64748b',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '10px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            ← Back to Dashboard
-                        </button>
                     </div>
                 );
         }
     };
 
     return (
-        <div style={{
-            width: '100%',
-            minHeight: 'calc(100vh - 80px)',
-            marginTop: '80px',
-            marginBottom: 0,
-            marginLeft: 0,
-            marginRight: 0,
-            padding: 0,
-            overflow: 'hidden'
-        }}>
+        <div className="w-full min-h-[calc(100vh-80px)] overflow-hidden m-0 p-0 bg-[#f9faec]">
             {renderGameContent()}
         </div>
     );

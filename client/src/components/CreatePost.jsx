@@ -1,37 +1,73 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../config";
+import {
+  FaPlus, FaTimes, FaPaperPlane, FaImage,
+  FaTag, FaGamepad, FaSpinner
+} from "react-icons/fa";
+import { useToast } from "./Toast";
+
+const ACTIVITY_OPTIONS = [
+  { value: "achievement", label: "Performance" },
+  { value: "question", label: "Question" },
+  { value: "tip", label: "Coding Tip" },
+  { value: "milestone", label: "Milestone" },
+];
 
 const CreatePost = ({ onPostCreated }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
-    title: "", content: "", activityType: "achievement", tags: "", levelCompleted: "", isPublic: true, image: null
+    title: "", content: "", activityType: "achievement",
+    tags: "", levelCompleted: "", isPublic: true, image: null
   });
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const toast = useToast();
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({ ...prev, image: file }));
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({ title: "", content: "", activityType: "achievement", tags: "", levelCompleted: "", isPublic: true, image: null });
+    setImagePreview(null);
+    setIsOpen(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.title.trim() || !formData.content.trim()) {
+      toast("Please fill in title and content!", "info");
+      return;
+    }
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
       const submitData = new FormData();
-      submitData.append("title", formData.title);
-      submitData.append("content", formData.content);
+      submitData.append("title", formData.title.trim());
+      submitData.append("content", formData.content.trim());
       submitData.append("activityType", formData.activityType);
-      submitData.append("tags", JSON.stringify(formData.tags.split(',').map(tag => tag.trim())));
+      submitData.append("tags", JSON.stringify(
+        formData.tags.split(',').map(t => t.trim()).filter(Boolean)
+      ));
       submitData.append("levelCompleted", formData.levelCompleted);
       submitData.append("isPublic", formData.isPublic);
       if (formData.image) submitData.append("image", formData.image);
 
-      await axios.post("http://localhost:5000/api/community/posts", submitData, {
+      await axios.post(`${API_BASE}/api/community/posts`, submitData, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
       });
 
-      setFormData({ title: "", content: "", activityType: "achievement", tags: "", levelCompleted: "", isPublic: true, image: null });
-      setIsOpen(false);
+      toast("Post shared with the community!", "success");
+      resetForm();
       if (onPostCreated) onPostCreated();
     } catch (err) {
       console.error("Error creating post:", err);
-      alert("Failed to create post");
+      toast("Couldn't share your post. Try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -41,98 +77,148 @@ const CreatePost = ({ onPostCreated }) => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 z-50 p-4 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-2xl shadow-purple-500/30 transition-all duration-300 transform hover:scale-110 hover:shadow-[0_0_30px_rgba(168,85,247,0.8)]"
+        className="fixed bottom-8 right-8 z-40 flex items-center gap-2 px-5 py-4 rounded-2xl bg-[#a0cc5b] hover:bg-[#8ebb4a] text-white font-bold shadow-lg transition-transform hover:scale-105"
+        title="Create a new post"
       >
-        + Create Post
+        <FaPlus className="text-xl" />
+        <span className="hidden sm:block">Share Post</span>
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="backdrop-blur-xl bg-gradient-to-br from-gray-900/90 via-purple-900/30 to-gray-900/90 rounded-2xl shadow-2xl shadow-purple-500/10 border border-white/10 p-5 w-full max-w-md">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-3">
-              Share Your Achievement
-            </h2>
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <input
-                type="text"
-                placeholder="Post Title"
-                value={formData.title}
-                onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full px-3 py-2 rounded-xl bg-gray-800/50 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
-                required
-              />
-              
-              <textarea
-                placeholder="What did you accomplish? Share your coding journey..."
-                value={formData.content}
-                onChange={(e) => setFormData({...formData, content: e.target.value})}
-                rows="3"
-                className="w-full px-3 py-2 rounded-xl bg-gray-800/50 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none text-sm"
-                required
-              />
-
-              <select
-                value={formData.activityType}
-                onChange={(e) => setFormData({...formData, activityType: e.target.value})}
-                className="w-full px-3 py-2 rounded-xl bg-gray-800/50 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900" style={{ fontFamily: "'Nunito', sans-serif" }}>
+                Create Post
+              </h2>
+              <button
+                onClick={resetForm}
+                className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
               >
-                <option value="achievement">🎉 Achievement</option>
-                <option value="question">❓ Question</option>
-                <option value="tip">💡 Tip</option>
-                <option value="milestone">🏆 Milestone</option>
-              </select>
+                <FaTimes />
+              </button>
+            </div>
 
-              <input
-                type="text"
-                placeholder="Tags (comma separated)"
-                value={formData.tags}
-                onChange={(e) => setFormData({...formData, tags: e.target.value})}
-                className="w-full px-3 py-2 rounded-xl bg-gray-800/50 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
-              />
+            <form onSubmit={handleSubmit} className="space-y-5">
+              
+              <div>
+                <label className="block text-gray-600 font-bold text-sm mb-1.5 uppercase tracking-wide">Post Title</label>
+                <input
+                  type="text"
+                  placeholder="What's your achievement called?"
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400 text-sm font-medium transition-colors"
+                  required
+                />
+              </div>
 
-              <input
-                type="number"
-                placeholder="Level Completed (optional)"
-                value={formData.levelCompleted}
-                onChange={(e) => setFormData({...formData, levelCompleted: e.target.value})}
-                className="w-full px-3 py-2 rounded-xl bg-gray-800/50 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 text-sm"
-              />
+              <div>
+                <label className="block text-gray-600 font-bold text-sm mb-1.5 uppercase tracking-wide">Your Story</label>
+                <textarea
+                  placeholder="Tell us about your coding adventure! What did you learn?"
+                  value={formData.content}
+                  onChange={(e) => setFormData({...formData, content: e.target.value})}
+                  rows="3"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400 resize-none text-sm font-medium transition-colors"
+                  required
+                />
+              </div>
 
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFormData({...formData, image: e.target.files[0]})}
-                className="w-full px-3 py-2 rounded-xl bg-gray-800/50 border border-white/10 text-white file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-500 file:text-white hover:file:bg-purple-600 text-sm"
-              />
+              <div>
+                <label className="block text-gray-600 font-bold text-sm mb-1.5 uppercase tracking-wide">Post Type</label>
+                <select
+                  value={formData.activityType}
+                  onChange={(e) => setFormData({...formData, activityType: e.target.value})}
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400 text-sm font-bold transition-colors"
+                >
+                  {ACTIVITY_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-600 font-bold text-sm mb-1.5 uppercase tracking-wide flex items-center gap-1">
+                    <FaTag /> Tags
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="python, loops..."
+                    value={formData.tags}
+                    onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400 text-sm font-medium transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-600 font-bold text-sm mb-1.5 uppercase tracking-wide flex items-center gap-1">
+                    <FaGamepad /> Level #
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 3"
+                    min="1"
+                    max="10"
+                    value={formData.levelCompleted}
+                    onChange={(e) => setFormData({...formData, levelCompleted: e.target.value})}
+                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-400 text-sm font-medium transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-600 font-bold text-sm mb-1.5 uppercase tracking-wide flex items-center gap-1">
+                  <FaImage /> Add Image
+                </label>
+                <label className="cursor-pointer block">
+                  <div className="w-full py-4 px-4 rounded-xl bg-gray-50 border-2 border-dashed border-gray-200 text-center text-gray-500 hover:border-green-400 hover:bg-green-50 hover:text-green-600 transition-colors text-sm font-bold">
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="Preview" className="max-h-32 mx-auto rounded-lg object-cover" />
+                    ) : (
+                      <span>Click to upload image</span>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50 border border-gray-100">
                 <input
                   type="checkbox"
-                  id="isPublic"
+                  id="isPublicCP"
                   checked={formData.isPublic}
                   onChange={(e) => setFormData({...formData, isPublic: e.target.checked})}
-                  className="rounded focus:ring-purple-400"
+                  className="w-5 h-5 rounded border-gray-300 text-green-500 focus:ring-green-500"
                 />
-                <label htmlFor="isPublic" className="text-gray-300 text-sm">
+                <label htmlFor="isPublicCP" className="text-gray-600 font-bold text-sm cursor-pointer select-none">
                   Make this post public
                 </label>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 pt-4 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="flex-1 py-3 bg-white text-gray-700 rounded-xl font-bold border border-gray-200 hover:bg-gray-50 transition-colors text-sm"
+                >
+                  Cancel
+                </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 text-sm"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-[#a0cc5b] text-white rounded-xl font-bold hover:bg-[#8ebb4a] transition-colors disabled:opacity-50 text-sm shadow-sm"
                 >
-                  {loading ? "Posting..." : "Share with Community"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="flex-1 py-2 bg-gray-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 text-sm"
-                >
-                  Cancel
+                  {loading
+                    ? <><FaSpinner className="animate-spin" /> Sharing...</>
+                    : <><FaPaperPlane /> Share Post</>
+                  }
                 </button>
               </div>
             </form>

@@ -53,8 +53,8 @@ router.post("/posts", authMiddleware, upload.single("image"), async (req, res) =
 
     await post.save();
     
-    // Populate author info for response
-    await post.populate('author', 'name profilePic badge completedLevels');
+    // Populate author info for response (fixed: 'currentBadge badges' instead of 'badge')
+    await post.populate('author', 'name profilePic currentBadge badges completedLevels');
     
     res.status(201).json({
       success: true,
@@ -67,7 +67,7 @@ router.post("/posts", authMiddleware, upload.single("image"), async (req, res) =
   }
 });
 
-// 🔹 Delete post (author only)
+// 🔹 Delete post (author only) - single definition (duplicate removed)
 router.delete("/posts/:postId", authMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
@@ -110,7 +110,7 @@ router.get("/posts", async (req, res) => {
     const skip = (page - 1) * limit;
 
     const posts = await Post.find({ isPublic: true })
-      .populate('author', 'name profilePic badge completedLevels')
+      .populate('author', 'name profilePic currentBadge badges completedLevels')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -137,7 +137,7 @@ router.get("/posts/user/:userId", async (req, res) => {
       author: req.params.userId,
       isPublic: true 
     })
-    .populate('author', 'name profilePic badge completedLevels')
+    .populate('author', 'name profilePic currentBadge badges completedLevels')
     .sort({ createdAt: -1 });
 
     res.json({ success: true, posts });
@@ -156,10 +156,8 @@ router.post("/posts/:postId/like", authMiddleware, async (req, res) => {
     const hasLiked = post.likes.includes(req.userId);
     
     if (hasLiked) {
-      // Unlike
       post.likes = post.likes.filter(id => id.toString() !== req.userId);
     } else {
-      // Like
       post.likes.push(req.userId);
     }
 
@@ -168,7 +166,8 @@ router.post("/posts/:postId/like", authMiddleware, async (req, res) => {
     res.json({
       success: true,
       liked: !hasLiked,
-      likesCount: post.likes.length
+      likesCount: post.likes.length,
+      likes: post.likes
     });
   } catch (err) {
     console.error("Like post error:", err);
@@ -184,17 +183,11 @@ router.post("/posts/:postId/comment", authMiddleware, async (req, res) => {
     
     if (!post) return res.status(404).json({ message: "Post not found" });
 
-    const comment = {
-      user: req.userId,
-      text
-    };
-
+    const comment = { user: req.userId, text };
     post.comments.push(comment);
     await post.save();
 
-    // Populate the new comment's user info
     await post.populate('comments.user', 'name profilePic');
-
     const newComment = post.comments[post.comments.length - 1];
     
     res.status(201).json({
@@ -204,28 +197,6 @@ router.post("/posts/:postId/comment", authMiddleware, async (req, res) => {
     });
   } catch (err) {
     console.error("Add comment error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-// 🔹 Delete post (author only)
-router.delete("/posts/:postId", authMiddleware, async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.postId);
-    
-    if (!post) return res.status(404).json({ message: "Post not found" });
-    if (post.author.toString() !== req.userId) {
-      return res.status(403).json({ message: "Not authorized to delete this post" });
-    }
-
-    await Post.findByIdAndDelete(req.params.postId);
-    
-    res.json({
-      success: true,
-      message: "Post deleted successfully"
-    });
-  } catch (err) {
-    console.error("Delete post error:", err);
     res.status(500).json({ message: "Server error" });
   }
 });

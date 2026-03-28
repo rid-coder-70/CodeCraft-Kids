@@ -1078,6 +1078,11 @@
             localStorage.setItem('pythonGame_level1_completed', 'true');
             localStorage.setItem('pythonGame_level1_score', score);
             localStorage.setItem('pythonGame_level1_stars', score);
+            
+            // Notify parent React app to sync with backend
+            if (window.parent) {
+                window.parent.postMessage({ type: 'LEVEL_COMPLETE', level: 1, score: score }, '*');
+            }
 
             // Return to island map
             window.location.href = 'index.html';

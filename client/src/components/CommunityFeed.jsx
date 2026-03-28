@@ -1,5 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE } from "../config";
+import {
+  FaHeart, FaRegHeart, FaComments, FaTrashAlt,
+  FaChevronLeft, FaChevronRight, FaSpinner
+} from "react-icons/fa";
+import { useToast } from "./Toast";
+
+// Helper: generate avatar color from username
+const avatarColor = (name = "") => {
+  const colors = [
+    "from-[#f4a261] to-[#e76f51]", "from-[#2a9d8f] to-[#264653]",
+    "from-[#e9c46a] to-[#f4a261]", "from-[#a0cc5b] to-[#8ebb4a]",
+  ];
+  let sum = 0;
+  for (let c of name) sum += c.charCodeAt(0);
+  return colors[sum % colors.length];
+};
+
+const ACTIVITY_LABELS = {
+  achievement: { label: "Performance", color: "bg-purple-100 text-purple-600 border border-purple-200" },
+  question: { label: "Question", color: "bg-blue-100 text-blue-600 border border-blue-200" },
+  tip: { label: "Coding Tip", color: "bg-yellow-100 text-yellow-600 border border-yellow-200" },
+  milestone: { label: "Milestone", color: "bg-green-100 text-green-600 border border-green-200" },
+};
 
 const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
   const [posts, setPosts] = useState([]);
@@ -8,34 +32,34 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentUser, setCurrentUser] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, postId: null, postTitle: "" });
+  const [likedPosts, setLikedPosts] = useState(new Set());
+  const [expandedComments, setExpandedComments] = useState(new Set());
+  const [newComment, setNewComment] = useState("");
+  const [submittingComment, setSubmittingComment] = useState(null); // stores postId being commented on
+  const toast = useToast();
 
   useEffect(() => {
     fetchPosts();
-    // Get current user info
     const token = localStorage.getItem("token");
-    if (token) {
-      fetchCurrentUser(token);
-    }
+    if (token) fetchCurrentUser(token);
   }, [refreshKey]);
 
   const fetchCurrentUser = async (token) => {
     try {
-      const response = await axios.get("http://localhost:5000/api/auth/profile", {
+      const res = await axios.get(`${API_BASE}/api/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (response.data.success) {
-        setCurrentUser(response.data.user);
-      }
-    } catch (error) {
-      console.error("Error fetching current user:", error);
+      if (res.data.success) setCurrentUser(res.data.user);
+    } catch (err) {
+      console.error("Error fetching current user:", err);
     }
   };
 
   const fetchPosts = async (page = 1) => {
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:5000/api/community/posts?page=${page}&limit=5`);
-      setPosts(res.data.posts);
+      const res = await axios.get(`${API_BASE}/api/community/posts?page=${page}&limit=5`);
+      setPosts(res.data.posts || []);
       setCurrentPage(res.data.currentPage);
       setTotalPages(res.data.totalPages);
     } catch (err) {
@@ -48,240 +72,310 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
   const handleLike = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please login to like posts!");
+      toast("Please login to like posts!", "info");
       return;
     }
-    
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/community/posts/${postId}/like`,
+        `${API_BASE}/api/community/posts/${postId}/like`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      setPosts(posts.map(post => 
-        post._id === postId 
-          ? { ...post, likes: res.data.likesCount } 
+      setPosts(prev => prev.map(post =>
+        post._id === postId
+          ? { ...post, likes: res.data.likes, _likesCount: res.data.likesCount }
           : post
       ));
+      if (res.data.liked) {
+        setLikedPosts(prev => new Set([...prev, postId]));
+      } else {
+        setLikedPosts(prev => { const s = new Set(prev); s.delete(postId); return s; });
+      }
     } catch (err) {
       console.error("Error liking post:", err);
-      if (err.response?.status === 401) {
-        alert("Please login to like posts!");
-      }
+      if (err.response?.status === 401) toast("Please login to like posts!", "error");
     }
-  };
-
-  const openDeleteModal = (postId, postTitle) => {
-    setDeleteModal({ isOpen: true, postId, postTitle });
-  };
-
-  const closeDeleteModal = () => {
-    setDeleteModal({ isOpen: false, postId: null, postTitle: "" });
   };
 
   const handleDelete = async () => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Please login to delete posts!");
-      return;
-    }
-
+    if (!token) { toast("Please login!", "error"); return; }
     try {
       const res = await axios.delete(
-        `http://localhost:5000/api/community/posts/${deleteModal.postId}`,
+        `${API_BASE}/api/community/posts/${deleteModal.postId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       if (res.data.success) {
-        // Remove post from local state
-        setPosts(posts.filter(post => post._id !== deleteModal.postId));
-        
-        // Show success message
-        alert("Post deleted successfully!");
-        
-        // Notify parent component
-        if (onPostDeleted) {
-          onPostDeleted();
-        }
-        
-        closeDeleteModal();
+        setPosts(prev => prev.filter(p => p._id !== deleteModal.postId));
+        toast("Post deleted successfully", "success");
+        if (onPostDeleted) onPostDeleted();
+        setDeleteModal({ isOpen: false, postId: null, postTitle: "" });
       }
     } catch (err) {
-      console.error("Error deleting post:", err);
-      if (err.response?.data?.message) {
-        alert(err.response.data.message);
-      } else {
-        alert("Failed to delete post. Please try again.");
-      }
-      closeDeleteModal();
+      toast(err.response?.data?.message || "Failed to delete post. Try again!", "error");
+      setDeleteModal({ isOpen: false, postId: null, postTitle: "" });
     }
   };
 
-  const isPostAuthor = (post) => {
-    return currentUser && post.author._id === currentUser._id;
+  const isPostAuthor = (post) =>
+    currentUser && post.author?._id?.toString() === currentUser._id?.toString();
+
+  const isLiked = (post) =>
+    likedPosts.has(post._id) ||
+    (currentUser && post.likes?.some?.(id => id.toString() === currentUser._id?.toString()));
+
+  const getLikesCount = (post) =>
+    post._likesCount !== undefined ? post._likesCount : (post.likes?.length || 0);
+
+  const toggleComments = (postId) => {
+    setExpandedComments(prev => {
+      const s = new Set(prev);
+      if (s.has(postId)) s.delete(postId);
+      else s.add(postId);
+      return s;
+    });
+  };
+
+  const handleAddComment = async (postId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast("Please login to comment!", "info");
+      return;
+    }
+    if (!newComment.trim()) return;
+
+    try {
+      setSubmittingComment(postId);
+      const res = await axios.post(
+        `${API_BASE}/api/community/posts/${postId}/comment`,
+        { text: newComment },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (res.data.success) {
+        setPosts(prev => prev.map(p => 
+          p._id === postId ? { ...p, comments: [...(p.comments || []), res.data.comment] } : p
+        ));
+        setNewComment("");
+        toast("Comment added!", "success");
+      }
+    } catch (err) {
+      console.error("Error adding comment:", err);
+      toast("Failed to add comment", "error");
+    } finally {
+      setSubmittingComment(null);
+    }
   };
 
   if (loading) {
     return (
-      <div className="text-center text-white py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto"></div>
-        <p className="mt-4 text-gray-400">Loading community posts...</p>
+      <div className="flex flex-col items-center justify-center py-16">
+        <FaSpinner className="animate-spin text-3xl text-green-500 mb-4" />
+        <p className="text-gray-500 font-bold">Loading community posts...</p>
       </div>
     );
   }
 
   if (posts.length === 0) {
     return (
-      <div className="text-center text-gray-400 py-12">
-        <div className="text-6xl mb-4">📝</div>
-        <h3 className="text-xl font-semibold mb-2">No posts yet</h3>
-        <p>Be the first to share your coding journey!</p>
+      <div className="text-center py-16 bg-white rounded-3xl border border-gray-100 shadow-sm">
+        <div className="text-5xl mb-4 text-gray-300 flex justify-center">📝</div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Nunito', sans-serif" }}>No posts yet!</h3>
+        <p className="text-gray-500 font-medium">Be the first to share your coding journey!</p>
       </div>
     );
   }
 
   return (
     <>
-      <div className="max-w-4xl mx-auto space-y-6">
-        {posts.map(post => (
-          <div key={post._id} className="backdrop-blur-xl bg-gradient-to-br from-gray-900/60 via-purple-900/10 to-gray-900/60 rounded-3xl shadow-xl shadow-purple-500/5 border border-white/10 p-6 hover:border-white/20 transition-all duration-300 relative">
-            
-            {/* Delete Button (only for post author) */}
-            {isPostAuthor(post) && (
-              <button
-                onClick={() => openDeleteModal(post._id, post.title)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-red-400 transition-colors duration-300 group"
-                title="Delete post"
-              >
-                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            )}
+      <div className="max-w-2xl mx-auto space-y-6 pb-12">
+        {posts.map(post => {
+          const activityInfo = ACTIVITY_LABELS[post.activityType] || ACTIVITY_LABELS.achievement;
+          const liked = isLiked(post);
+          return (
+            <div
+              key={post._id}
+              className="relative bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 p-6 transition-all duration-300"
+            >
+              {isPostAuthor(post) && (
+                <button
+                  onClick={() => setDeleteModal({ isOpen: true, postId: post._id, postTitle: post.title })}
+                  className="absolute top-4 right-4 p-2 rounded-xl text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all duration-300"
+                  title="Delete post"
+                >
+                  <FaTrashAlt />
+                </button>
+              )}
 
-            {/* Post Header */}
-            <div className="flex items-center space-x-4 mb-4">
-              <img
-                src={post.author.profilePic ? `http://localhost:5000${post.author.profilePic}` : "/default-avatar.png"}
-                alt={post.author.name}
-                className="w-12 h-12 rounded-full border-2 border-purple-500/50 object-cover"
-              />
-              <div className="flex-1">
-                <div className="flex items-center space-x-2">
-                  <h3 className="text-white font-semibold">{post.author.name}</h3>
-                  {isPostAuthor(post) && (
-                    <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">
-                      You
+              {/* Post Header */}
+              <div className="flex items-center space-x-4 mb-4">
+                {post.author?.profilePic ? (
+                  <img
+                    src={`${API_BASE}${post.author.profilePic}`}
+                    alt={post.author.name}
+                    className="w-12 h-12 rounded-full border border-gray-200 object-cover"
+                  />
+                ) : (
+                  <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${avatarColor(post.author?.name)} flex items-center justify-center text-white font-bold text-lg border border-gray-100`}>
+                    {post.author?.name?.[0]?.toUpperCase() || "?"}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-gray-900 font-bold text-base" style={{ fontFamily: "'Nunito', sans-serif" }}>{post.author?.name || "Anonymous"}</h3>
+                    {isPostAuthor(post) && (
+                      <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">
+                        You
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap mt-1">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${activityInfo.color}`}>
+                      {activityInfo.label}
                     </span>
-                  )}
+                    <span className="text-gray-400 text-xs font-medium">
+                      {new Date(post.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
+                    {post.levelCompleted && (
+                      <span className="text-[10px] bg-yellow-50 text-yellow-600 border border-yellow-200 px-2 py-0.5 rounded-full font-bold uppercase">
+                        Level {post.levelCompleted}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <p className="text-gray-400 text-sm">
-                  {new Date(post.createdAt).toLocaleDateString()} • {post.activityType}
-                  {post.levelCompleted && ` • Level ${post.levelCompleted}`}
-                </p>
               </div>
-              {post.author.badge && (
+
+              {/* Post Content */}
+              <h2 className="text-lg font-bold text-gray-900 mb-2" style={{ fontFamily: "'Nunito', sans-serif" }}>{post.title}</h2>
+              <p className="text-gray-600 mb-4 leading-relaxed whitespace-pre-line text-sm font-medium">{post.content}</p>
+
+              {/* Post Image */}
+              {post.image && (
                 <img
-                  src={`http://localhost:5000${post.author.badge}`}
-                  alt="Badge"
-                  className="w-8 h-8"
+                  src={`${API_BASE}${post.image}`}
+                  alt="Post"
+                  className="w-full rounded-2xl mb-4 max-h-80 object-cover border border-gray-100"
                 />
               )}
-            </div>
 
-            {/* Post Content */}
-            <h2 className="text-xl font-bold text-white mb-2">{post.title}</h2>
-            <p className="text-gray-300 mb-4 whitespace-pre-line">{post.content}</p>
+              {/* Tags */}
+              {post.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {post.tags.map(tag => (
+                    <span key={tag} className="px-3 py-1 bg-gray-50 text-gray-500 rounded-lg text-xs font-bold border border-gray-100">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
 
-            {/* Post Image */}
-            {post.image && (
-              <img
-                src={`http://localhost:5000${post.image}`}
-                alt="Post"
-                className="w-full rounded-2xl mb-4 max-h-96 object-cover"
-              />
-            )}
-
-            {/* Tags */}
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-4">
-                {post.tags.map(tag => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-sm"
-                  >
-                    #{tag}
-                  </span>
-                ))}
+              {/* Actions */}
+              <div className="flex items-center justify-between border-t border-gray-50 pt-4 mt-2 mb-4">
+                <button
+                  onClick={() => handleLike(post._id)}
+                  className={`flex items-center gap-2 font-bold text-sm transition-all duration-300 ${liked ? "text-pink-500" : "text-gray-400 hover:text-pink-500"}`}
+                >
+                  {liked ? <FaHeart className="text-lg" /> : <FaRegHeart className="text-lg" />}
+                  <span>{getLikesCount(post)} {getLikesCount(post) === 1 ? "Like" : "Likes"}</span>
+                </button>
+                <button
+                  onClick={() => toggleComments(post._id)}
+                  className="flex items-center gap-2 text-gray-400 hover:text-green-500 font-bold text-sm transition-colors"
+                >
+                  <FaComments className="text-lg" />
+                  <span>{post.comments?.length || 0} {post.comments?.length === 1 ? "Comment" : "Comments"}</span>
+                </button>
               </div>
-            )}
 
-            {/* Actions */}
-            <div className="flex items-center justify-between border-t border-white/10 pt-4">
-              <button
-                onClick={() => handleLike(post._id)}
-                className="flex items-center space-x-2 text-gray-400 hover:text-pink-400 transition-colors duration-300"
-              >
-                <span className="text-lg">❤️</span>
-                <span>{post.likes?.length || 0} Likes</span>
-              </button>
-              <span className="text-gray-400">
-                {post.comments?.length || 0} Comments
-              </span>
+              {/* Comments Section */}
+              {expandedComments.has(post._id) && (
+                <div className="mt-4 pt-4 border-t border-gray-50 animate-fade-in">
+                  <div className="space-y-4 mb-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                    {post.comments?.map((comment, idx) => (
+                      <div key={idx} className="flex gap-3">
+                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${avatarColor(comment.user?.name)} flex items-center justify-center text-white text-[10px] font-bold shrink-0`}>
+                          {comment.user?.name?.[0]?.toUpperCase() || "?"}
+                        </div>
+                        <div className="bg-gray-50 rounded-2xl p-3 flex-1">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-bold text-gray-800">{comment.user?.name || "User"}</span>
+                            <span className="text-[10px] text-gray-400">{comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : "Just now"}</span>
+                          </div>
+                          <p className="text-xs text-gray-600 font-medium">{comment.text}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {(!post.comments || post.comments.length === 0) && (
+                      <p className="text-center text-xs text-gray-400 font-medium py-2">No comments yet. Start the conversation!</p>
+                    )}
+                  </div>
+
+                  {/* Add Comment Input */}
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      placeholder={currentUser ? "Add a comment..." : "Login to comment"}
+                      disabled={!currentUser}
+                      value={submittingComment === post._id ? newComment : (submittingComment === null ? newComment : "")}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      className="flex-1 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs focus:outline-none focus:border-green-400 transition-all font-medium disabled:opacity-50"
+                      onKeyPress={(e) => { if (e.key === 'Enter') handleAddComment(post._id) }}
+                    />
+                    <button 
+                      onClick={() => handleAddComment(post._id)}
+                      disabled={!currentUser || !newComment.trim() || submittingComment !== null}
+                      className="px-4 py-2 bg-[#a0cc5b] text-white rounded-xl text-xs font-bold hover:bg-[#8ebb4a] transition-colors disabled:opacity-50 shrink-0"
+                    >
+                      {submittingComment === post._id ? "..." : "Send"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center space-x-4 mt-8">
-            {currentPage > 1 && (
-              <button
-                onClick={() => fetchPosts(currentPage - 1)}
-                className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl text-white font-semibold transition-all duration-300 transform hover:scale-105"
-              >
-                Previous
-              </button>
-            )}
-            {currentPage < totalPages && (
-              <button
-                onClick={() => fetchPosts(currentPage + 1)}
-                className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl text-white font-semibold transition-all duration-300 transform hover:scale-105"
-              >
-                Next
-              </button>
-            )}
+          <div className="flex justify-center items-center gap-4 mt-8">
+            <button
+              onClick={() => fetchPosts(currentPage - 1)}
+              disabled={currentPage <= 1}
+              className="flex items-center gap-2 px-6 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-bold transition-all duration-300 hover:bg-gray-50 disabled:opacity-40 shadow-sm"
+            >
+              <FaChevronLeft className="text-xs" /> Prev
+            </button>
+            <span className="text-gray-500 font-bold text-sm">
+              {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => fetchPosts(currentPage + 1)}
+              disabled={currentPage >= totalPages}
+              className="flex items-center gap-2 px-6 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-bold transition-all duration-300 hover:bg-gray-50 disabled:opacity-40 shadow-sm"
+            >
+              Next <FaChevronRight className="text-xs" />
+            </button>
           </div>
         )}
       </div>
 
-      {/* Delete Confirmation Modal */}
       {deleteModal.isOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="backdrop-blur-xl bg-gradient-to-br from-gray-900/90 via-purple-900/30 to-gray-900/90 rounded-3xl shadow-2xl shadow-purple-500/10 border border-white/10 p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold text-white mb-4">Delete Post</h3>
-            <p className="text-gray-300 mb-2">
-              Are you sure you want to delete this post?
-            </p>
-            <p className="text-gray-400 text-sm mb-6">
-              "{deleteModal.postTitle}"
-            </p>
-            <p className="text-red-400 text-sm mb-6">
-              This action cannot be undone.
-            </p>
-            <div className="flex gap-4">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 w-full max-w-sm text-center">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Delete Post?</h3>
+            <p className="text-gray-500 text-sm font-medium mb-6">Are you sure you want to delete this? This action cannot be undone.</p>
+            <div className="flex gap-3">
               <button
-                onClick={handleDelete}
-                className="flex-1 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-[0_0_20px_rgba(239,68,68,0.6)]"
-              >
-                Delete
-              </button>
-              <button
-                onClick={closeDeleteModal}
-                className="flex-1 py-3 bg-gray-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                onClick={() => setDeleteModal({ isOpen: false, postId: null, postTitle: "" })}
+                className="flex-1 py-2.5 bg-gray-50 text-gray-600 rounded-xl font-bold border border-gray-200 transition-all hover:bg-gray-100"
               >
                 Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="flex-1 py-2.5 bg-red-500 text-white rounded-xl font-bold transition-all hover:bg-red-600 shadow-sm"
+              >
+                Delete
               </button>
             </div>
           </div>
