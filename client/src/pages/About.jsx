@@ -26,7 +26,7 @@ export default function About() {
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6" style={{ fontFamily: "'Nunito', sans-serif" }}>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
             About CodeCraft Kids
           </h1>
           <p className="text-xl text-gray-500 font-medium leading-relaxed">
@@ -40,7 +40,7 @@ export default function About() {
             <div key={i} className="bg-white rounded-2xl p-8 border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_25px_rgba(0,0,0,0.06)] transition-shadow">
               <div className="flex flex-col items-center text-center">
                 {f.icon}
-                <h3 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Nunito', sans-serif" }}>
+                <h3 className="text-xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
                   {f.title}
                 </h3>
                 <p className="text-gray-500 font-medium leading-relaxed">
@@ -53,7 +53,7 @@ export default function About() {
 
         {/* Footer CTA */}
         <div className="text-center pt-10 border-t border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-8" style={{ fontFamily: "'Nunito', sans-serif" }}>
+          <h2 className="text-2xl font-bold text-gray-800 mb-8" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
             Building the future, one line of code at a time!
           </h2>
           <div className="flex flex-col sm:flex-row justify-center gap-4">

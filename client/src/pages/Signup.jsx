@@ -10,10 +10,11 @@ const signupSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  age: z.string().refine((val) => !isNaN(val) && parseInt(val) >= 4 && parseInt(val) <= 18, "Age must be between 4 and 18"),
 });
 
 export default function Signup() {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", age: "", password: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export default function Signup() {
     <div className="min-h-[calc(100vh-6rem)] bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <img src={Logo} alt="CodeCraft Kids" className="mx-auto h-16 w-16 object-contain rounded-full border border-green-200" />
-        <h2 className="mt-6 text-3xl font-extrabold text-gray-900" style={{ fontFamily: "'Nunito', sans-serif" }}>
+        <h2 className="mt-6 text-3xl font-extrabold text-gray-900" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
           Join the Fun
         </h2>
         <p className="mt-2 text-sm text-gray-600">
@@ -86,7 +87,7 @@ export default function Signup() {
                 className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-400 focus:border-green-400 text-gray-900 text-sm transition-colors"
                 placeholder="Coder Kid"
               />
-              {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
             </div>
 
             <div>
@@ -97,7 +98,18 @@ export default function Signup() {
                 className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-400 focus:border-green-400 text-gray-900 text-sm transition-colors"
                 placeholder="you@example.com"
               />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Your Age</label>
+              <input
+                type="number" name="age"
+                value={formData.age} onChange={handleChange}
+                className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-400 focus:border-green-400 text-gray-900 text-sm transition-colors"
+                placeholder="Age (e.g. 10)"
+              />
+              {errors.age && <p className="text-red-500 text-sm mt-1">{errors.age}</p>}
             </div>
 
             <div>
@@ -108,7 +120,7 @@ export default function Signup() {
                 className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-400 focus:border-green-400 text-gray-900 text-sm transition-colors"
                 placeholder="••••••••"
               />
-              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
             </div>
 
             <div>

@@ -70,7 +70,7 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <img src={Logo} alt="CodeCraft Kids" className="w-12 h-12 rounded-full border border-green-200" />
             <div>
-              <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Nunito', sans-serif" }}>
+              <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
                 CodeCraft Kids
               </h2>
               <p className="text-gray-500 font-medium text-sm">Empowering the next generation.</p>
@@ -121,7 +121,7 @@ export default function Footer() {
             </p>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-100 rounded-xl">
               <span className="w-2 h-2 rounded-full bg-green-500 block"></span>
-              <span className="text-green-800 text-xs font-bold uppercase tracking-wider">Safe & Educational</span>
+              <span className="text-green-800 text-sm font-bold uppercase tracking-wider">Safe & Educational</span>
             </div>
           </div>
 

@@ -7,7 +7,6 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
-// 🔹 Middleware to verify JWT token
 const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -24,7 +23,6 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-// 🔹 Multer config
 const storage = multer.diskStorage({
   destination: "uploads/",
   filename: (req, file, cb) =>
@@ -32,7 +30,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// 🔹 Check if email exists
 router.post("/check-email", async (req, res) => {
   try {
     const { email } = req.body;
@@ -53,10 +50,9 @@ router.post("/check-email", async (req, res) => {
   }
 });
 
-// 🔹 Signup
 router.post("/signup", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, age } = req.body;
 
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -64,7 +60,12 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
 
     // ✅ Let pre-save hook hash the password
-    const newUser = await User.create({ name, email, password });
+    const newUser = await User.create({ 
+      name, 
+      email, 
+      password,
+      age: parseInt(age) || 10 
+    });
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
@@ -79,7 +80,6 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// 🔹 Login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -101,7 +101,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// 🔹 Get profile
 router.get("/profile", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
@@ -113,7 +112,6 @@ router.get("/profile", authMiddleware, async (req, res) => {
   }
 });
 
-// 🔹 Update profile / level completion
 router.put("/profile", authMiddleware, upload.single("profilePic"), async (req, res) => {
   try {
     const user = await User.findById(req.userId);

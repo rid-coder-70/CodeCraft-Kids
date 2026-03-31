@@ -59,7 +59,7 @@ export default function Login() {
     <div className="min-h-[calc(100vh-6rem)] bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <img src={Logo} alt="CodeCraft Kids" className="mx-auto h-16 w-16 object-contain rounded-full border border-green-200" />
-        <h2 className="mt-6 text-3xl font-extrabold text-gray-900" style={{ fontFamily: "'Nunito', sans-serif" }}>
+        <h2 className="mt-6 text-3xl font-extrabold text-gray-900" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
           Welcome Back
         </h2>
         <p className="mt-2 text-sm text-gray-600">
@@ -85,7 +85,7 @@ export default function Login() {
                 className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-400 focus:border-green-400 text-gray-900 text-sm transition-colors"
                 placeholder="you@example.com"
               />
-              {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
 
             <div>
@@ -96,7 +96,7 @@ export default function Login() {
                 className="appearance-none block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-400 focus:border-green-400 text-gray-900 text-sm transition-colors"
                 placeholder="••••••••"
               />
-              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
             </div>
 
             <div>

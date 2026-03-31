@@ -89,7 +89,7 @@ const CreatePost = ({ onPostCreated }) => {
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900" style={{ fontFamily: "'Nunito', sans-serif" }}>
+              <h2 className="text-xl font-bold text-gray-900" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
                 Create Post
               </h2>
               <button

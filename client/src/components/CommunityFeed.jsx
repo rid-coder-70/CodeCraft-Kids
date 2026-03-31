@@ -180,7 +180,7 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
     return (
       <div className="text-center py-16 bg-white rounded-3xl border border-gray-100 shadow-sm">
         <div className="text-5xl mb-4 text-gray-300 flex justify-center">📝</div>
-        <h3 className="text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Nunito', sans-serif" }}>No posts yet!</h3>
+        <h3 className="text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>No posts yet!</h3>
         <p className="text-gray-500 font-medium">Be the first to share your coding journey!</p>
       </div>
     );
@@ -222,7 +222,7 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-gray-900 font-bold text-base" style={{ fontFamily: "'Nunito', sans-serif" }}>{post.author?.name || "Anonymous"}</h3>
+                    <h3 className="text-gray-900 font-bold text-base" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>{post.author?.name || "Anonymous"}</h3>
                     {isPostAuthor(post) && (
                       <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">
                         You
@@ -233,7 +233,7 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                     <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${activityInfo.color}`}>
                       {activityInfo.label}
                     </span>
-                    <span className="text-gray-400 text-xs font-medium">
+                    <span className="text-gray-400 text-sm font-medium">
                       {new Date(post.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
                     {post.levelCompleted && (
@@ -246,7 +246,7 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
               </div>
 
               {/* Post Content */}
-              <h2 className="text-lg font-bold text-gray-900 mb-2" style={{ fontFamily: "'Nunito', sans-serif" }}>{post.title}</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-2" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>{post.title}</h2>
               <p className="text-gray-600 mb-4 leading-relaxed whitespace-pre-line text-sm font-medium">{post.content}</p>
 
               {/* Post Image */}
@@ -262,7 +262,7 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
               {post.tags?.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-4">
                   {post.tags.map(tag => (
-                    <span key={tag} className="px-3 py-1 bg-gray-50 text-gray-500 rounded-lg text-xs font-bold border border-gray-100">
+                    <span key={tag} className="px-3 py-1 bg-gray-50 text-gray-500 rounded-lg text-sm font-bold border border-gray-100">
                       #{tag}
                     </span>
                   ))}
@@ -298,15 +298,15 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                         </div>
                         <div className="bg-gray-50 rounded-2xl p-3 flex-1">
                           <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-bold text-gray-800">{comment.user?.name || "User"}</span>
+                            <span className="text-sm font-bold text-gray-800">{comment.user?.name || "User"}</span>
                             <span className="text-[10px] text-gray-400">{comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : "Just now"}</span>
                           </div>
-                          <p className="text-xs text-gray-600 font-medium">{comment.text}</p>
+                          <p className="text-sm text-gray-600 font-medium">{comment.text}</p>
                         </div>
                       </div>
                     ))}
                     {(!post.comments || post.comments.length === 0) && (
-                      <p className="text-center text-xs text-gray-400 font-medium py-2">No comments yet. Start the conversation!</p>
+                      <p className="text-center text-sm text-gray-400 font-medium py-2">No comments yet. Start the conversation!</p>
                     )}
                   </div>
 
@@ -318,13 +318,13 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                       disabled={!currentUser}
                       value={submittingComment === post._id ? newComment : (submittingComment === null ? newComment : "")}
                       onChange={(e) => setNewComment(e.target.value)}
-                      className="flex-1 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-xs focus:outline-none focus:border-green-400 transition-all font-medium disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:border-green-400 transition-all font-medium disabled:opacity-50"
                       onKeyPress={(e) => { if (e.key === 'Enter') handleAddComment(post._id) }}
                     />
                     <button 
                       onClick={() => handleAddComment(post._id)}
                       disabled={!currentUser || !newComment.trim() || submittingComment !== null}
-                      className="px-4 py-2 bg-[#a0cc5b] text-white rounded-xl text-xs font-bold hover:bg-[#8ebb4a] transition-colors disabled:opacity-50 shrink-0"
+                      className="px-4 py-2 bg-[#a0cc5b] text-white rounded-xl text-sm font-bold hover:bg-[#8ebb4a] transition-colors disabled:opacity-50 shrink-0"
                     >
                       {submittingComment === post._id ? "..." : "Send"}
                     </button>
@@ -343,7 +343,7 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
               disabled={currentPage <= 1}
               className="flex items-center gap-2 px-6 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-bold transition-all duration-300 hover:bg-gray-50 disabled:opacity-40 shadow-sm"
             >
-              <FaChevronLeft className="text-xs" /> Prev
+              <FaChevronLeft className="text-sm" /> Prev
             </button>
             <span className="text-gray-500 font-bold text-sm">
               {currentPage} / {totalPages}
@@ -353,7 +353,7 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
               disabled={currentPage >= totalPages}
               className="flex items-center gap-2 px-6 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-bold transition-all duration-300 hover:bg-gray-50 disabled:opacity-40 shadow-sm"
             >
-              Next <FaChevronRight className="text-xs" />
+              Next <FaChevronRight className="text-sm" />
             </button>
           </div>
         )}

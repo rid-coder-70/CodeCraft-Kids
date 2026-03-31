@@ -1,4 +1,3 @@
-// --------------------------- Imports ---------------------------
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -10,7 +9,6 @@ import communityRoutes from "./routes/community.js";
 import userRoutes from "./routes/users.js";
 import feedbackRoutes from "./routes/feedback.js";
 
-// --------------------------- Config Setup ---------------------------
 dotenv.config();
 
 const app = express();
@@ -19,11 +17,9 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// --------------------------- Middleware ---------------------------
 app.use(cors());
 app.use(express.json());
 
-// --------------------------- Routes ---------------------------
 app.use("/api/auth", authRoutes);
 app.use("/api/community", communityRoutes);
 app.use("/api/users", userRoutes);
@@ -33,7 +29,6 @@ app.use("/api/feedback", feedbackRoutes);
 // Serve static uploads folder
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
-// --------------------------- MongoDB Connection ---------------------------
 const mongoUri = process.env.MONGODB_URI;
 
 if (!mongoUri) {
@@ -54,7 +49,6 @@ const connectDB = async () => {
 
 connectDB();
 
-// --------------------------- Server Setup ---------------------------
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

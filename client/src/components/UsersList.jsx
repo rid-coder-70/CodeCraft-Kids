@@ -12,6 +12,7 @@ import {
   FaStar,
   FaChartLine
 } from "react-icons/fa";
+import * as FaIcons from "react-icons/fa";
 import { 
   GiRank3,
   GiProgression
@@ -55,9 +56,14 @@ const UsersList = () => {
   const getUserLevel = (completedLevels) => completedLevels?.length || 0;
 
   const getHighestBadge = (badges) => {
-    if (!badges || badges.length === 0) return "⭐";
+    if (!badges || badges.length === 0) return <FaStar />;
     const highest = badges.reduce((a, b) => ((b.level || 0) > (a.level || 0) ? b : a));
-    return highest.icon || "🏆";
+    const iconName = highest.icon;
+    if (iconName && FaIcons[iconName]) {
+      const Icon = FaIcons[iconName];
+      return <Icon />;
+    }
+    return <FaTrophy />;
   };
 
   const getProgressPercentage = (completedLevels) => {
@@ -66,7 +72,10 @@ const UsersList = () => {
   };
 
   const getCurrentBadge = (user) => {
-    if (user.currentBadge) return user.currentBadge;
+    if (user.currentBadge && FaIcons[user.currentBadge]) {
+      const Icon = FaIcons[user.currentBadge];
+      return <Icon className="text-yellow-500" />;
+    }
     if (user.badges && user.badges.length > 0) {
       return getHighestBadge(user.badges);
     }
@@ -86,7 +95,7 @@ const UsersList = () => {
     <div className="max-w-6xl mx-auto py-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2 flex items-center justify-center gap-3" style={{ fontFamily: "'Nunito', sans-serif" }}>
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-2 flex items-center justify-center gap-3" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
           Community Leaderboard
         </h1>
         <p className="text-gray-500 font-medium">
@@ -140,23 +149,23 @@ const UsersList = () => {
                       </div>
                     )}
                     <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 border border-gray-100 shadow-sm">
-                      <span className="text-lg" title="Current Badge">
+                      <span className="text-lg flex items-center justify-center p-0.5" title="Current Badge">
                         {getCurrentBadge(user)}
                       </span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="text-2xl mb-1 text-yellow-400 drop-shadow-sm">
+                    <span className="text-2xl mb-1 text-yellow-400 drop-shadow-sm flex items-center justify-center">
                       {getHighestBadge(user.badges)}
                     </span>
-                    <span className="text-xs text-gray-500 font-bold flex items-center gap-1">
-                      <FaAward className="text-xs text-orange-400" /> {user.badges?.length || 0} badges
+                    <span className="text-sm text-gray-500 font-bold flex items-center gap-1">
+                      <FaAward className="text-sm text-orange-400" /> {user.badges?.length || 0} badges
                     </span>
                   </div>
                 </div>
 
                 {/* User Info */}
-                <h3 className="text-gray-900 font-extrabold text-lg mb-4 truncate flex items-center gap-2" style={{ fontFamily: "'Nunito', sans-serif" }}>
+                <h3 className="text-gray-900 font-extrabold text-lg mb-4 truncate flex items-center gap-2" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
                   {user.name}
                 </h3>
                 
@@ -182,7 +191,7 @@ const UsersList = () => {
 
                 {/* Progress Bar */}
                 <div className="mt-5">
-                  <div className="flex justify-between text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">
+                  <div className="flex justify-between text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">
                     <span>Progress</span>
                     <span className="text-green-600">{getProgressPercentage(user.completedLevels)}%</span>
                   </div>

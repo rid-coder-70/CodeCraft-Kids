@@ -98,7 +98,7 @@ const PythonEditor = () => {
             <FaCode />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-800 leading-none" style={{ fontFamily: "'Nunito', sans-serif" }}>Python Lab</h2>
+            <h2 className="text-lg font-bold text-gray-800 leading-none" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>Python Lab</h2>
             <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">With Syntax Highlighting</span>
           </div>
         </div>
@@ -147,7 +147,7 @@ const PythonEditor = () => {
         {/* Console Output */}
         <div className="flex-1 bg-[#1e293b] flex flex-col min-h-0 relative lg:max-w-md xl:max-w-lg">
           <div className="px-4 py-2 border-b border-gray-700/50 flex items-center gap-2 text-gray-400 shrink-0">
-            <FaTerminal className="text-xs" />
+            <FaTerminal className="text-sm" />
             <span className="text-[10px] font-bold uppercase tracking-widest">Result Terminal</span>
           </div>
           

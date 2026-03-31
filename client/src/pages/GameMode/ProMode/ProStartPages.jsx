@@ -10,7 +10,7 @@ export default function ProStartPages() {
             <div className="bg-white rounded-3xl p-10 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 max-w-lg w-full text-center">
                 <span className="text-5xl block mb-6">🚀</span>
                 
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: "'Nunito', sans-serif" }}>
+                <h1 className="text-3xl font-extrabold text-gray-900 mb-4" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
                     Pro Mode
                 </h1>
                 

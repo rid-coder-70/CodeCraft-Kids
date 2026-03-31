@@ -7,7 +7,6 @@ import Post from "../models/Post.js";
 
 const router = express.Router();
 
-// 🔹 Multer config for post images
 const storage = multer.diskStorage({
   destination: "uploads/posts/",
   filename: (req, file, cb) =>
@@ -18,7 +17,6 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
 
-// 🔹 Middleware to verify JWT token
 const authMiddleware = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -35,7 +33,6 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-// 🔹 Create a new post
 router.post("/posts", authMiddleware, upload.single("image"), async (req, res) => {
   try {
     const { title, content, tags, activityType, levelCompleted, isPublic } = req.body;
@@ -67,7 +64,6 @@ router.post("/posts", authMiddleware, upload.single("image"), async (req, res) =
   }
 });
 
-// 🔹 Delete post (author only) - single definition (duplicate removed)
 router.delete("/posts/:postId", authMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
@@ -102,7 +98,6 @@ router.delete("/posts/:postId", authMiddleware, async (req, res) => {
   }
 });
 
-// 🔹 Get all posts (with pagination)
 router.get("/posts", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -130,7 +125,6 @@ router.get("/posts", async (req, res) => {
   }
 });
 
-// 🔹 Get posts by user
 router.get("/posts/user/:userId", async (req, res) => {
   try {
     const posts = await Post.find({ 
@@ -147,7 +141,6 @@ router.get("/posts/user/:userId", async (req, res) => {
   }
 });
 
-// 🔹 Like/Unlike a post
 router.post("/posts/:postId/like", authMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
@@ -175,7 +168,6 @@ router.post("/posts/:postId/like", authMiddleware, async (req, res) => {
   }
 });
 
-// 🔹 Add comment to post
 router.post("/posts/:postId/comment", authMiddleware, async (req, res) => {
   try {
     const { text } = req.body;
