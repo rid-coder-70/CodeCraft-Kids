@@ -98,7 +98,7 @@ We are a group of passionate developers dedicated to making coding education fun
 
 *   **Ridoy Baidya** ([@rid-coder-70](https://github.com/rid-coder-70)) - Lead Developer & Backend Engineer
 *   **Priom Chakraborty** ([@chkpriom](https://github.com/chkpriom)) - Frontend Engineer & Game Logic Designer
-*   **Rahat Ahmed** - ([@chkpriom](https://github.com/rahatfarabi)) Frontend Developer & UI/UX Designer
+*   **Rahat Ahmed** - ([@rahatfarabi](https://github.com/rahatfarabi)) Frontend Developer & UI/UX Designer
 
 ---
 
