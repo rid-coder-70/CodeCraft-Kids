@@ -6,17 +6,17 @@ The vibrant, interactive interface of CodeCraft Kids is where learning transform
 
 ## Key Learning Modules
 
-### Python Island Map
-Our core adventure map uses a Sequential Level Locking System. Students must complete one level's challenge to unlock the next, earning Gems and Badges as proof of their progress.
+### Python Island Map (v3.0)
+Our core adventure map uses a **Sequential Level Locking System**. Students must complete one level's challenge to unlock the next, earning Gems and Badges as proof of their progress. The progression is strictly enforced via backend validation.
 
-### The Python Lab (v2.0)
+### The Python Lab (v3.0)
 A high-performance "Try-it-Yourself" IDE with:
-*   Prism.js Highlighting: Real-time syntax coloring for Python keywords like print, for, in.
-*   Skulpt Execution: Fast, client-side Python 3 runner that works in the browser.
-*   Dual-Pane UI: Split-screen design for code and terminal output, just like professional developer tools.
+*   **Prism.js Highlighting**: Real-time syntax coloring for Python keywords.
+*   **Skulpt Execution**: Fast, client-side Python 3 runner that works in the browser.
+*   **Dual-Pane UI**: Split-screen design for code and terminal output, optimized for focused learning.
 
 ### The Adventure Shop
-A gamified marketplace where students spend Coding Gems on hats, pets, and character skins to personalize their learning experience.
+A gamified marketplace where students spend Coding Gems on hats, pets, and character skins to personalize their experience. (Now with fully modernized `react-icons` UI).
 
 ### Daily Streaks & Milestones
 Integrated engagement tracking that rewards consecutive days of practice and major learning achievements with special visual cues.
@@ -25,11 +25,11 @@ Integrated engagement tracking that rewards consecutive days of practice and maj
 
 ## Specialized UI Architecture
 
-*   React 19 & Vite: Optimized for sub-second loading and real-time state management.
-*   Framer Motion: Smooth, high-fidelity animations for sidebars, modals, and content transitions.
-*   Tailwind 4 & "Kiwi" System: Custom-engineered design tokens using nature-calm greens.
-*   React Joyride: An automated, interactive onboarding tour to welcome every new student.
-*   Axios: Dedicated service layer for all RESTful API communication.
+*   **React 19 & Vite**: Optimized for sub-second loading and real-time state management.
+*   **Framer Motion**: Smooth, high-fidelity animations for sidebars, modals, and content transitions.
+*   **Tailwind CSS & "Kiwi" System**: Custom-engineered design tokens using nature-calm greens and playful handwritten typography.
+*   **Inline Components**: Profile Editor and Pro Mode simulators are integrated directly into the Dashboard for a cohesive Single-Page Application (SPA) feel.
+*   **Axios**: Dedicated service layer for all RESTful API communication.
 
 ---
 
@@ -62,7 +62,7 @@ Integrated engagement tracking that rewards consecutive days of practice and maj
 All components follow the "Kiwi" Minimalist Standard:
 *   Maximum use of common utility classes in Tailwind.
 *   Focus on Card-based Layouts and Gentle Animations.
-*   All interactive elements must be accessible and kid-friendly with larger tap targets.
+*   All interactive elements must be accessible and kid-friendly with larger tap targets and clear iconography.
 
 ---
 *Fueling the next generation of digital pioneers!*
