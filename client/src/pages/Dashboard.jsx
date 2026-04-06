@@ -129,7 +129,6 @@ export default function Dashboard() {
 
   const handlePostCreated = () => setCommunityRefresh((prev) => prev + 1);
 
-  // ── Fetch user profile ────────────────────────────────────────────────────
   const fetchUser = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) { navigate("/login"); return; }
@@ -144,7 +143,6 @@ export default function Dashboard() {
 
   useEffect(() => { fetchUser(); }, [fetchUser]);
 
-  // ── Listen for level complete messages from level pages (if opened in same tab via navigate) ─
   useEffect(() => {
     const handleMessage = async (e) => {
       if (e.data?.type === "LEVEL_COMPLETE") {
@@ -173,10 +171,8 @@ export default function Dashboard() {
     navigate("/login");
   };
 
-  // ── Level lock logic ─────────────────────────────────────────────────────────
-  // Level 1 always unlocked. Level N requires Level N-1 completed.
   const isLevelUnlocked = (levelId) => {
-    if (levelId === 1) return true; // Level 1 is ALWAYS open
+    if (levelId === 1) return true; 
     return user?.completedLevels?.includes(levelId - 1);
   };
   const isLevelCompleted = (levelId) => user?.completedLevels?.includes(levelId);
@@ -201,10 +197,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-white flex font-sans text-gray-800 overflow-x-hidden relative">
 
-      {/* Badge Unlock Popup */}
       <BadgeUnlockPopup badge={badgePopup} onClose={() => setBadgePopup(null)} />
 
-      {/* Mobile toggle */}
       <div className="lg:hidden fixed top-5 left-5 z-50">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -214,7 +208,6 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Mobile overlay */}
       <AnimatePresence>
         {isSidebarOpen && (
           <motion.div
@@ -227,7 +220,6 @@ export default function Dashboard() {
         )}
       </AnimatePresence>
 
-      {/* ── Sidebar ──────────────────────────────────────────────────────────── */}
       <motion.div
         initial={false}
         animate={{
@@ -239,7 +231,6 @@ export default function Dashboard() {
       >
         <SidebarWave />
 
-        {/* Brand */}
         <div className="flex items-center gap-3 px-6 mb-8 cursor-pointer" onClick={() => navigate("/")}>
           <img src={Logo} alt="CodeCraft" className="w-10 h-10 object-contain rounded-full border border-[#a0cc5b]" />
           <h1 className="font-black text-xl text-gray-800 tracking-tight" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
@@ -247,7 +238,6 @@ export default function Dashboard() {
           </h1>
         </div>
 
-        {/* User mini card */}
         {user && (
           <div className="mx-4 mb-6 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3">
             <div
@@ -266,7 +256,6 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Nav */}
         <div className="flex-1 overflow-y-auto px-4 custom-scrollbar sidebar-menu">
           {SIDEBAR_MENU.map((group, i) => (
             <div key={i} className="mb-6">
@@ -303,7 +292,6 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* Bottom actions */}
         <div className="px-4 mt-2 space-y-1">
           <button
             onClick={() => navigate("/")}
@@ -320,14 +308,12 @@ export default function Dashboard() {
         </div>
       </motion.div>
 
-      {/* ── Main Content ─────────────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.15 }}
         className="flex-1 flex flex-col h-screen overflow-y-auto bg-white pt-10 px-4 sm:px-8 lg:px-16 z-0 dashboard-content"
       >
-        {/* ── Stats header ─────────────────────────────────────────────── */}
         <div className="flex flex-col items-center mb-10 stats-header">
           <div className="flex gap-3 mb-6 flex-wrap justify-center">
             <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-2 bg-orange-50 rounded-2xl border border-orange-100 shadow-sm cursor-default">
@@ -344,7 +330,6 @@ export default function Dashboard() {
             </motion.div>
           </div>
 
-          {/* Avatar */}
           <motion.div
             whileHover={{ scale: 1.05 }}
             onClick={() => setActiveTab("edit_profile")}
@@ -356,7 +341,6 @@ export default function Dashboard() {
             {user?.name || "CodeCrafter"}
           </h2>
 
-          {/* Search */}
           <div className="w-full max-w-lg">
             <div className="relative">
               <input
@@ -371,13 +355,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ── Tab content ──────────────────────────────────────────────── */}
         <div className="w-full max-w-4xl mx-auto pb-20">
 
-          {/* BEGINNER LEVELS */}
           {activeTab === "beginner" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-              {/* Progress bar */}
               <div className="mb-6 bg-gray-50 rounded-2xl p-5 border border-gray-100">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-black text-gray-500 uppercase tracking-wider">Your Progress</span>
@@ -421,7 +402,6 @@ export default function Dashboard() {
                           : "bg-gray-50 border-gray-200 opacity-70"
                       }`}
                     >
-                      {/* Left */}
                       <div className="flex items-center gap-4">
                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white text-3xl shadow-sm bg-gradient-to-br ${
                           completed ? "from-green-400 to-green-500" : unlocked ? level.color : "from-gray-200 to-gray-300"
@@ -457,7 +437,6 @@ export default function Dashboard() {
                         </div>
                       </div>
 
-                      {/* Right */}
                       <div className="shrink-0">
                         {!unlocked ? (
                           <button
@@ -487,8 +466,6 @@ export default function Dashboard() {
               </div>
             </motion.div>
           )}
-
-          {/* COMMUNITY */}
           {activeTab === "community" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
               <div className="mb-6 p-5 bg-[#f9faec] rounded-2xl border border-gray-100 flex justify-between items-center">
@@ -503,7 +480,6 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {/* LEADERBOARD */}
           {activeTab === "leaderboard" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
               <div className="mb-6 p-5 bg-yellow-50 rounded-2xl border border-yellow-100 flex justify-between items-center">
@@ -517,7 +493,6 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {/* BADGES */}
           {activeTab === "badges" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
               className="bg-[#eff5f0] p-8 rounded-3xl border border-[#e1ecdf] shadow-sm"
@@ -539,7 +514,6 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {/* EDITOR */}
           {activeTab === "editor" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
               className="h-[75vh] w-full"
@@ -548,7 +522,6 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {/* PROFILE */}
           {activeTab === "profile" && (
             <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}
               className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden"
@@ -591,14 +564,12 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {/* EDIT PROFILE INLINE */}
           {activeTab === "edit_profile" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="w-full">
               <ProfileSettings onClose={() => setActiveTab("profile")} />
             </motion.div>
           )}
 
-          {/* PRO MODE */}
           {activeTab === "games_pro" && (
             <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}
               className="bg-gradient-to-br from-red-50 to-orange-50 p-8 rounded-[2.5rem] border border-red-100 text-center shadow-sm"
@@ -620,7 +591,6 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {/* PLAY PRO MODE (Inline Rendering of ProStart) */}
           {activeTab === "play_games_pro" && (
             <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}
               className="bg-white rounded-3xl p-10 shadow-sm border border-gray-100 w-full text-center"
@@ -652,7 +622,6 @@ export default function Dashboard() {
             </motion.div>
           )}
 
-          {/* SHOP */}
           {activeTab === "shop" && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
               className="bg-orange-50 rounded-3xl border-2 border-dashed border-orange-200 p-10 text-center"

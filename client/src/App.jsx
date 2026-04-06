@@ -26,7 +26,6 @@ function ScrollToTop() {
   return null;
 }
 
-// PrivateRoute component to protect private pages
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" />;
@@ -45,20 +44,17 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/about" element={<About />} />
 
-            {/* Protected Routes */}
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/profile" element={<Navigate to="/dashboard" />} />
             <Route path="/game/beginner" element={<PrivateRoute><BeginnerMode /></PrivateRoute>} />
             <Route path="/game/pro" element={<PrivateRoute><ProMode /></PrivateRoute>} />
 
-            {/* Level Routes - protected */}
             <Route path="/game/level/1" element={<PrivateRoute><Level1 /></PrivateRoute>} />
             <Route path="/game/level/2" element={<PrivateRoute><Level2 /></PrivateRoute>} />
             <Route path="/game/level/3" element={<PrivateRoute><Level3 /></PrivateRoute>} />
             <Route path="/game/level/4" element={<PrivateRoute><Level4 /></PrivateRoute>} />
             <Route path="/game/level/5" element={<PrivateRoute><Level5 /></PrivateRoute>} />
 
-            {/* Redirect unknown routes to home */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
