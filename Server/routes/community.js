@@ -1,4 +1,3 @@
-// backend/routes/community.js
 import express from "express";
 import jwt from "jsonwebtoken";
 import multer from "multer";
@@ -50,7 +49,6 @@ router.post("/posts", authMiddleware, upload.single("image"), async (req, res) =
 
     await post.save();
     
-    // Populate author info for response (fixed: 'currentBadge badges' instead of 'badge')
     await post.populate('author', 'name profilePic currentBadge badges completedLevels');
     
     res.status(201).json({
@@ -74,8 +72,7 @@ router.delete("/posts/:postId", authMiddleware, async (req, res) => {
         message: "Post not found" 
       });
     }
-    
-    // Check if the current user is the author of the post
+  
     if (post.author.toString() !== req.userId) {
       return res.status(403).json({ 
         success: false,

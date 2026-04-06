@@ -13,7 +13,7 @@ dotenv.config();
 
 const app = express();
 
-// Resolve __dirname for ES modules
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -26,7 +26,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/feedback", feedbackRoutes);
 
 
-// Serve static uploads folder
+
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 const mongoUri = process.env.MONGODB_URI;
@@ -43,7 +43,7 @@ const connectDB = async () => {
   } catch (error) {
     console.error("❌ MongoDB Connection Error:", error.message);
     console.error("🧠 Full Error Details:", error);
-    process.exit(1); // Stop the server if MongoDB fails
+    process.exit(1); 
   }
 };
 

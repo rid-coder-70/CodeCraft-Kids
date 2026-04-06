@@ -6,8 +6,6 @@ const router = express.Router();
 router.get("/platform-stats", async (req, res) => {
   try {
     const totalCount = await User.countDocuments();
-    
-    // Simple aggregation for average age
     const ageResult = await User.aggregate([
       { $group: { _id: null, avgAge: { $avg: "$age" } } }
     ]);
@@ -17,7 +15,7 @@ router.get("/platform-stats", async (req, res) => {
     res.json({
       success: true,
       stats: {
-        totalUsers: 500 + totalCount, // Marketing: Base + Real
+        totalUsers: 500 + totalCount,
         pythonLevels: 10,
         badgesToEarn: 10,
         averageAge: avgAge
@@ -53,7 +51,6 @@ router.get("/leaderboard", async (req, res) => {
       .select("name profilePic currentBadge badges completedLevels gems experiencePoints streak createdAt")
       .lean();
 
-    // Sort by: completedLevels → gems → XP → earliest join date
     const sorted = users
       .sort((a, b) => {
         const levelDiff = (b.completedLevels?.length || 0) - (a.completedLevels?.length || 0);

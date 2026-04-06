@@ -54,12 +54,10 @@ router.post("/signup", async (req, res) => {
   try {
     const { name, email, password, age } = req.body;
 
-    // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
-    // ✅ Let pre-save hook hash the password
     const newUser = await User.create({ 
       name, 
       email, 
@@ -71,7 +69,6 @@ router.post("/signup", async (req, res) => {
       expiresIn: "1d",
     });
 
-    // Exclude password in response
     const { password: _, ...userWithoutPass } = newUser.toObject();
     res.status(201).json({ token, user: userWithoutPass });
   } catch (err) {
@@ -124,7 +121,7 @@ router.put("/profile", authMiddleware, upload.single("profilePic"), async (req, 
 
     let badgeEarned = null;
 
-    // Update streak and last active date
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -143,20 +140,16 @@ router.put("/profile", authMiddleware, upload.single("profilePic"), async (req, 
     }
     user.lastActiveDate = today;
 
-    // Level completion & badge update
     if (completedLevel !== undefined) {
       const level = Number(completedLevel);
       if (!user.completedLevels.includes(level)) {
         user.completedLevels.push(level);
         
-        // Award gems and XP for completing a new level
         user.gems += 50;
         user.experiencePoints += 100;
 
-        // Award badge for the completed level
         const badgeAdded = user.addBadge(level);
         if (badgeAdded) {
-          // Get the badge that was just added
           const newBadge = user.badges[user.badges.length - 1];
           badgeEarned = {
             name: newBadge.name,
@@ -173,7 +166,7 @@ router.put("/profile", authMiddleware, upload.single("profilePic"), async (req, 
     res.json({
       success: true,
       message: badgeEarned
-        ? `🎉 You completed Level ${completedLevel} & earned the ${badgeEarned.name} badge!`
+        ? `You completed Level ${completedLevel} & earned the ${badgeEarned.name} badge!`
         : "Profile updated successfully.",
       user,
       badgeEarned,

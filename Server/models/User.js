@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema({
     }], 
     default: [] 
   },
-  completedLevels: { type: [Number], default: [] }, // track completed levels
-  currentBadge: { type: String, default: "FaStar" }, // current display badge
+  completedLevels: { type: [Number], default: [] }, 
+  currentBadge: { type: String, default: "FaStar" }, 
   gems: { type: Number, default: 0 },
   streak: { type: Number, default: 0 },
   age: { type: Number, default: 10 },
@@ -59,11 +59,10 @@ userSchema.methods.addBadge = function(level) {
       earnedAt: new Date()
     });
     
-    // Update current badge to the latest earned badge
     this.currentBadge = badgeConfig[level].icon;
-    return true; // Badge added
+    return true; 
   }
-  return false; // Badge already exists or invalid level
+  return false; 
 };
 
 const User = mongoose.model("User", userSchema);
