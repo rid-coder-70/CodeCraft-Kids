@@ -10,7 +10,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const isLoggedIn = !!localStorage.getItem("token");
 
-  // Hide navbar on dashboard / game / profile / level pages
   const hidden =
     location.pathname.includes("/dashboard") ||
     location.pathname.includes("/game") ||
@@ -23,7 +22,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close menu on route change
   useEffect(() => setMenuOpen(false), [location.pathname]);
 
   if (hidden) return null;
@@ -42,7 +40,6 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group" aria-label="CodeCraft Kids Home">
             <motion.img
               whileHover={{ rotate: 10, scale: 1.1 }}
@@ -59,7 +56,6 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-2">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.to;
@@ -80,7 +76,6 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Desktop auth buttons */}
           <div className="hidden md:flex items-center gap-3">
             {isLoggedIn ? (
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
@@ -111,7 +106,6 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile hamburger */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-gray-100 text-gray-600 hover:bg-gray-50 transition-colors"
@@ -130,7 +124,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div

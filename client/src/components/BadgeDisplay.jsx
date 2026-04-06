@@ -42,7 +42,6 @@ const BadgeDisplay = ({ badges, size = "medium", showTooltip = true, maxDisplay 
       <AnimatePresence>
         {displayedBadges.map((badge, index) => {
           const gradient = BADGE_COLORS[((badge.level || 1) - 1) % BADGE_COLORS.length];
-          // Support old emoji data just in case, but prioritize react-icon if it's a string like 'FaReact'
           const emojiRegex = /[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u;
           const isEmoji = emojiRegex.test(badge.icon);
           const IconComp = !isEmoji && badge.icon && FaIcons[badge.icon] ? FaIcons[badge.icon] : null;
@@ -56,7 +55,6 @@ const BadgeDisplay = ({ badges, size = "medium", showTooltip = true, maxDisplay 
               transition={{ delay: index * 0.06, type: "spring", stiffness: 200, damping: 15 }}
               className="relative group cursor-pointer"
             >
-              {/* Glow effect on hover */}
               <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-30 blur-md transition-opacity duration-300`} />
 
               <motion.div
@@ -70,7 +68,6 @@ const BadgeDisplay = ({ badges, size = "medium", showTooltip = true, maxDisplay 
                 </span>
               </motion.div>
 
-              {/* Tooltip */}
               {showTooltip && (
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 hidden group-hover:block z-30 pointer-events-none">
                   <motion.div
@@ -89,7 +86,6 @@ const BadgeDisplay = ({ badges, size = "medium", showTooltip = true, maxDisplay 
                     <div className="text-gray-300 text-[9px] font-bold mt-1">
                       {new Date(badge.earnedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                     </div>
-                    {/* Tooltip arrow */}
                     <div className="absolute top-full left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-white border-r border-b border-gray-100 rotate-45 -translate-y-1.5" />
                   </motion.div>
                 </div>
@@ -97,8 +93,6 @@ const BadgeDisplay = ({ badges, size = "medium", showTooltip = true, maxDisplay 
             </motion.div>
           );
         })}
-
-        {/* +N more badges */}
         {remainingCount > 0 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}

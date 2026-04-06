@@ -93,7 +93,6 @@ const UsersList = () => {
 
   return (
     <div className="max-w-6xl mx-auto py-8">
-      {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2 flex items-center justify-center gap-3" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
           Community Leaderboard
@@ -103,7 +102,6 @@ const UsersList = () => {
         </p>
       </div>
 
-      {/* Search Bar */}
       <div className="mb-8 max-w-xl mx-auto">
         <div className="relative border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden">
           <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -127,14 +125,12 @@ const UsersList = () => {
         </div>
       ) : (
         <>
-          {/* Users Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredUsers.map((user) => (
               <div
                 key={user._id}
                 className="bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 p-6 hover:shadow-[0_4px_25px_rgba(0,0,0,0.06)] transition-all duration-300 group"
               >
-                {/* User Avatar & Badge */}
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-50">
                   <div className="relative">
                     {user.profilePic ? (
@@ -164,7 +160,6 @@ const UsersList = () => {
                   </div>
                 </div>
 
-                {/* User Info */}
                 <h3 className="text-gray-900 font-extrabold text-lg mb-4 truncate flex items-center gap-2" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>
                   {user.name}
                 </h3>
@@ -189,7 +184,6 @@ const UsersList = () => {
                   </div>
                 </div>
 
-                {/* Progress Bar */}
                 <div className="mt-5">
                   <div className="flex justify-between text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">
                     <span>Progress</span>

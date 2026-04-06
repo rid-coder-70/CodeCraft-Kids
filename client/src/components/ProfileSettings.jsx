@@ -8,7 +8,6 @@ import {
 } from "react-icons/fa";
 import { useToast } from "../components/Toast";
 
-// Color generator for avatars
 const avatarColors = [
   "from-[#f4a261] to-[#e76f51]", "from-[#2a9d8f] to-[#264653]",
   "from-[#e9c46a] to-[#f4a261]", "from-[#a0cc5b] to-[#8ebb4a]",
@@ -116,11 +115,9 @@ export default function ProfileSettings({ onClose }) {
           <FaArrowLeft />
         </button>
 
-        {/* Decorative Header */}
         <div className="bg-gradient-to-r from-green-400 to-blue-500 h-36 w-full relative">
           <div className="absolute inset-0 bg-white/10" style={{ backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", backgroundSize: "16px 16px", opacity: 0.2 }}></div>
           
-          {/* Avatar floating out of header */}
           <div className="absolute -bottom-14 left-1/2 -translate-x-1/2 flex flex-col items-center">
             <div className="relative group cursor-pointer inline-block">
               {avatarSrc ? (
@@ -144,7 +141,6 @@ export default function ProfileSettings({ onClose }) {
           </div>
         </div>
 
-        {/* Content Body */}
         <div className="pt-20 px-8 pb-10">
           
           <div className="flex flex-col items-center mb-8">
@@ -156,7 +152,6 @@ export default function ProfileSettings({ onClose }) {
             </p>
           </div>
 
-          {/* Stats Row */}
           {user && (
             <div className="flex justify-center gap-10 mb-8 pb-8 border-b border-gray-100">
               <div className="text-center">
@@ -173,8 +168,6 @@ export default function ProfileSettings({ onClose }) {
               </div>
             </div>
           )}
-
-        {/* Form Fields */}
         <div className="space-y-5 mb-8">
           <div>
             <label className="block text-sm font-bold text-gray-500 mb-1.5 uppercase tracking-wide">Full Name</label>
@@ -213,7 +206,6 @@ export default function ProfileSettings({ onClose }) {
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex flex-col gap-3">
           {!editing ? (
             <button

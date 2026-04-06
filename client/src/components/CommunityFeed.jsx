@@ -7,7 +7,6 @@ import {
 } from "react-icons/fa";
 import { useToast } from "./Toast";
 
-// Helper: generate avatar color from username
 const avatarColor = (name = "") => {
   const colors = [
     "from-[#f4a261] to-[#e76f51]", "from-[#2a9d8f] to-[#264653]",
@@ -206,8 +205,6 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                   <FaTrashAlt />
                 </button>
               )}
-
-              {/* Post Header */}
               <div className="flex items-center space-x-4 mb-4">
                 {post.author?.profilePic ? (
                   <img
@@ -245,11 +242,9 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                 </div>
               </div>
 
-              {/* Post Content */}
               <h2 className="text-lg font-bold text-gray-900 mb-2" style={{ fontFamily: "'KG Primary Penmanship', 'Lazy Sunday', 'Jenna Sue', 'Sunny Spells', 'Caveat', cursive" }}>{post.title}</h2>
               <p className="text-gray-600 mb-4 leading-relaxed whitespace-pre-line text-sm font-medium">{post.content}</p>
 
-              {/* Post Image */}
               {post.image && (
                 <img
                   src={`${API_BASE}${post.image}`}
@@ -258,7 +253,6 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                 />
               )}
 
-              {/* Tags */}
               {post.tags?.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-4">
                   {post.tags.map(tag => (
@@ -269,7 +263,6 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                 </div>
               )}
 
-              {/* Actions */}
               <div className="flex items-center justify-between border-t border-gray-50 pt-4 mt-2 mb-4">
                 <button
                   onClick={() => handleLike(post._id)}
@@ -287,7 +280,6 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                 </button>
               </div>
 
-              {/* Comments Section */}
               {expandedComments.has(post._id) && (
                 <div className="mt-4 pt-4 border-t border-gray-50 animate-fade-in">
                   <div className="space-y-4 mb-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
@@ -310,7 +302,6 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
                     )}
                   </div>
 
-                  {/* Add Comment Input */}
                   <div className="flex gap-3">
                     <input
                       type="text"
@@ -335,7 +326,6 @@ const CommunityFeed = ({ refreshKey, onPostDeleted }) => {
           );
         })}
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-4 mt-8">
             <button

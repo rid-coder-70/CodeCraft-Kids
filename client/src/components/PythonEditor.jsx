@@ -12,7 +12,6 @@ const PythonEditor = () => {
   const outputRef = useRef(null);
 
   useEffect(() => {
-    // Load Skulpt from CDN
     const addScript = (src, id) => {
         if (document.getElementById(id)) return Promise.resolve();
         return new Promise((resolve, reject) => {
@@ -56,7 +55,7 @@ const PythonEditor = () => {
   const runCode = () => {
     if (!isSkulptLoaded || !window.Sk) return;
     
-    setOutput(""); // Clear output before running
+    setOutput("");
     window.Sk.pre = "output";
     window.Sk.configure({
       output: outf,
@@ -91,7 +90,6 @@ const PythonEditor = () => {
         .code-editor textarea { outline: none !important; }
       `}</style>
 
-      {/* Editor Header */}
       <div className="bg-white px-6 py-4 flex items-center justify-between border-b border-gray-100 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
@@ -128,9 +126,7 @@ const PythonEditor = () => {
         </div>
       </div>
 
-      {/* Editor Main Section (W3Schools Layout) */}
       <div className="flex-1 flex flex-col lg:flex-row min-h-0">
-        {/* Code Input */}
         <div className="flex-1 border-r border-gray-100 bg-white relative flex flex-col min-h-0 overflow-auto custom-scrollbar">
           <Editor
             value={code}
@@ -144,7 +140,6 @@ const PythonEditor = () => {
           </div>
         </div>
 
-        {/* Console Output */}
         <div className="flex-1 bg-[#1e293b] flex flex-col min-h-0 relative lg:max-w-md xl:max-w-lg">
           <div className="px-4 py-2 border-b border-gray-700/50 flex items-center gap-2 text-gray-400 shrink-0">
             <FaTerminal className="text-sm" />

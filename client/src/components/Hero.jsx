@@ -118,12 +118,10 @@ export default function Hero() {
     <div className="bg-white min-h-screen font-sans text-gray-800 overflow-x-hidden">
 
             <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-24">
-        {/* Decorative blobs */}
         <div className="absolute top-10 left-0 w-72 h-72 bg-green-100 rounded-full blur-3xl opacity-40 pointer-events-none" />
         <div className="absolute top-20 right-0 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-30 pointer-events-none" />
 
         <div className="relative flex flex-col lg:flex-row items-center justify-between gap-14">
-          {/* Left */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -175,8 +173,6 @@ export default function Hero() {
                 </Link>
               </motion.div>
             </div>
-
-            {/* Trust indicators */}
             <div className="flex flex-wrap gap-4 justify-center lg:justify-start pt-2 text-sm font-bold text-gray-400">
               <span className="flex items-center gap-1"><FaCode className="text-green-500" /> {platformStats.pythonLevels} Python Levels</span>
               <span className="flex items-center gap-1"><FaGem className="text-blue-500" /> Gem Rewards</span>
@@ -185,7 +181,6 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* Right – illustration */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -193,7 +188,6 @@ export default function Hero() {
             className="flex-1 w-full flex justify-center lg:justify-end"
           >
             <div className="relative w-full max-w-md">
-              {/* Level cards floating */}
               <div className="relative flex items-end justify-center gap-4 mt-8">
                 {LEVELS_PREVIEW.map((level, i) => (
                   <motion.div
@@ -212,7 +206,6 @@ export default function Hero() {
                 ))}
               </div>
 
-              {/* Kids */}
               <div className="flex items-end justify-center gap-8 mt-8">
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
@@ -230,7 +223,6 @@ export default function Hero() {
                 </motion.div>
               </div>
 
-              {/* Floating badges */}
               <motion.div
                 animate={{ rotate: [-5, 5, -5], y: [0, -6, 0] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}

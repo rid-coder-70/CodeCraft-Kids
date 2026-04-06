@@ -52,7 +52,6 @@ export default function Footer() {
     setFeedback({ name: "", email: "", message: "" });
   };
 
-  // Do not render footer on dashboard to allow sidebar full height control
   if (
     location.pathname.includes("/dashboard") ||
     location.pathname.includes("/game") ||
@@ -63,9 +62,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-white border-t border-gray-100 py-16 font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Top Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> 
         <div className="flex flex-col md:flex-row justify-between items-center mb-16 gap-8">
           <div className="flex items-center gap-3">
             <img src={Logo} alt="CodeCraft Kids" className="w-12 h-12 rounded-full border border-green-200" />
@@ -90,10 +87,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Grid Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-16">
           
-          {/* Quick Links */}
           <div className="lg:col-span-3">
             <h3 className="text-sm font-bold text-gray-900 tracking-wider uppercase mb-6">Pages</h3>
             <ul className="space-y-4">
@@ -111,8 +106,6 @@ export default function Footer() {
               ))}
             </ul>
           </div>
-
-          {/* Connect / Info */}
           <div className="lg:col-span-4">
             <h3 className="text-sm font-bold text-gray-900 tracking-wider uppercase mb-6">Info</h3>
             <p className="text-gray-500 text-sm leading-relaxed mb-6 font-medium">
@@ -124,8 +117,6 @@ export default function Footer() {
               <span className="text-green-800 text-sm font-bold uppercase tracking-wider">Safe & Educational</span>
             </div>
           </div>
-
-          {/* Feedback Form */}
           <div className="lg:col-span-5 bg-gray-50 rounded-2xl p-6 border border-gray-100 shadow-sm">
             <h3 className="text-sm font-bold text-gray-900 tracking-wider uppercase mb-4 flex items-center gap-2">
               Send Feedback
@@ -159,7 +150,6 @@ export default function Footer() {
 
         </div>
 
-        {/* Copyright */}
         <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400 text-sm font-medium">
             © {new Date().getFullYear()} CodeCraft Kids. All rights reserved.
@@ -170,8 +160,6 @@ export default function Footer() {
         </div>
 
       </div>
-
-      {/* Scroll to top */}
       {showTop && (
         <button
           onClick={scrollToTop}

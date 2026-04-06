@@ -1,18 +1,11 @@
 import { useState, useCallback, useEffect, createContext, useContext } from "react";
 import { FaCheckCircle, FaTimesCircle, FaInfoCircle, FaTimes } from "react-icons/fa";
-
-// ============================
-// Toast Context
-// ============================
 const ToastContext = createContext(null);
 
 export function useToast() {
   return useContext(ToastContext);
 }
 
-// ============================
-// Toast Provider
-// ============================
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
