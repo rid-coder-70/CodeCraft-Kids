@@ -6,7 +6,7 @@
 [![Tech Stack](https://img.shields.io/badge/stack-MERN-blue)](https://github.com/rid-coder-70/CodeCraft-Kids)
 [![Kids Safe](https://img.shields.io/badge/Age-6--15-orange)](https://github.com/rid-coder-70/CodeCraft-Kids)
 
-Welcome to **CodeCraft Kids**, a premiere, gamified Learning Management System (LMS) designed to turn coding from a daunting task into a world-class adventure. Featuring our innovative "Kiwi" Design System, we focus on creating a high-end, minimalist environment that fosters creativity and focuses the mind.
+Welcome to **CodeCraft Kids**, a premiere, gamified Learning Management System (LMS) designed to turn coding from a daunting task into a world-class adventure. We focus on creating a high-end, minimalist environment that fosters creativity and focuses the mind.
 
 ---
 
