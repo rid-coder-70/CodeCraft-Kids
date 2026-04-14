@@ -136,6 +136,11 @@ export default function Dashboard() {
       const res = await fetch(`${API_BASE}/api/auth/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      if (res.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
       const data = await res.json();
       if (data.success) setUser(data.user);
     } catch (e) { console.error(e); }
@@ -154,6 +159,11 @@ export default function Dashboard() {
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
             body: JSON.stringify({ completedLevel: e.data.level }),
           });
+          if (res.status === 401) {
+            localStorage.removeItem("token");
+            navigate("/login");
+            return;
+          }
           const data = await res.json();
           if (data.badgeEarned) {
             setBadgePopup({ ...data.badgeEarned, gems: 50 });

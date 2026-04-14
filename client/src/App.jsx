@@ -26,9 +26,25 @@ function ScrollToTop() {
   return null;
 }
 
+function isTokenValid(token) {
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    // payload.exp is in seconds; Date.now() is in ms
+    return payload.exp * 1000 > Date.now();
+  } catch {
+    return false;
+  }
+}
+
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/login" />;
+  if (!isTokenValid(token)) {
+    // Clear any stale/expired token so the server never receives it
+    localStorage.removeItem("token");
+    return <Navigate to="/login" />;
+  }
+  return children;
 }
 
 function App() {
